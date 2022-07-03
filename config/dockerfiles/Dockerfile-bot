@@ -1,0 +1,4 @@
+FROM gradle:4.10.2-jdk8-alpine
+WORKDIR /home/gradle/bot
+COPY --chown=gradle:gradle ./bot .
+ENTRYPOINT ["gradle", "run"]
