@@ -1,0 +1,30 @@
+FROM gradle:jdk8-alpine as build_image
+RUN mkdir -p /home/gradle/code
+RUN mkdir -p /home/gradle/app
+
+COPY --chown=gradle:gradle ./rabKot /home/gradle/code/rabKot
+COPY --chown=gradle:gradle ./transmission /home/gradle/code/transmission
+
+RUN cd /home/gradle/code && \
+	cd rabKot && \
+	gradle clean jar && \
+	cp ./build/libs/*.jar /home/gradle/app/kot_lib.jar && \
+	cd /home/gradle/code && \
+	cd transmission && \
+	gradle clean fatJar && \
+	cp ./build/libs/*.jar /home/gradle/app/transmission.jar && \
+	ls /home/gradle/app
+
+RUN rm -rf /home/gradle/code
+
+FROM openjdk:8-jre-alpine
+RUN mkdir -p /app
+RUN mkdir -p /scripts
+
+RUN apk add transmission-daemon transmission-cli #transmission-common
+
+COPY --from=build_image /home/gradle/app/*.jar /app/
+
+COPY ./additional_config/commands/*.sh /scripts/
+
+ENTRYPOINT ["java", "-jar", "/app/transmission.jar"]
