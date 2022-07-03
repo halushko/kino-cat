@@ -2,17 +2,12 @@ FROM gradle:jdk8-alpine as build_image
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 
-COPY --chown=gradle:gradle ./rabKot /home/gradle/code/rabKot
-COPY --chown=gradle:gradle ./microBot2 /home/gradle/code/microBot
+ADD --chown=gradle:gradle https://github.com/halushko/kino-cat/tree/master/rabit_tools /home/gradle/code/rabKot
 
 RUN cd /home/gradle/code && \
 	cd rabKot && \
 	gradle clean jar && \
 	cp ./build/libs/*.jar /home/gradle/app/kot_lib.jar && \
-	cd /home/gradle/code && \
-	cd microBot && \
-	gradle clean fatJar && \
-	cp ./build/libs/*.jar /home/gradle/app/micro_bot.jar && \
 	ls /home/gradle/app
 
 RUN rm -rf /home/gradle/code
