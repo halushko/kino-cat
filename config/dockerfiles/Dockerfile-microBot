@@ -2,8 +2,8 @@ FROM gradle:jdk8-alpine as build_image
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 
-COPY --chown=gradle:gradle ./rabKot /home/gradle/code/rabKot
-COPY --chown=gradle:gradle ./microBot2 /home/gradle/code/microBot
+#COPY --chown=gradle:gradle ./rabKot /home/gradle/code/rabKot
+#COPY --chown=gradle:gradle ./microBot2 /home/gradle/code/microBot
 
 RUN cd /home/gradle/code && \
 	cd rabKot && \

@@ -9,3 +9,18 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
+  jar_builder:
+    build:
+      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-rabkot
+    depends_on:
+      - rabbitmq
+    volumes:
+      - libsdata:/app      
+volumes:
+  libsdata:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./jars

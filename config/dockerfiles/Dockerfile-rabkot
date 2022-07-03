@@ -2,12 +2,12 @@ FROM gradle:jdk8-alpine as build_image
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 
-ADD --chown=gradle:gradle https://github.com/halushko/kino-cat/tree/master/rabit_tools /home/gradle/code/rabKot
+ADD --chown=gradle:gradle https://github.com/halushko/kino-cat/tree/master/rabit_tools/ /home/gradle/code/rabKot
 
 RUN cd /home/gradle/code && \
 	cd rabKot && \
 	gradle clean jar && \
-	cp ./build/libs/*.jar /home/gradle/app/kot_lib.jar && \
+	cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar && \
 	ls /home/gradle/app
 
 RUN rm -rf /home/gradle/code
