@@ -11,6 +11,7 @@ services:
       - 15672:15672
   jar_builder:
     build:
+#      context: .
       context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/dockerfiles/Dockerfile-rabkot
     depends_on:
