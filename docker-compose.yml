@@ -16,6 +16,7 @@ services:
       dockerfile: ./config/dockerfiles/Dockerfile-jar_builder
     depends_on:
       - rabbitmq
+    container_name: "jar_builder"
     volumes:
       - libsdata:/home/gradle/app/
   bot:
@@ -24,6 +25,7 @@ services:
       #      context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/dockerfiles/Dockerfile-microBot
     restart: always
+    container_name: "bot"
     depends_on:
       - jar_builder
     volumes:
