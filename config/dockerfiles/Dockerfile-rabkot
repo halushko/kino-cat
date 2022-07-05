@@ -5,7 +5,7 @@ RUN cd /home/git/code && git clone --depth 1 https://github.com/halushko/kino-ca
 
 FROM gradle:jdk8-alpine as build_image
 RUN mkdir -p /home/gradle/code/rabKot
-RUN mkdir -p /home/gradle/app
+RUN mkdir -p /home/app
 
 COPY --from=download_image /home/git/code/kino-cat/rabKot /home/gradle/code/rabKot
 
