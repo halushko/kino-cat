@@ -20,15 +20,16 @@ public class RabbitUtils {
     private static Connection connection;
 
     private static Connection newConnection() throws IOException, TimeoutException {
+        System.out.println("RABBIT_USERNAME=" + RABBIT_USERNAME);
+        System.out.println("RABBIT_PASSWORD=" + RABBIT_PASSWORD);
+        System.out.println("RABBIT_HOST_IP=" + RABBIT_HOST_IP);
+        System.out.println("RABBIT_PORT=" + RABBIT_PORT);
+
         if (connection != null && !connection.isOpen()) {
             connection.close();
             connection = null;
         }
         if (connection == null) {
-            System.out.println("RABBIT_USERNAME=" + RABBIT_USERNAME);
-            System.out.println("RABBIT_PASSWORD=" + RABBIT_PASSWORD);
-            System.out.println("RABBIT_HOST_IP=" + RABBIT_HOST_IP);
-            System.out.println("RABBIT_PORT=" + RABBIT_PORT);
             connection = new ConnectionFactory() {
                 {
                     setHost(RABBIT_HOST_IP);
