@@ -11,8 +11,8 @@ services:
       - 15672:15672
   jar_builder:
     build:
-      context: .
-      #      context: https://github.com/halushko/kino-cat.git
+      #      context: .
+      context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/dockerfiles/Dockerfile-jar_builder
     depends_on:
       - rabbitmq
@@ -21,8 +21,8 @@ services:
       - libsdata:/home/gradle/app/
   bot:
     build:
-      context: .
-      #      context: https://github.com/halushko/kino-cat.git
+      #      context: .
+      context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/dockerfiles/Dockerfile-microBot
     environment:
       RABBITMQ_DEFAULT_USER: rabbit_user

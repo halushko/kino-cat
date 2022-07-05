@@ -11,7 +11,7 @@ import java.util.concurrent.TimeoutException;
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.MEDIUM_PAUSE_MILIS;
 
 public class RabbitUtils {
-        private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");//"172.17.0.1";
+    private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");//"172.17.0.1";
     private final static String RABBIT_USERNAME = System.getenv("RABBITMQ_DEFAULT_USER");//"dima";
     private final static String RABBIT_PASSWORD = System.getenv("RABBITMQ_DEFAULT_PASS");//"dima";
     private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));//5672;
@@ -25,6 +25,10 @@ public class RabbitUtils {
             connection = null;
         }
         if (connection == null) {
+            System.out.println(RABBIT_USERNAME);
+            System.out.println(RABBIT_PASSWORD);
+            System.out.println(RABBIT_HOST_IP);
+            System.out.println(RABBIT_PORT);
             connection = new ConnectionFactory() {
                 {
                     setHost(RABBIT_HOST_IP);
@@ -48,7 +52,7 @@ public class RabbitUtils {
     }
 
     public static void postMessage(long chatId, String text, String queue, String... consumersId) throws IOException, TimeoutException {
-        if(consumersId == null || consumersId.length == 0) {
+        if (consumersId == null || consumersId.length == 0) {
             postMessage(new RabbitMessage(chatId, text), queue);
         } else {
             for (String consumer : consumersId) {
