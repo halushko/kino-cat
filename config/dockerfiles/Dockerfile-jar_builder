@@ -14,13 +14,10 @@ RUN mkdir -p /home/gradle/app
 COPY --from=download_image /home/git/code/kino-cat/rabKot /home/gradle/code/rabKot
 COPY --from=download_image /home/git/code/kino-cat/microBot /home/gradle/code/microBot
 
-RUN cd /home/gradle/code/rabKot && \
-	gradle jar && \
-    cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
-
-RUN cd /home/gradle/code/microBot && \
-	gradle fatJar && \
-    cp ./build/libs/*.jar /home/gradle/app/micro_bot.jar
+RUN ls /home/gradle/code/rabKot
+RUN ls /home/gradle/code/microBot
+RUN cd /home/gradle/code/rabKot && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
+RUN cd /home/gradle/code/microBot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/micro_bot.jar
 
 RUN ls /home/gradle/app
 

@@ -1,9 +1,2 @@
 FROM openjdk:8-alpine as microBot
-RUN ls /home
-RUN mkdir -p /home/app
-
-
-COPY --from=build_image /home/gradle/jars/micro_bot.jar /home/app/micro_bot.jar
-RUN ls /home/app
-
 ENTRYPOINT ["java", "-jar", "/home/app/micro_bot.jar"]

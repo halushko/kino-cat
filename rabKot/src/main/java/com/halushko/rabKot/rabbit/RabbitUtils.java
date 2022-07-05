@@ -11,9 +11,9 @@ import java.util.concurrent.TimeoutException;
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.MEDIUM_PAUSE_MILIS;
 
 public class RabbitUtils {
-    private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");//"172.17.0.1";
-    private final static String RABBIT_USERNAME = System.getenv("RABBIT_USERNAME");//"dima";
-    private final static String RABBIT_PASSWORD = System.getenv("RABBIT_PASSWORD");//"dima";
+        private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");//"172.17.0.1";
+    private final static String RABBIT_USERNAME = System.getenv("RABBITMQ_DEFAULT_USER");//"dima";
+    private final static String RABBIT_PASSWORD = System.getenv("RABBITMQ_DEFAULT_PASS");//"dima";
     private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));//5672;
 //    final static int RABBIT_CONNECTION_TIMEOUT = 60000;
 
