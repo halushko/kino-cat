@@ -25,10 +25,10 @@ public class RabbitUtils {
             connection = null;
         }
         if (connection == null) {
-            System.out.println(RABBIT_USERNAME);
-            System.out.println(RABBIT_PASSWORD);
-            System.out.println(RABBIT_HOST_IP);
-            System.out.println(RABBIT_PORT);
+            System.out.println("RABBIT_USERNAME=" + RABBIT_USERNAME);
+            System.out.println("RABBIT_PASSWORD=" + RABBIT_PASSWORD);
+            System.out.println("RABBIT_HOST_IP=" + RABBIT_HOST_IP);
+            System.out.println("RABBIT_PORT=" + RABBIT_PORT);
             connection = new ConnectionFactory() {
                 {
                     setHost(RABBIT_HOST_IP);
