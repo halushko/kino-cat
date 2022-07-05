@@ -11,13 +11,21 @@ services:
       - 15672:15672
   jar_builder:
     build:
-#      context: .
-      context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-rabkot
+      context: .
+#      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-jar_builder
     depends_on:
       - rabbitmq
     volumes:
-      - libsdata:/app      
+      - libsdata:/app
+  bot:
+    build:
+      context: .
+#      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-microBot
+    restart: always
+    depends_on:
+      - jar_builder
 volumes:
   libsdata:
     driver: local
