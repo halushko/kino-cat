@@ -2,12 +2,13 @@ FROM alpine/git as download_image
 ENV VERSION="v 1.1"
 RUN ls /home
 RUN mkdir -p /home/git/code
-RUN cd /home/git/code && git clone --depth 1 https://github.com/halushko/kino-cat.git
-RUN ls /home/git/code
+RUN cd /home/git/code && git clone https://github.com/halushko/kino-cat.git
+RUN ls /home/git/code/kino-cat
 
 FROM gradle:jdk8-alpine as build_image
 RUN ls /home
 RUN mkdir -p /home/gradle/code/rabKot
+RUN mkdir -p /home/gradle/code/microBot
 RUN mkdir -p /home/gradle/app
 
 COPY --from=download_image /home/git/code/kino-cat/rabKot /home/gradle/code/rabKot
