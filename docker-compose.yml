@@ -1,36 +1,40 @@
+version: '3.4'
+
+x-common-variables: &common-variables
+  RABBITMQ_DEFAULT_USER: rabbit_user
+  RABBITMQ_DEFAULT_PASS: rabbit_pswrd
+  RABBIT_PORT: 5672
+  RABBIT_HOST_IP: 172.17.0.1
+
 services:
   rabbitmq:
     image: rabbitmq:3.9.20-management-alpine
     hostname: rabbitmq
     restart: always
-    environment:
-      RABBITMQ_DEFAULT_USER: rabbit_user
-      RABBITMQ_DEFAULT_PASS: rabbit_pswrd
+    environment: *common-variables
     ports:
       - 5672:5672
       - 15672:15672
-#  downloader:
-#    build:
-#      context: .
-#      #      context: https://github.com/halushko/kino-cat.git
-#      dockerfile: ./config/dockerfiles/Dockerfile-downloader
-#    depends_on:
-#      - rabbitmq
-#    container_name: "downloader"
-#    volumes:
-#      - libsdata:/home/gradle/
   bot:
     build:
       context: .
       #      context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/dockerfiles/Dockerfile-microBot
-    environment:
-      RABBITMQ_DEFAULT_USER: rabbit_user
-      RABBITMQ_DEFAULT_PASS: rabbit_pswrd
-      RABBIT_PORT: 5672
-      RABBIT_HOST_IP: 172.17.0.1
+    environment: *common-variables
     restart: always
     container_name: "bot"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - libsdata:/home/app/
+  text_handler:
+    build:
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-text
+    environment: *common-variables
+    restart: always
+    container_name: "text_handler"
     depends_on:
       - rabbitmq
     volumes:

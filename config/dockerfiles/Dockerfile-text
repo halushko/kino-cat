@@ -1,25 +1,24 @@
+FROM alpine/git as download_image
+RUN mkdir -p /home/git/code
+RUN cd /home/git/code && \
+    git init kino-cat && \
+    cd kino-cat && \
+    git remote add origin https://github.com/halushko/kino-cat.git && \
+    git config core.sparseCheckout true && \
+    echo "rabKot/" >> .git/info/sparse-checkout && \
+    echo "textConsumer/" >> .git/info/sparse-checkout && \
+    git pull origin master
+
 FROM gradle:jdk8-alpine as build_image
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 
-#COPY --chown=gradle:gradle ./rabKot /home/gradle/code/rabKot
-#COPY --chown=gradle:gradle ./textConsumer /home/gradle/code/textConsumer
+COPY --chown=gradle:gradle --from=download_image /home/git/code /home/gradle/code
 
-RUN cd /home/gradle/code && \
-	cd rabKot && \
-	gradle clean jar && \
-	cp ./build/libs/*.jar /home/gradle/app/kot_lib.jar && \
-	cd /home/gradle/code && \
-	cd textConsumer && \
-	gradle clean fatJar && \
-	cp ./build/libs/*.jar /home/gradle/app/text_consumer.jar && \
-	ls /home/gradle/app
+RUN cd /home/gradle/code/kino-cat/rabKot && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
+RUN cd /home/gradle/code/kino-cat/textConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/text_consumer.jar
 
-RUN rm -rf /home/gradle/code
-
-FROM openjdk:8-jre-alpine
-RUN mkdir -p /app
-
-COPY --from=build_image /home/gradle/app/*.jar /app/
-
-ENTRYPOINT ["java", "-jar", "/app/text_consumer.jar"]
+FROM openjdk:8-alpine as textConsumer
+COPY --from=download_image /home/git/code /home/app/code
+COPY --from=build_image /home/gradle/app /home/app
+ENTRYPOINT ["java", "-jar", "/home/app/text_consumer.jar"]
