@@ -9,25 +9,20 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-  jar_builder:
-    build:
-            context: .
-#      context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-jar_builder
-    environment:
-      RABBITMQ_DEFAULT_USER: rabbit_user
-      RABBITMQ_DEFAULT_PASS: rabbit_pswrd
-      RABBIT_PORT: 5672
-      RABBIT_HOST_IP: 172.17.0.1
-    depends_on:
-      - rabbitmq
-    container_name: "jar_builder"
-    volumes:
-      - libsdata:/home/gradle/app/
+#  downloader:
+#    build:
+#      context: .
+#      #      context: https://github.com/halushko/kino-cat.git
+#      dockerfile: ./config/dockerfiles/Dockerfile-downloader
+#    depends_on:
+#      - rabbitmq
+#    container_name: "downloader"
+#    volumes:
+#      - libsdata:/home/gradle/
   bot:
     build:
-            context: .
-#      context: https://github.com/halushko/kino-cat.git
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/dockerfiles/Dockerfile-microBot
     environment:
       RABBITMQ_DEFAULT_USER: rabbit_user
@@ -37,7 +32,7 @@ services:
     restart: always
     container_name: "bot"
     depends_on:
-      - jar_builder
+      - rabbitmq
     volumes:
       - libsdata:/home/app/
 volumes:
