@@ -10,15 +10,13 @@ RUN cd /home/git/code && \
     git pull origin master
 
 FROM gradle:jdk8-alpine as build_image
-#FROM  gradle:4.4.1-jre8-alpine as build_image
-RUN ls /home
-RUN mkdir -p /home/gradle/kino-cat
+RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 
-COPY --from=download_image /home/git/code/kino-cat /home/gradle/kino-cat
+COPY --chown=gradle:gradle --from=download_image /home/git/code /home/gradle/code
 
-RUN cd /home/gradle/kino-cat/rabKot && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
-RUN cd /home/gradle/kino-cat/microBot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/micro_bot.jar
+RUN cd /home/gradle/code/kino-cat/rabKot && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
+RUN cd /home/gradle/code/kino-cat/microBot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/micro_bot.jar
 
 FROM openjdk:8-alpine as microBot
 COPY --from=download_image /home/git/code /home/app/code
