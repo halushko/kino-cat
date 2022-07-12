@@ -5,7 +5,11 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
   RABBIT_HOST_IP: 172.17.0.1
-
+  TELEGRAM_INPUT_FILE_QUEUE: TELEGRAM_INPUT_FILE
+  TELEGRAM_INPUT_TEXT_QUEUE: TELEGRAM_INPUT_TEXT
+  TELEGRAM_OUTPUT_TEXT_QUEUE: TELEGRAM_INPUT_TEXT
+  BOT_TOKEN: 1859184957:AAF2DaTJpaOEj2I6T2Vf35fOJszp9skPeiE
+  BOT_NAME: koTorrentBot
 services:
   rabbitmq:
     image: rabbitmq:3.9.20-management-alpine
@@ -25,8 +29,8 @@ services:
     container_name: "bot"
     depends_on:
       - rabbitmq
-    volumes:
-      - libsdata:/home/app/
+  #    volumes:
+  #      - libsdata:/home/app/
   text_handler:
     build:
       context: .
@@ -37,12 +41,45 @@ services:
     container_name: "text_handler"
     depends_on:
       - rabbitmq
+  #    volumes:
+  #      - libsdata:/home/app/
+  file_handler:
+    build:
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-file
+    environment: *common-variables
+    restart: always
+    container_name: "file_handler"
+    depends_on:
+      - rabbitmq
     volumes:
-      - libsdata:/home/app/
+      - mediadata:/home/media/
+  torrent:
+    build:
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-torrent
+    environment: *common-variables
+    restart: always
+    container_name: "torrent"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - mediadata:/home/media/
+    ports:
+      - 9091:9091
+      - 51413:51413
 volumes:
-  libsdata:
+  #  libsdata:
+  #    driver: local
+  #    driver_opts:
+  #      o: bind
+  #      type: none
+  #      device: ./jars
+  mediadata:
     driver: local
     driver_opts:
       o: bind
       type: none
-      device: ./jars
+      device: ./mediadata

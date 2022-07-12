@@ -1,4 +1,4 @@
-package com.halushko;
+package com.halushko.rabKot.cli;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExecuteBash {
-    public static List<String> executeViaCLI(String script, String[] args) {
+    public static List<String> executeViaCLI(String script, String... args) {
         Process p = null;
         List<String> result = new ArrayList<>();
 
