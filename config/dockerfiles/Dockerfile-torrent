@@ -8,7 +8,7 @@ RUN cd /home/git/code && \
     echo "rabKot/" >> .git/info/sparse-checkout && \
     echo "torrent/" >> .git/info/sparse-checkout && \
     echo "config/commands/transmission/" >> .git/info/sparse-checkout && \
-    echo "config/config_files" >> .git/info/sparse-checkout && \ /config/config_files && \
+    echo "config/config_files" >> .git/info/sparse-checkout && \
     git pull origin master
 
 FROM gradle:jdk8-alpine as build_image
