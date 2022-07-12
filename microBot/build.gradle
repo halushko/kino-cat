@@ -30,7 +30,7 @@ artifacts {
 dependencies {
     implementation "org.telegram:telegrambots:4.1"
 //    implementation 'com.rabbitmq:amqp-client:+'
-    implementation files('/home/gradle/kot_utils.jar')
+    implementation files('/home/gradle/app/kot_utils.jar')
 //    implementation files('../rabKot/build/libs/rabKot-1.0-SNAPSHOT.jar')
 }
 

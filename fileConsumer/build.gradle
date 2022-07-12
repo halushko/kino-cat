@@ -28,7 +28,7 @@ artifacts {
 }
 
 dependencies {
-    implementation files('/home/gradle/kot_utils.jar')
+    implementation files('/home/gradle/app/kot_utils.jar')
     implementation 'commons-io:commons-io:2.5'
 //    implementation files('../rabKot/build/libs/rabKot-1.0-SNAPSHOT.jar')
 }
