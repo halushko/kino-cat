@@ -73,26 +73,4 @@ public class RabbitUtils {
             System.out.println("Consumer error! " + e.getMessage());
         }
     }
-
-    public static void getFileFromMessage(RabbitMessage rabbitMessage) {
-        String uploadedFileId = rabbitMessage.getText();
-        GetFile uploadedFile = new GetFile();
-        uploadedFile.setFileId(uploadedFileId);
-
-        String uploadedFilePath = null;
-        try {
-            uploadedFilePath = BotController.BOT.execute(uploadedFile).getFilePath();
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-            return;
-        }
-        File localFile = new File("/media/torrent/torrent_files/" + update.getMessage().getDocument().getFileName());
-        InputStream is = null;
-        try {
-            is = new URL("https://api.telegram.org/file/bot" + BotController.BOT.getBotToken() + "/" + uploadedFilePath).openStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-    }
 }
