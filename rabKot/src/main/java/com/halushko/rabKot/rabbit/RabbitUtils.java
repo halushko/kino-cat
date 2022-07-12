@@ -4,8 +4,13 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.concurrent.TimeoutException;
 
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.MEDIUM_PAUSE_MILIS;
@@ -66,6 +71,28 @@ public class RabbitUtils {
             Thread.sleep(MEDIUM_PAUSE_MILIS);
         } catch (Exception e) {
             System.out.println("Consumer error! " + e.getMessage());
+        }
+    }
+
+    public static void getFileFromMessage(RabbitMessage rabbitMessage) {
+        String uploadedFileId = rabbitMessage.getText();
+        GetFile uploadedFile = new GetFile();
+        uploadedFile.setFileId(uploadedFileId);
+
+        String uploadedFilePath = null;
+        try {
+            uploadedFilePath = BotController.BOT.execute(uploadedFile).getFilePath();
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+            return;
+        }
+        File localFile = new File("/media/torrent/torrent_files/" + update.getMessage().getDocument().getFileName());
+        InputStream is = null;
+        try {
+            is = new URL("https://api.telegram.org/file/bot" + BotController.BOT.getBotToken() + "/" + uploadedFilePath).openStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
     }
 }

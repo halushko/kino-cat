@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException;
 class TextHandler extends KoTorrentUserMessageHandler {
     @Override
     protected void readMessagePrivate(Update update) throws IOException, TimeoutException {
-        RabbitUtils.postMessage(update.getMessage().getChatId(), update.getMessage().getText(), "TELEGRAM_INPUT_TEXT");
+        RabbitUtils.postMessage(update.getMessage().getChatId(), update.getMessage().getText(), System.getenv("TELEGRAM_INPUT_TEXT_QUEUE"));
     }
 
     @Override

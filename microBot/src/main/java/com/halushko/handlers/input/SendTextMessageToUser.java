@@ -13,6 +13,6 @@ public class SendTextMessageToUser extends InputMessageHandler {
 
     @Override
     protected String getQueue() {
-        return "TELEGRAM_OUTPUT_TEXT";
+        return System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
     }
 }

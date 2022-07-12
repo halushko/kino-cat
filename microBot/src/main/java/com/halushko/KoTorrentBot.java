@@ -20,7 +20,8 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
         try {
             BOT = new KoTorrentBot();
-            new Thread(new SendTextMessageToUser()).start();;
+            new Thread(new SendTextMessageToUser()).start();
+            ;
             botapi.registerBot(BOT);
         } catch (TelegramApiException e) {
             System.out.println("Bot start has been fail: " + e.getMessage());
@@ -35,12 +36,12 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "koTorrentBot";
+        return System.getenv("BOT_NAME");
     }
 
     @Override
     public String getBotToken() {
-        return "1859184957:AAF2DaTJpaOEj2I6T2Vf35fOJszp9skPeiE";
+        return System.getenv("BOT_TOKEN");
     }
 
     public static void sendText(long chatId, String str) {
@@ -48,11 +49,10 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             return;
         }
         try {
-            BOT.execute(
-                    new SendMessage() {{
-                        setChatId(chatId);
-                        setText(str);
-                    }}
+            BOT.execute(new SendMessage() {{
+                            setChatId(chatId);
+                            setText(str);
+                        }}
             );
         } catch (TelegramApiException ex) {
             System.out.println("Unknown koTorrent error: " + ex.getMessage());

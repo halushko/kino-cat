@@ -12,7 +12,7 @@
     "blocklist-url": "http://www.example.com/blocklist", 
     "cache-size-mb": 4, 
     "dht-enabled": true, 
-    "download-dir": "/media/torrent/complete", 
+    "download-dir": "/home/media/torrent/complete",
     "download-limit": 100, 
     "download-limit-enabled": 0, 
     "download-queue-enabled": true, 
@@ -20,7 +20,7 @@
     "encryption": 1, 
     "idle-seeding-limit": 30, 
     "idle-seeding-limit-enabled": false, 
-    "incomplete-dir": "/media/torrent/downloads", 
+    "incomplete-dir": "/home/media/torrent/downloads",
     "incomplete-dir-enabled": true, 
     "lpd-enabled": false, 
     "max-peers-global": 200, 
@@ -71,5 +71,5 @@
     "upload-slots-per-torrent": 14, 
     "utp-enabled": true,
     "watch-dir-enable": true,
-    "watch-dir": "/media/torrent/torrent_files"
+    "watch-dir": "/home/media/torrent/torrent_files"
 }
