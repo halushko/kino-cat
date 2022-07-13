@@ -14,26 +14,26 @@ public class UserMessageHandler extends InputMessageHandler {
             Command command = Scripts.getCommand(text);
             RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue());
 
-            if (text.equalsIgnoreCase("/reload_media_server")) {
-//            executeViaCLI(update, "sudo systemctl restart minidlna");
-            }
-            if (text.equalsIgnoreCase("/bot_config")) {
-
-            }
-            if (text.startsWith("/commands_")) {
-//                sendText(update, new PrintCommands(text.replaceAll("/commands_", "")).run());
-            }
-
-            if (text.startsWith("/remove_all_")) {
-//                sendText(update, new DoNothing(text.replaceAll("/remove_all_", "")).run());
-            }
-            if (text.startsWith("/remove_")) {
-//                sendText(update, new DoNothing(text.replaceAll("/remove_", "")).run());
-            }
-            if (text.startsWith("/file_list_")) {
-//                sendText(update, new FilesTorrent(text.replaceAll("/file_list_", "")).run());
-            }
-//            RabbitUtils.postMessage(rabbitMessage.getUserId(), rabbitMessage.getText(), "TELEGRAM_OUTPUT_TEXT");
+//            if (text.equalsIgnoreCase("/reload_media_server")) {
+////            executeViaCLI(update, "sudo systemctl restart minidlna");
+//            }
+//            if (text.equalsIgnoreCase("/bot_config")) {
+//
+//            }
+//            if (text.startsWith("/commands_")) {
+////                sendText(update, new PrintCommands(text.replaceAll("/commands_", "")).run());
+//            }
+//
+//            if (text.startsWith("/remove_all_")) {
+////                sendText(update, new DoNothing(text.replaceAll("/remove_all_", "")).run());
+//            }
+//            if (text.startsWith("/remove_")) {
+////                sendText(update, new DoNothing(text.replaceAll("/remove_", "")).run());
+//            }
+//            if (text.startsWith("/file_list_")) {
+////                sendText(update, new FilesTorrent(text.replaceAll("/file_list_", "")).run());
+//            }
+////            RabbitUtils.postMessage(rabbitMessage.getUserId(), rabbitMessage.getText(), "TELEGRAM_OUTPUT_TEXT");
         } catch (Exception e) {
             System.out.println("During message handle got an error: " + e.getMessage());
         }

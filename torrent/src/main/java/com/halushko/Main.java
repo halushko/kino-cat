@@ -1,4 +1,6 @@
-package com.halushko.torrent;
+package com.halushko;
+
+import com.halushko.torrent.TorrentOperator;
 
 public class Main {
     public static void main(String[] args) {
