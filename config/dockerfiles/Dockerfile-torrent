@@ -19,8 +19,9 @@ COPY --chown=gradle:gradle --from=download_image /home/git/code /home/gradle/cod
 
 RUN cd /home/gradle/code/kino-cat/rabKot && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
 RUN cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/torrent.jar
-RUN cp /home/gradle/code/kino-cat/config/config_files/settings.json /home/gradle/app/settings.json
-RUN cp /home/gradle/code/kino-cat/config/commands/transmission/after_download.sh /home/gradle/app/after_download.sh
+#RUN cp /home/gradle/code/kino-cat/config/config_files/transmission-settings.json /home/gradle/app/settings.json
+#RUN cp /home/gradle/code/kino-cat/config/config_files/after_download.sh /home/gradle/app/after_download.sh
+RUN #cp /home/gradle/code/kino-cat/config/commands/transmission/after_download.sh /home/gradle/app/after_download.sh
 
 FROM openjdk:8-alpine
 RUN apk add transmission-daemon transmission-cli
@@ -30,6 +31,9 @@ RUN mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/torrent_files
 
 COPY --from=build_image /home/gradle/app /home/app
-RUN mv -f /home/app/settings.json /etc/transmission-daemon/settings.json
-RUN mv -f /home/app/after_download.sh /etc/transmission-daemon/after_download.sh
+COPY --from=download_image /home/git/code/kino-cat/config/config_files /etc/transmission-daemon
+#RUN cp /home/gradle/code/kino-cat/config/config_files/after_download.sh /home/gradle/app/after_download.sh
+
+#RUN mv -f /home/app/settings.json /etc/transmission-daemon/settings.json
+#RUN mv -f /home/app/after_download.sh /etc/transmission-daemon/after_download.sh
 ENTRYPOINT ["java", "-jar", "/home/app/torrent.jar"]
