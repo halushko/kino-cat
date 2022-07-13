@@ -36,6 +36,7 @@ public class UserMessageHandler extends InputMessageHandler {
 ////            RabbitUtils.postMessage(rabbitMessage.getUserId(), rabbitMessage.getText(), "TELEGRAM_OUTPUT_TEXT");
         } catch (Exception e) {
             System.out.println("During message handle got an error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
