@@ -19,6 +19,5 @@ RUN cd /home/gradle/code/kino-cat/rabKot && gradle jar && cp ./build/libs/*.jar 
 RUN cd /home/gradle/code/kino-cat/textConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/text_consumer.jar
 
 FROM openjdk:8-alpine as textConsumer
-#COPY --from=download_image /home/git/code /home/app/code
 COPY --from=build_image /home/gradle/app /home/app
 ENTRYPOINT ["java", "-jar", "/home/app/text_consumer.jar"]
