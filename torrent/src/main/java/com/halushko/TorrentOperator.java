@@ -1,4 +1,4 @@
-package com.halushko.torrent;
+package com.halushko;
 
 import com.halushko.rabKot.handlers.input.InputMessageHandler;
 import com.halushko.rabKot.rabbit.RabbitMessage;
