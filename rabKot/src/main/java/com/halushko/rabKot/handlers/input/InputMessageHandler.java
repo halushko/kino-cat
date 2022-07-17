@@ -32,7 +32,7 @@ public abstract class InputMessageHandler implements Runnable {
     public void run() {
         for (; ; ) {
             try {
-                Thread.sleep(LONG_PAUSE_MILIS);
+                Thread.sleep(LONG_PAUSE_MILIS * 2);
                 handle();
             } catch (InterruptedException e) {
                 System.out.println("Unknown koTorrent error: " + e.getMessage());

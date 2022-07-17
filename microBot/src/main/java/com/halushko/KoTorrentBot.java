@@ -16,25 +16,14 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     public static KoTorrentBot BOT;
 
     public static void main(String[] args) {
-        ApiContextInitializer.init();
-        TelegramBotsApi botapi = new TelegramBotsApi();
         try {
-            Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
-        } catch (Exception ignore) {
-        }
-
-        for(;;) {
-            try {
-                BOT = new KoTorrentBot();
-                new Thread(new SendTextMessageToUser()).start();
-                botapi.registerBot(BOT);
-            } catch (TelegramApiException e) {
-                System.out.println("Bot start has been fail: " + e.getMessage());
-                try {
-                    Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
-                } catch (Exception ignore) {
-                }
-            }
+            ApiContextInitializer.init();
+            TelegramBotsApi botapi = new TelegramBotsApi();
+            BOT = new KoTorrentBot();
+            new Thread(new SendTextMessageToUser()).start();
+            botapi.registerBot(BOT);
+        } catch (TelegramApiException e) {
+            System.out.println("Bot start has been fail: " + e.getMessage());
         }
     }
 
