@@ -8,7 +8,7 @@ RUN cd /home/git/code && \
     echo "rabKot/" >> .git/info/sparse-checkout && \
     echo "torrent/" >> .git/info/sparse-checkout && \
     echo "config/commands/transmission/" >> .git/info/sparse-checkout && \
-    echo "config/config_files/" >> .git/info/sparse-checkout && \
+    echo "config/config_files/transmission/" >> .git/info/sparse-checkout && \
     git pull origin master
 
 FROM gradle:jdk8-alpine as build_image
@@ -21,13 +21,16 @@ RUN cd /home/gradle/code/kino-cat/rabKot && gradle jar && cp ./build/libs/*.jar 
 RUN cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/torrent.jar
 
 FROM openjdk:8-alpine
-RUN apk add transmission-daemon transmission-cli
+RUN apk add transmission-daemon transmission-cli openrc
 
 RUN mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files
 
 COPY --from=build_image /home/gradle/app /home/app
-COPY --from=download_image /home/git/code/kino-cat/config/config_files /etc/transmission-daemon
+COPY --from=download_image /home/git/code/kino-cat/config/config_files/transmission /etc/transmission-daemon
+
+RUN chmod +x /etc/transmission-daemon/after_download.sh
+RUN rc-update add transmission-daemon default
 
 ENTRYPOINT ["java", "-jar", "/home/app/torrent.jar"]

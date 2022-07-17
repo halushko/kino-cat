@@ -2,6 +2,7 @@ package com.halushko;
 
 import com.halushko.handlers.input.SendTextMessageToUser;
 import com.halushko.handlers.telegram.KoTorrentUserMessageHandler;
+import com.halushko.rabKot.handlers.input.InputMessageHandler;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -17,14 +18,23 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     public static void main(String[] args) {
         ApiContextInitializer.init();
         TelegramBotsApi botapi = new TelegramBotsApi();
-
         try {
-            BOT = new KoTorrentBot();
-            new Thread(new SendTextMessageToUser()).start();
-            ;
-            botapi.registerBot(BOT);
-        } catch (TelegramApiException e) {
-            System.out.println("Bot start has been fail: " + e.getMessage());
+            Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
+        } catch (Exception ignore) {
+        }
+
+        for(;;) {
+            try {
+                BOT = new KoTorrentBot();
+                new Thread(new SendTextMessageToUser()).start();
+                botapi.registerBot(BOT);
+            } catch (TelegramApiException e) {
+                System.out.println("Bot start has been fail: " + e.getMessage());
+                try {
+                    Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
+                } catch (Exception ignore) {
+                }
+            }
         }
     }
 

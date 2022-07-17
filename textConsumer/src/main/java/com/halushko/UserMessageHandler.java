@@ -12,7 +12,11 @@ public class UserMessageHandler extends InputMessageHandler {
             long userId = rabbitMessage.getUserId();
 
             Command command = Scripts.getCommand(text);
-            RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue());
+            if ( command.getCommand().equals("")) {
+                RabbitUtils.postMessage(rabbitMessage.getUserId(), "Command '"+ rabbitMessage.getText() + "' is not found", "TELEGRAM_OUTPUT_TEXT");
+            } else {
+                RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue());
+            }
 
 //            if (text.equalsIgnoreCase("/reload_media_server")) {
 ////            executeViaCLI(update, "sudo systemctl restart minidlna");

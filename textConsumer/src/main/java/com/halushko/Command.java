@@ -35,11 +35,19 @@ public class Command {
     }
 
     public String getScript() {
-        return script;
+        return script == null || script.trim().equals("") ? "" : script;
+    }
+
+    public String getArguments() {
+        return arguments == null || arguments.trim().equals("") ? "" : arguments;
     }
 
     public String getCommand() {
-        return script + " " + arguments;
+        if (getScript().equals("") ) {
+            return "";
+        } else {
+            return getArguments().equals("") ? getScript() : getScript() + " " + getArguments();
+        }
     }
 
     public String getQueue() {
