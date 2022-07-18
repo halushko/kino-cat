@@ -28,9 +28,11 @@ RUN mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/torrent_files
 
 COPY --from=build_image /home/gradle/app /home/app
-COPY --from=download_image /home/git/code/kino-cat/config/config_files/transmission /etc/transmission-daemon
+COPY --from=download_image /home/git/code/kino-cat/config/config_files/transmission /var/lib/transmission/config
 
 RUN chmod +x /etc/transmission-daemon/after_download.sh
-RUN rc-update add transmission-daemon default
+RUN openrc
+RUN touch /run/openrc/softlevel
+RUN echo 'rc_provide="loopback net"' >> /etc/rc.conf
 
 ENTRYPOINT ["java", "-jar", "/home/app/torrent.jar"]

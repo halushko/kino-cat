@@ -56,7 +56,7 @@
     "rpc-whitelist-enabled": false, 
     "scrape-paused-torrents-enabled": true, 
     "script-torrent-done-enabled": true, 
-    "script-torrent-done-filename": "/etc/transmission-daemon/after_download.sh", 
+    "script-torrent-done-filename": "/var/lib/transmission/config/after_download.sh",
     "seed-queue-enabled": false, 
     "seed-queue-size": 10, 
     "speed-limit-down": 100, 
