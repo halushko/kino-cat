@@ -8,24 +8,31 @@ import com.halushko.rabKot.rabbit.RabbitUtils;
 import java.util.List;
 
 public class TorrentOperator extends InputMessageHandler {
-    public static final String EXECUTE_TORRENT_COMMAND;
-    static {
-        String str = "EXECUTE_TORRENT_COMMAND";
-        try {
-            str = System.getenv("EXECUTE_TORRENT_COMMAND");
-        } catch (Exception ignore) {
+    public static final String EXECUTE_TORRENT_COMMAND_QUEUE;
 
+    static {
+        String str = "EXECUTE_TORRENT_COMMAND_QUEUE";
+        try {
+            String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
+            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+                str = str1;
+            }
+        } catch (Exception ignore) {
         }
-        EXECUTE_TORRENT_COMMAND = str;
+        EXECUTE_TORRENT_COMMAND_QUEUE = str;
     }
 
     public static final String TELEGRAM_OUTPUT_TEXT;
+
     static {
         String str = "TELEGRAM_OUTPUT_TEXT";
         try {
-            str = System.getenv("TELEGRAM_OUTPUT_TEXT");
+            String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
+            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+                str = str1;
+            }
+            str = str1;
         } catch (Exception ignore) {
-
         }
         TELEGRAM_OUTPUT_TEXT = str;
     }
@@ -45,6 +52,6 @@ public class TorrentOperator extends InputMessageHandler {
 
     @Override
     protected String getQueue() {
-        return EXECUTE_TORRENT_COMMAND;
+        return EXECUTE_TORRENT_COMMAND_QUEUE;
     }
 }

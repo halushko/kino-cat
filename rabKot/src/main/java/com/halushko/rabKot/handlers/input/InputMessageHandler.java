@@ -12,9 +12,11 @@ public abstract class InputMessageHandler implements Runnable {
     static {
         long str = 10000L;
         try {
-            str = Long.getLong(System.getenv("PAUSE_BEFORE_START_MILIS"));
+            String str1 = System.getenv("PAUSE_BEFORE_START_MILIS");
+            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+                str = Long.getLong(str1);
+            }
         } catch (Exception ignore) {
-
         }
         LONG_PAUSE_MILIS = str;
     }
@@ -23,9 +25,11 @@ public abstract class InputMessageHandler implements Runnable {
     static {
         long str = 5000L;
         try {
-            str = Long.getLong(System.getenv("PAUSE_AFTER_ERROR_MILIS"));
+            String str1 = System.getenv("PAUSE_AFTER_ERROR_MILIS");
+            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+                str = Long.getLong(str1);
+            }
         } catch (Exception ignore) {
-
         }
         MEDIUM_PAUSE_MILIS = str;
     }
@@ -34,9 +38,11 @@ public abstract class InputMessageHandler implements Runnable {
     static {
         long str = 500L;
         try {
-            str = Long.getLong(System.getenv("SMALL_PAUSE_MILIS"));
+            String str1 = System.getenv("SMALL_PAUSE_MILIS");
+            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+                str = Long.getLong(str1);
+            }
         } catch (Exception ignore) {
-
         }
         SMALL_PAUSE_MILIS = str;
     }

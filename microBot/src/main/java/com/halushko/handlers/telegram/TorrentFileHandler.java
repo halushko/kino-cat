@@ -15,20 +15,14 @@ import static com.halushko.rabKot.rabbit.RabbitMessage.KEYS.*;
 public class TorrentFileHandler extends KoTorrentUserMessageHandler {
     public static final String TELEGRAM_INPUT_FILE_QUEUE;
     static {
-        String str = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
-        TELEGRAM_INPUT_FILE_QUEUE = str != null ? str : "TELEGRAM_INPUT_FILE_QUEUE";
-    }
-
-    public static final String ASD;
-    static {
-        String str = "ASD";
-        try {
-            str = System.getenv("ASD");
-        } catch (Exception ignore) {
-
+        String str = "TELEGRAM_INPUT_FILE_QUEUE";
+        String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
+        if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+            str = str1;
         }
-        ASD = str;
+        TELEGRAM_INPUT_FILE_QUEUE = str;
     }
+
     @Override
     protected void readMessagePrivate(Update update) throws IOException, TimeoutException {
         String uploadedFileId = update.getMessage().getDocument().getFileId();

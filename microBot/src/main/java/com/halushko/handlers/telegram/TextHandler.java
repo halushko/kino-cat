@@ -7,23 +7,15 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 class TextHandler extends KoTorrentUserMessageHandler {
-
-    public static final String ASD;
-    static {
-        String str = "ASD";
-        try {
-            str = System.getenv("ASD");
-        } catch (Exception ignore) {
-
-        }
-        ASD = str;
-    }
-
     private final static String TELEGRAM_INPUT_TEXT_QUEUE;
 
     static {
-        String str = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
-        TELEGRAM_INPUT_TEXT_QUEUE = str != null ? str : "TELEGRAM_INPUT_TEXT_QUEUE";
+        String str = "TELEGRAM_INPUT_TEXT_QUEUE";
+        String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
+        if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+            str = str1;
+        }
+        TELEGRAM_INPUT_TEXT_QUEUE = str;
     }
     @Override
     protected void readMessagePrivate(Update update) throws IOException, TimeoutException {

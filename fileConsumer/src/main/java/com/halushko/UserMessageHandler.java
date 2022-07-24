@@ -20,9 +20,12 @@ public class UserMessageHandler extends InputMessageHandler {
     static {
         String str = "TELEGRAM_OUTPUT_TEXT_QUEUE";
         try {
-            str = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
+            String str1 = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
+            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+                str = str1;
+            }
+            str = str1;
         } catch (Exception ignore) {
-
         }
         TELEGRAM_OUTPUT_TEXT_QUEUE = str;
     }
@@ -30,9 +33,12 @@ public class UserMessageHandler extends InputMessageHandler {
     static {
         String str = "TELEGRAM_INPUT_FILE_QUEUE";
         try {
-            str = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
+            String str1 = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
+            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+                str = str1;
+            }
+            str =str1;
         } catch (Exception ignore) {
-
         }
         TELEGRAM_INPUT_FILE_QUEUE = str;
     }
