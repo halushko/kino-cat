@@ -14,7 +14,6 @@ public class RabbitUtils {
     private final static String RABBIT_PASSWORD = System.getenv("RABBITMQ_DEFAULT_PASS");
     private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));
 
-    private static Connection connection;
     private static final ConnectionFactory connectionFactory = new ConnectionFactory() {
         {
             setHost(RABBIT_HOST_IP);
@@ -22,12 +21,15 @@ public class RabbitUtils {
             setPassword(RABBIT_PASSWORD);
             setPort(RABBIT_PORT);
             setRequestedHeartbeat(20);
+            setAutomaticRecoveryEnabled(false);
         }
     };
 
-    private static Connection newConnection() {
+    private static Connection connection = createConnection();
+
+    private static Connection createConnection() {
         do {
-            closeConnectionIfNeeded();
+            closeConnection();
             try {
                 Thread.sleep(LONG_PAUSE_MILIS);
                 connection = connectionFactory.newConnection();
@@ -41,8 +43,14 @@ public class RabbitUtils {
         } while (true);
     }
 
-    private static void closeConnectionIfNeeded() {
-        if (connection != null && !connection.isOpen()) {
+    private static Connection newConnection() {
+        return connection;
+    }
+
+
+    private static void closeConnection() {
+        if (connection != null) {
+            System.out.println("Connection closed");
             try {
                 connection.close();
             } catch (Exception e) {
