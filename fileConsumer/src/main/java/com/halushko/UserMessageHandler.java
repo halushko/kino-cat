@@ -18,15 +18,26 @@ public class UserMessageHandler extends InputMessageHandler {
 
     public static final String TELEGRAM_OUTPUT_TEXT_QUEUE;
     static {
-        String str = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
-        TELEGRAM_OUTPUT_TEXT_QUEUE = str != null ? str : "TELEGRAM_OUTPUT_TEXT_QUEUE";
-    }
+        String str = "TELEGRAM_OUTPUT_TEXT_QUEUE";
+        try {
+            str = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
+        } catch (Exception ignore) {
 
+        }
+        TELEGRAM_OUTPUT_TEXT_QUEUE = str;
+    }
     public static final String TELEGRAM_INPUT_FILE_QUEUE;
     static {
-        String str = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
-        TELEGRAM_INPUT_FILE_QUEUE = str != null ? str : "TELEGRAM_INPUT_FILE_QUEUE";
+        String str = "TELEGRAM_INPUT_FILE_QUEUE";
+        try {
+            str = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
+        } catch (Exception ignore) {
+
+        }
+        TELEGRAM_INPUT_FILE_QUEUE = str;
     }
+
+
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         try {

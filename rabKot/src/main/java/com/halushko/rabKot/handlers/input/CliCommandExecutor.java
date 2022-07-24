@@ -7,19 +7,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public abstract class CliCommandExecutor extends InputMessageHandler {
-    public static final String PARSER_QUEUE = System.getenv("PARSER_QUEUE");
-
-    public static final long USE_SUDO;
-
-    static {
-        String str = System.getenv("USE_SUDO");
-        USE_SUDO = str != null ? Long.parseLong(str) : 10000L;
-    }
     private final String parserId;
 
-    private CliCommandExecutor(){
-        this("");
-    }
     public CliCommandExecutor(String parserId) {
         this.parserId = parserId;
     }
@@ -52,7 +41,7 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
         }
 
         try {
-            RabbitUtils.postMessage(userId,  result.toString(), PARSER_QUEUE, getParserId());
+            RabbitUtils.postMessage(userId,  result.toString(), getParserId(), getParserId());
         } catch (Exception e) {
             e.printStackTrace();
         }

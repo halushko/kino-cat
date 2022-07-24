@@ -9,22 +9,36 @@ import static com.halushko.rabKot.rabbit.RabbitUtils.readMessage;
 
 public abstract class InputMessageHandler implements Runnable {
     public static final long LONG_PAUSE_MILIS;
+    static {
+        long str = 10000L;
+        try {
+            str = Long.getLong(System.getenv("PAUSE_BEFORE_START_MILIS"));
+        } catch (Exception ignore) {
+
+        }
+        LONG_PAUSE_MILIS = str;
+    }
+
     public static final long MEDIUM_PAUSE_MILIS;
+    static {
+        long str = 5000L;
+        try {
+            str = Long.getLong(System.getenv("PAUSE_AFTER_ERROR_MILIS"));
+        } catch (Exception ignore) {
+
+        }
+        MEDIUM_PAUSE_MILIS = str;
+    }
+
     public static final long SMALL_PAUSE_MILIS;
-
     static {
-        String str = System.getenv("PAUSE_BEFORE_START_MILIS");
-        LONG_PAUSE_MILIS = str != null ? Long.parseLong(str) : 10000L;
-    }
+        long str = 500L;
+        try {
+            str = Long.getLong(System.getenv("SMALL_PAUSE_MILIS"));
+        } catch (Exception ignore) {
 
-    static {
-        String str = System.getenv("PAUSE_AFTER_ERROR_MILIS");
-        MEDIUM_PAUSE_MILIS = str != null ? Long.parseLong(str) : 5000L;
-    }
-
-    static {
-        String str = System.getenv("SMALL_PAUSE_MILIS");
-        SMALL_PAUSE_MILIS = str != null ? Long.parseLong(str) : 500L;
+        }
+        SMALL_PAUSE_MILIS = str;
     }
 
     @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})

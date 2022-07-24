@@ -18,6 +18,17 @@ public class TorrentFileHandler extends KoTorrentUserMessageHandler {
         String str = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
         TELEGRAM_INPUT_FILE_QUEUE = str != null ? str : "TELEGRAM_INPUT_FILE_QUEUE";
     }
+
+    public static final String ASD;
+    static {
+        String str = "ASD";
+        try {
+            str = System.getenv("ASD");
+        } catch (Exception ignore) {
+
+        }
+        ASD = str;
+    }
     @Override
     protected void readMessagePrivate(Update update) throws IOException, TimeoutException {
         String uploadedFileId = update.getMessage().getDocument().getFileId();

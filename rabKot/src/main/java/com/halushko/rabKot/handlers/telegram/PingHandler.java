@@ -4,16 +4,24 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public abstract class PingHandler extends UserMessageHandler {
     public static final String PING;
-    public static final String PONG;
-
     static {
-        String str = System.getenv("PING");
-        PING = str != null ? str : "/ping";
+        String str = "/ping";
+        try {
+            str = System.getenv("PING");
+        } catch (Exception ignore) {
+        }
+        PING = str;
     }
 
+    public static final String PONG;
     static {
-        String str = System.getenv("PONG");
-        PONG = str != null ? str : "pong";
+        String str = "pong";
+        try {
+            str = System.getenv("PONG");
+        } catch (Exception ignore) {
+
+        }
+        PONG = str;
     }
 
     @Override

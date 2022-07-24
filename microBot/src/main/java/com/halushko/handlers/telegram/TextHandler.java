@@ -7,6 +7,18 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 class TextHandler extends KoTorrentUserMessageHandler {
+
+    public static final String ASD;
+    static {
+        String str = "ASD";
+        try {
+            str = System.getenv("ASD");
+        } catch (Exception ignore) {
+
+        }
+        ASD = str;
+    }
+
     private final static String TELEGRAM_INPUT_TEXT_QUEUE;
 
     static {

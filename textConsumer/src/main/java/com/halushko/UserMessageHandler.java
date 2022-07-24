@@ -6,10 +6,25 @@ import com.halushko.rabKot.rabbit.RabbitUtils;
 
 public class UserMessageHandler extends InputMessageHandler {
     public static final String TELEGRAM_OUTPUT_TEXT;
-
     static {
-        String str = System.getenv("TELEGRAM_OUTPUT_TEXT");
-        TELEGRAM_OUTPUT_TEXT = str != null ? str : "TELEGRAM_OUTPUT_TEXT";
+        String str = "TELEGRAM_OUTPUT_TEXT";
+        try {
+            str = System.getenv("TELEGRAM_OUTPUT_TEXT");
+        } catch (Exception ignore) {
+
+        }
+        TELEGRAM_OUTPUT_TEXT = str;
+    }
+
+    public static final String TELEGRAM_INPUT_TEXT_QUEUE;
+    static {
+        String str = "TELEGRAM_INPUT_TEXT_QUEUE";
+        try {
+            str = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
+        } catch (Exception ignore) {
+
+        }
+        TELEGRAM_INPUT_TEXT_QUEUE = str;
     }
 
     @Override
@@ -53,6 +68,6 @@ public class UserMessageHandler extends InputMessageHandler {
 
     @Override
     protected String getQueue() {
-        return System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
+        return TELEGRAM_INPUT_TEXT_QUEUE;
     }
 }
