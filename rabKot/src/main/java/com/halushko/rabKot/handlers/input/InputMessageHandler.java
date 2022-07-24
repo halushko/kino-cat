@@ -8,9 +8,9 @@ import java.nio.charset.StandardCharsets;
 import static com.halushko.rabKot.rabbit.RabbitUtils.readMessage;
 
 public abstract class InputMessageHandler implements Runnable {
-    public static final long LONG_PAUSE_MILIS = Long.getLong(System.getenv("LONG_PAUSE_MILIS"));
-    public static final long MEDIUM_PAUSE_MILIS = Long.getLong(System.getenv("MEDIUM_PAUSE_MILIS"));
-    public static final long SMALL_PAUSE_MILIS = Long.getLong(System.getenv("SMALL_PAUSE_MILIS"));
+    public static final long LONG_PAUSE_MILIS = Long.parseLong(System.getenv("LONG_PAUSE_MILIS"));
+    public static final long MEDIUM_PAUSE_MILIS = Long.parseLong(System.getenv("MEDIUM_PAUSE_MILIS"));
+    public static final long SMALL_PAUSE_MILIS = Long.parseLong(System.getenv("SMALL_PAUSE_MILIS"));
 
 //    public static final long MEDIUM_PAUSE_MILIS;
 //    static {

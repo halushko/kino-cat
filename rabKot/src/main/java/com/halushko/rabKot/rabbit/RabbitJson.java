@@ -117,7 +117,7 @@ public class RabbitJson {
     }
 
     public long getLong() {
-        return Long.getLong(getString(), DEFAULT_INT_VALUE);
+        return Long.parseLong(getString(), DEFAULT_INT_VALUE);
     }
 
     public int getInteger() {
@@ -145,7 +145,7 @@ public class RabbitJson {
         return getLong(key.name());
     }
     public long getLong(String key) {
-        return Long.getLong(getString(key), DEFAULT_INT_VALUE);
+        return Long.parseLong(getString(key), DEFAULT_INT_VALUE);
     }
 
     public int getInteger(RabbitMessage.KEYS key) {
