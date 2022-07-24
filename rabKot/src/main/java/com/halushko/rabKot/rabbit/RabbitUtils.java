@@ -1,10 +1,12 @@
 package com.halushko.rabKot.rabbit;
 
+import com.halushko.rabKot.handlers.input.InputMessageHandler;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+import static com.halushko.rabKot.handlers.input.InputMessageHandler.LONG_PAUSE_MILIS;
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.MEDIUM_PAUSE_MILIS;
 
 public class RabbitUtils {
@@ -17,14 +19,17 @@ public class RabbitUtils {
         String str = System.getenv("RABBIT_HOST_IP");
         RABBIT_HOST_IP = str != null ? str : "127.0.0.1";
     }
+
     static {
         String str = System.getenv("RABBIT_USERNAME");
         RABBIT_USERNAME = str != null ? str : "rabbit_user";
     }
+
     static {
         String str = System.getenv("RABBIT_PASSWORD");
         RABBIT_PASSWORD = str != null ? str : "rabbit_pswrd";
     }
+
     static {
         String str = System.getenv("RABBIT_PORT");
         int portNo = 5672;
@@ -36,23 +41,33 @@ public class RabbitUtils {
     }
 
     private static Connection connection;
-
-    private static Connection newConnection() throws IOException, TimeoutException {
-        if (connection != null && !connection.isOpen()) {
-            connection.close();
-            connection = null;
+    private static final ConnectionFactory connectionFactory = new ConnectionFactory() {
+        {
+            setHost(RABBIT_HOST_IP);
+            setUsername(RABBIT_USERNAME);
+            setPassword(RABBIT_PASSWORD);
+            setPort(RABBIT_PORT);
+            setRequestedHeartbeat(20);
         }
-        if (connection == null) {
-            connection = new ConnectionFactory() {
-                {
-                    setHost(RABBIT_HOST_IP);
-                    setUsername(RABBIT_USERNAME);
-                    setPassword(RABBIT_PASSWORD);
-                    setPort(RABBIT_PORT);
-                    setRequestedHeartbeat(20);
-                }
-            }.newConnection();
-            connection.addShutdownListener(new MyShutdownListener());
+    };
+
+    private static Connection newConnection() {
+        if (connection != null && !connection.isOpen()) {
+            try {
+                connection.close();
+            } catch (Exception ignore) {
+            } finally {
+                connection = null;
+            }
+        }
+        while (connection == null) {
+            try {
+                Thread.sleep(LONG_PAUSE_MILIS);
+                connection = connectionFactory.newConnection();
+                connection.addShutdownListener(new MyShutdownListener());
+            } catch (Exception ignore) {
+                connection = null;
+            }
         }
         return connection;
     }
@@ -65,11 +80,12 @@ public class RabbitUtils {
         }
     }
 
-    public static void postMessage(RabbitMessage message, String queue) throws IOException, TimeoutException {
-        Connection connection = newConnection();
-        try (Channel channel = connection.createChannel()) {
+    public static void postMessage(RabbitMessage message, String queue) {
+        try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicPublish("", queue, null, message.getRabbitMessageBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -83,15 +99,12 @@ public class RabbitUtils {
         }
     }
 
-    public static void readMessage(String queue, DeliverCallback deliverCallback) throws IOException, TimeoutException {
-        Connection connection = newConnection();
-        try (Channel channel = connection.createChannel()) {
+    public static void readMessage(String queue, DeliverCallback deliverCallback) {
+        try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
-            channel.basicConsume(queue, true, deliverCallback, consumerTag -> {
-            });
+            channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
             Thread.sleep(MEDIUM_PAUSE_MILIS);
         } catch (Exception e) {
-            System.out.println("Consumer error! " + e.getMessage());
             e.printStackTrace();
         }
     }
