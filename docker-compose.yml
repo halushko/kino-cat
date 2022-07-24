@@ -11,6 +11,9 @@ x-common-variables: &common-variables
   EXECUTE_TORRENT_COMMAND_QUEUE: EXECUTE_TORRENT_COMMAND
   BOT_TOKEN: 1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8
   BOT_NAME: koTorrentBot
+  LONG_PAUSE_MILIS: 10000
+  MEDIUM_PAUSE_MILIS: 5000
+  SMALL_PAUSE_MILIS: 500
 services:
   rabbitmq:
     image: rabbitmq:3.9.20-management-alpine

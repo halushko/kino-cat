@@ -5,31 +5,33 @@ import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
 
 public class UserMessageHandler extends InputMessageHandler {
-    public static final String TELEGRAM_OUTPUT_TEXT;
-    static {
-        String str = "TELEGRAM_OUTPUT_TEXT";
-        try {
-            String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
-            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
-                str = str1;
-            }
-        } catch (Exception ignore) {
-        }
-        TELEGRAM_OUTPUT_TEXT = str;
-    }
+    public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
+    public static final String TELEGRAM_INPUT_TEXT_QUEUE = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
 
-    public static final String TELEGRAM_INPUT_TEXT_QUEUE;
-    static {
-        String str = "TELEGRAM_INPUT_TEXT_QUEUE";
-        try {
-            String str1 = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
-            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
-                str = str1;
-            }
-        } catch (Exception ignore) {
-        }
-        TELEGRAM_INPUT_TEXT_QUEUE = str;
-    }
+//    static {
+//        String str = "TELEGRAM_OUTPUT_TEXT";
+//        try {
+//            String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
+//            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+//                str = str1;
+//            }
+//        } catch (Exception ignore) {
+//        }
+//        TELEGRAM_OUTPUT_TEXT = str;
+//    }
+
+//    public static final String TELEGRAM_INPUT_TEXT_QUEUE;
+//    static {
+//        String str = "TELEGRAM_INPUT_TEXT_QUEUE";
+//        try {
+//            String str1 = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
+//            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+//                str = str1;
+//            }
+//        } catch (Exception ignore) {
+//        }
+//        TELEGRAM_INPUT_TEXT_QUEUE = str;
+//    }
 
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
@@ -39,7 +41,7 @@ public class UserMessageHandler extends InputMessageHandler {
 
             Command command = Scripts.getCommand(text);
             if ( command.getCommand().equals("")) {
-                RabbitUtils.postMessage(rabbitMessage.getUserId(), "Command '"+ rabbitMessage.getText() + "' is not found", TELEGRAM_OUTPUT_TEXT);
+                RabbitUtils.postMessage(rabbitMessage.getUserId(), "Command '"+ rabbitMessage.getText() + "' is not found", TELEGRAM_OUTPUT_TEXT_QUEUE);
             } else {
                 RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue());
             }

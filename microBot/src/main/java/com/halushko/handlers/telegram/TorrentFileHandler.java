@@ -13,15 +13,15 @@ import java.util.concurrent.TimeoutException;
 import static com.halushko.rabKot.rabbit.RabbitMessage.KEYS.*;
 
 public class TorrentFileHandler extends KoTorrentUserMessageHandler {
-    public static final String TELEGRAM_INPUT_FILE_QUEUE;
-    static {
-        String str = "TELEGRAM_INPUT_FILE_QUEUE";
-        String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
-        if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
-            str = str1;
-        }
-        TELEGRAM_INPUT_FILE_QUEUE = str;
-    }
+    public static final String TELEGRAM_INPUT_FILE_QUEUE = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
+//    static {
+//        String str = "TELEGRAM_INPUT_FILE_QUEUE";
+//        String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
+//        if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
+//            str = str1;
+//        }
+//        TELEGRAM_INPUT_FILE_QUEUE = str;
+//    }
 
     @Override
     protected void readMessagePrivate(Update update) throws IOException, TimeoutException {
