@@ -8,12 +8,11 @@ public class Main {
         UserMessageHandler handler = new UserMessageHandler();
         for(;;) {
             try {
-                Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
                 handler.run();
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
                 } catch (InterruptedException ignored) {
                 }
             }

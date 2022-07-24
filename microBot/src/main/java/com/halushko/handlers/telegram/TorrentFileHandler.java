@@ -1,6 +1,7 @@
 package com.halushko.handlers.telegram;
 
 import com.halushko.KoTorrentBot;
+import com.halushko.rabKot.handlers.telegram.UserMessageHandler;
 import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
@@ -12,17 +13,8 @@ import java.util.concurrent.TimeoutException;
 
 import static com.halushko.rabKot.rabbit.RabbitMessage.KEYS.*;
 
-public class TorrentFileHandler extends KoTorrentUserMessageHandler {
+public class TorrentFileHandler extends UserMessageHandler {
     public static final String TELEGRAM_INPUT_FILE_QUEUE = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
-//    static {
-//        String str = "TELEGRAM_INPUT_FILE_QUEUE";
-//        String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
-//        if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
-//            str = str1;
-//        }
-//        TELEGRAM_INPUT_FILE_QUEUE = str;
-//    }
-
     @Override
     protected void readMessagePrivate(Update update) throws IOException, TimeoutException {
         String uploadedFileId = update.getMessage().getDocument().getFileId();
@@ -43,5 +35,10 @@ public class TorrentFileHandler extends KoTorrentUserMessageHandler {
     @Override
     protected boolean validate(Update update) {
         return update != null && update.getMessage().hasDocument();
+    }
+
+    @Override
+    public void sendAnswer(long userId, String messageText) {
+        System.out.println(new RabbitMessage(userId, messageText));
     }
 }

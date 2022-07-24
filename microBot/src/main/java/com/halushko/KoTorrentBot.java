@@ -22,16 +22,8 @@ public class KoTorrentBot extends TelegramLongPollingBot {
         }
     }
     public static final String BOT_NAME = System.getenv("BOT_NAME");
-//    static {
-//        String str =
-//        BOT_NAME = str != null ? str : "koTorrentBot";
-//    }
 
     public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
-//    static {
-//        String str = System.getenv("BOT_TOKEN");
-//        BOT_TOKEN = str != null ? str : "1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8";
-//    }
 
     public static void main(String[] args) {
         try {

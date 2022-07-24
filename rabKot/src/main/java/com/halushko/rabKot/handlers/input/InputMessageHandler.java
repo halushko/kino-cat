@@ -12,40 +12,13 @@ public abstract class InputMessageHandler implements Runnable {
     public static final long MEDIUM_PAUSE_MILIS = Long.parseLong(System.getenv("MEDIUM_PAUSE_MILIS"));
     public static final long SMALL_PAUSE_MILIS = Long.parseLong(System.getenv("SMALL_PAUSE_MILIS"));
 
-//    public static final long MEDIUM_PAUSE_MILIS;
-//    static {
-//        long str = 5000L;
-//        try {
-//            String str1 = System.getenv("PAUSE_AFTER_ERROR_MILIS");
-//            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
-//                str = Long.getLong(str1);
-//            }
-//        } catch (Exception ignore) {
-//        }
-//        MEDIUM_PAUSE_MILIS = str;
-//    }
-//
-//    public static final long SMALL_PAUSE_MILIS;
-//    static {
-//        long str = 500L;
-//        try {
-//            String str1 = System.getenv("SMALL_PAUSE_MILIS");
-//            if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
-//                str = Long.getLong(str1);
-//            }
-//        } catch (Exception ignore) {
-//        }
-//        SMALL_PAUSE_MILIS = str;
-//    }
-
     @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
     @Override
     public void run() {
         for (; ; ) {
             try {
-                Thread.sleep(LONG_PAUSE_MILIS * 2);
                 handle();
-            } catch (InterruptedException e) {
+            } catch (Exception e) {
                 System.out.println("Unknown koTorrent error: " + e.getMessage());
                 try {
                     Thread.sleep(MEDIUM_PAUSE_MILIS);
@@ -55,11 +28,13 @@ public abstract class InputMessageHandler implements Runnable {
             }
         }
     }
+
     @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
     protected void handle() {
         for (; ; ) {
             try {
                 readMessage(getQueue(), getDeliverCallback());
+                Thread.sleep(SMALL_PAUSE_MILIS);
             } catch (Exception e) {
                 System.out.println("Unknown koTorrent error: " + e.getMessage());
                 try {

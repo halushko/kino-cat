@@ -28,36 +28,49 @@ public class RabbitUtils {
     private static Connection connection = createConnection();
 
     private static Connection createConnection() {
-        do {
-            closeConnection();
-            try {
-                Thread.sleep(LONG_PAUSE_MILIS);
-                connection = connectionFactory.newConnection();
-                connection.addShutdownListener(new MyShutdownListener());
-                return connection;
-            } catch (Exception e) {
-                System.out.println("Error while open connection. " + e.getMessage());
-                e.printStackTrace();
-                connection = null;
-            }
-        } while (true);
+        synchronized (connectionFactory) {
+            do {
+                closeConnection();
+                try {
+                    connection = connectionFactory.newConnection();
+                    connection.addShutdownListener(new MyShutdownListener());
+                    return connection;
+                } catch (Exception e) {
+                    try {
+                        Thread.sleep(LONG_PAUSE_MILIS);
+                    } catch (InterruptedException ignored) {
+                    }
+                    System.out.println("Error while open connection. " + e.getMessage());
+                    e.printStackTrace();
+                    connection = null;
+                }
+            } while (true);
+        }
     }
 
     private static Connection newConnection() {
-        return connection;
+        synchronized (connectionFactory) {
+            if (!connection.isOpen()) {
+                closeConnection();
+                connection = createConnection();
+            }
+            return connection;
+        }
     }
 
 
     private static void closeConnection() {
-        if (connection != null) {
-            System.out.println("Connection closed");
-            try {
-                connection.close();
-            } catch (Exception e) {
-                System.out.println("Error while close connection. " + e.getMessage());
-                e.printStackTrace();
-            } finally {
-                connection = null;
+        synchronized (connectionFactory) {
+            if (connection != null) {
+                System.out.println("Connection closed");
+                try {
+                    connection.close();
+                } catch (Exception e) {
+                    System.out.println("Error while close connection. " + e.getMessage());
+                    e.printStackTrace();
+                } finally {
+                    connection = null;
+                }
             }
         }
     }
@@ -94,7 +107,6 @@ public class RabbitUtils {
         try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
-            Thread.sleep(MEDIUM_PAUSE_MILIS);
         } catch (Exception e) {
             System.out.println("Error while read message. " + e.getMessage());
             e.printStackTrace();

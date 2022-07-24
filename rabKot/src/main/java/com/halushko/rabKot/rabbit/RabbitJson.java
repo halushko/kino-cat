@@ -117,11 +117,19 @@ public class RabbitJson {
     }
 
     public long getLong() {
-        return Long.parseLong(getString(), DEFAULT_INT_VALUE);
+        try {
+            return Long.parseLong(getString());
+        } catch (Exception e) {
+            return DEFAULT_INT_VALUE;
+        }
     }
 
     public int getInteger() {
-        return Integer.getInteger(getString(), DEFAULT_INT_VALUE);
+        try {
+            return Integer.getInteger(getString());
+        } catch (Exception e) {
+            return DEFAULT_INT_VALUE;
+        }
     }
 
     public double getDouble() {
@@ -145,14 +153,22 @@ public class RabbitJson {
         return getLong(key.name());
     }
     public long getLong(String key) {
-        return Long.parseLong(getString(key), DEFAULT_INT_VALUE);
+        try {
+            return Long.parseLong(getString(key));
+        } catch (Exception e) {
+            return DEFAULT_INT_VALUE;
+        }
     }
 
     public int getInteger(RabbitMessage.KEYS key) {
         return getInteger(key.name());
     }
     public int getInteger(String key) {
-        return Integer.getInteger(getString(key), DEFAULT_INT_VALUE);
+        try {
+            return Integer.getInteger(getString(key));
+        } catch (Exception e) {
+            return DEFAULT_INT_VALUE;
+        }
     }
 
     public double getDouble(RabbitMessage.KEYS key) {
