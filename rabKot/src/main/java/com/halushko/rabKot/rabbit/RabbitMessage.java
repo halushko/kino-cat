@@ -1,66 +1,55 @@
 package com.halushko.rabKot.rabbit;
 
-public class RabbitMessage {
-    public static final int ID_LENGTH;
-    public static final String DELIMITER;
-    private final String text;
-    private final long userId;
+import static com.halushko.rabKot.rabbit.RabbitMessage.KEYS.*;
 
-    static {
-        String str = System.getenv("ID_LENGTH");
-        ID_LENGTH = str != null ? Integer.parseInt(str) : 11;
+public class RabbitMessage {
+    private final RabbitJson json;
+
+    public enum KEYS {
+        USER_ID, TEXT, CONSUMER, FILE_NAME, FILE_PATH;
     }
 
-    static {
-        String str = System.getenv("DELIMITER");
-        DELIMITER = str != null ? str : "#";
+    public RabbitMessage(long userId) {
+        json = RabbitJson.create(USER_ID, String.valueOf(userId));
+    }
+
+    public RabbitMessage(String message) {
+        json = RabbitJson.create(message);
     }
 
     public RabbitMessage(long userId, String text) {
-        this.userId = userId;
-        this.text = text;
-    }
-
-    public RabbitMessage(long userId, String text, String someId) {
-        this.userId = userId;
-        this.text = someId + DELIMITER + text;
-    }
-
-    public RabbitMessage(String text) {
-        this.text = getTextWithoutId(text);
-        this.userId = getIdFromString(text);
+        json = RabbitJson.create(USER_ID, String.valueOf(userId)).add(TEXT, text);
     }
 
     public String getText() {
-        return text;
-    }
-    public String getTextWithoutSomeId() {
-        String[] partsOfTextMessage = text.split(DELIMITER, 2);
-        return partsOfTextMessage.length == 2 ? partsOfTextMessage[1] : text;
+        return json.getString(TEXT);
     }
 
     public long getUserId() {
-        return userId;
+        return json.getLong(USER_ID);
     }
 
-    public String getSomeId() {
-        String[] partsOfTextMessage = text.split(DELIMITER, 2);
-        return partsOfTextMessage.length == 2 ? partsOfTextMessage[0] : "";
+    public RabbitMessage addValue(String key, String value) {
+        json.add(key, value);
+        return this;
+    }
+
+    public RabbitMessage addValue(KEYS key, String value) {
+        return addValue(key.name(), value);
+    }
+
+    public String getValue(KEYS key) {
+        return getValue(key.name());
+    }
+    public String getValue(String key) {
+        return json.getString(key);
     }
 
     public String getRabbitMessageText() {
-        return String.format("%0" + ID_LENGTH + "d", getUserId()) + getText();
+        return json.toString();
     }
 
     public byte[] getRabbitMessageBytes() {
         return getRabbitMessageText().getBytes();
-    }
-
-    private static long getIdFromString(String str) {
-        return Long.parseLong(str.substring(0, ID_LENGTH));
-    }
-
-    private static String getTextWithoutId(String str) {
-        return str.substring(ID_LENGTH);
     }
 }

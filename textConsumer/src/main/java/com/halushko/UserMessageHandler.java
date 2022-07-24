@@ -5,6 +5,13 @@ import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
 
 public class UserMessageHandler extends InputMessageHandler {
+    public static final String TELEGRAM_OUTPUT_TEXT;
+
+    static {
+        String str = System.getenv("TELEGRAM_OUTPUT_TEXT");
+        TELEGRAM_OUTPUT_TEXT = str != null ? str : "TELEGRAM_OUTPUT_TEXT";
+    }
+
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         try {
@@ -13,7 +20,7 @@ public class UserMessageHandler extends InputMessageHandler {
 
             Command command = Scripts.getCommand(text);
             if ( command.getCommand().equals("")) {
-                RabbitUtils.postMessage(rabbitMessage.getUserId(), "Command '"+ rabbitMessage.getText() + "' is not found", "TELEGRAM_OUTPUT_TEXT");
+                RabbitUtils.postMessage(rabbitMessage.getUserId(), "Command '"+ rabbitMessage.getText() + "' is not found", TELEGRAM_OUTPUT_TEXT);
             } else {
                 RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue());
             }

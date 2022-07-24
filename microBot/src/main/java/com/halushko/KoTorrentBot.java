@@ -2,7 +2,7 @@ package com.halushko;
 
 import com.halushko.handlers.input.SendTextMessageToUser;
 import com.halushko.handlers.telegram.KoTorrentUserMessageHandler;
-import com.halushko.rabKot.handlers.input.InputMessageHandler;
+import com.halushko.rabKot.handlers.telegram.UserMessageHandler;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -14,6 +14,18 @@ import java.util.Collection;
 
 public class KoTorrentBot extends TelegramLongPollingBot {
     public static KoTorrentBot BOT;
+
+    public static final String BOT_NAME;
+    static {
+        String str = System.getenv("BOT_NAME");
+        BOT_NAME = str != null ? str : "koTorrentBot";
+    }
+
+    public static final String BOT_TOKEN;
+    static {
+        String str = System.getenv("BOT_TOKEN");
+        BOT_TOKEN = str != null ? str : "1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8";
+    }
 
     public static void main(String[] args) {
         try {
@@ -30,17 +42,19 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        KoTorrentUserMessageHandler.getHandlers().forEach(handler -> handler.readMessage(update));
+        for (UserMessageHandler handler : KoTorrentUserMessageHandler.getHandlers()) {
+            handler.readMessage(update);
+        }
     }
 
     @Override
     public String getBotUsername() {
-        return System.getenv("BOT_NAME");
+        return BOT_NAME;
     }
 
     @Override
     public String getBotToken() {
-        return System.getenv("BOT_TOKEN");
+        return BOT_TOKEN;
     }
 
     public static void sendText(long chatId, String str) {

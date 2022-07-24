@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.8'
 
 x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
@@ -8,7 +8,7 @@ x-common-variables: &common-variables
   TELEGRAM_INPUT_FILE_QUEUE: TELEGRAM_INPUT_FILE
   TELEGRAM_INPUT_TEXT_QUEUE: TELEGRAM_INPUT_TEXT
   TELEGRAM_OUTPUT_TEXT_QUEUE: TELEGRAM_INPUT_TEXT
-  BOT_TOKEN: 1859184957:AAF2DaTJpaOEj2I6T2Vf35fOJszp9skPeiE
+  BOT_TOKEN: 1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8
   BOT_NAME: koTorrentBot
 services:
   rabbitmq:
@@ -29,8 +29,6 @@ services:
     container_name: "bot"
     depends_on:
       - rabbitmq
-  #    volumes:
-  #      - libsdata:/home/app/
   text_handler:
     build:
       context: .
@@ -41,8 +39,6 @@ services:
     container_name: "text_handler"
     depends_on:
       - rabbitmq
-  #    volumes:
-  #      - libsdata:/home/app/
   file_handler:
     build:
       context: .
@@ -54,7 +50,7 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - mediadata:/home/media/
+      - ./mediadata/torrent/torrent_files:/home/torrent_files/
   torrent:
     build:
       context: .
@@ -66,20 +62,9 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - mediadata:/home/media/
+      - ./mediadata:/home/media/
+      - ./torrentdata/torrents:/var/lib/transmission/config/torrents
+      - ./torrentdata/resume:/var/lib/transmission/config/resume
     ports:
       - 9091:9091
       - 51413:51413
-volumes:
-  #  libsdata:
-  #    driver: local
-  #    driver_opts:
-  #      o: bind
-  #      type: none
-  #      device: ./jars
-  mediadata:
-    driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: ./mediadata

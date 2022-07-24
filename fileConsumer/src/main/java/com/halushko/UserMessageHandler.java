@@ -10,20 +10,32 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import static com.halushko.Main.TELEGRAM_OUTPUT_TEXT_QUEUE;
+import static com.halushko.rabKot.rabbit.RabbitMessage.KEYS.FILE_NAME;
+import static com.halushko.rabKot.rabbit.RabbitMessage.KEYS.FILE_PATH;
 
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = "https://api.telegram.org/file/bot" + System.getenv("BOT_TOKEN") + "/";
 
+    public static final String TELEGRAM_OUTPUT_TEXT_QUEUE;
+    static {
+        String str = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
+        TELEGRAM_OUTPUT_TEXT_QUEUE = str != null ? str : "TELEGRAM_OUTPUT_TEXT_QUEUE";
+    }
+
+    public static final String TELEGRAM_INPUT_FILE_QUEUE;
+    static {
+        String str = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
+        TELEGRAM_INPUT_FILE_QUEUE = str != null ? str : "TELEGRAM_INPUT_FILE_QUEUE";
+    }
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         try {
-            String uploadedFilePath = rabbitMessage.getText();
-            URL fileUrl = new URL(FILE_URL_PREFIX + uploadedFilePath);
+            URL fileUrl = new URL(FILE_URL_PREFIX + rabbitMessage.getValue(FILE_PATH));
             long userId = rabbitMessage.getUserId();
+            String fileName = rabbitMessage.getValue(FILE_NAME);
 
-            File localFile = new File("/home/media/torrent/torrent_files/" + fileUrl.getFile());
-            try(InputStream is = fileUrl.openStream()) {
+            File localFile = new File(fileName);
+            try (InputStream is = fileUrl.openStream()) {
                 FileUtils.copyInputStreamToFile(is, localFile);
             } catch (IOException e) {
                 RabbitUtils.postMessage(userId, e.getMessage(), TELEGRAM_OUTPUT_TEXT_QUEUE);
@@ -35,6 +47,6 @@ public class UserMessageHandler extends InputMessageHandler {
 
     @Override
     protected String getQueue() {
-        return System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
+        return TELEGRAM_INPUT_FILE_QUEUE;
     }
 }

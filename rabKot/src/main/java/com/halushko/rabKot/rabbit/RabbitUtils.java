@@ -1,34 +1,42 @@
 package com.halushko.rabKot.rabbit;
 
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
-import org.telegram.telegrambots.meta.api.methods.GetFile;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import com.rabbitmq.client.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.concurrent.TimeoutException;
 
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.MEDIUM_PAUSE_MILIS;
 
 public class RabbitUtils {
-    private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");//"172.17.0.1";
-    private final static String RABBIT_USERNAME = System.getenv("RABBITMQ_DEFAULT_USER");//"dima";
-    private final static String RABBIT_PASSWORD = System.getenv("RABBITMQ_DEFAULT_PASS");//"dima";
-    private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));//5672;
-//    final static int RABBIT_CONNECTION_TIMEOUT = 60000;
+    private final static String RABBIT_HOST_IP;
+    private final static String RABBIT_USERNAME;
+    private final static String RABBIT_PASSWORD;
+    private final static int RABBIT_PORT;
+
+    static {
+        String str = System.getenv("RABBIT_HOST_IP");
+        RABBIT_HOST_IP = str != null ? str : "127.0.0.1";
+    }
+    static {
+        String str = System.getenv("RABBIT_USERNAME");
+        RABBIT_USERNAME = str != null ? str : "rabbit_user";
+    }
+    static {
+        String str = System.getenv("RABBIT_PASSWORD");
+        RABBIT_PASSWORD = str != null ? str : "rabbit_pswrd";
+    }
+    static {
+        String str = System.getenv("RABBIT_PORT");
+        RABBIT_PORT = str != null ? Integer.getInteger(str) : 5672;
+    }
 
     private static Connection connection;
 
     private static Connection newConnection() throws IOException, TimeoutException {
-        if (connection != null && !connection.isOpen()) {
-            connection.close();
-            connection = null;
-        }
+//        if (connection != null && !connection.isOpen()) {
+//            connection.close();
+//            connection = null;
+//        }
         if (connection == null) {
             connection = new ConnectionFactory() {
                 {
@@ -36,15 +44,23 @@ public class RabbitUtils {
                     setUsername(RABBIT_USERNAME);
                     setPassword(RABBIT_PASSWORD);
                     setPort(RABBIT_PORT);
-//                    setConnectionTimeout(RABBIT_CONNECTION_TIMEOUT);
                     setRequestedHeartbeat(20);
                 }
             }.newConnection();
+            connection.addShutdownListener(new MyShutdownListener());
         }
         return connection;
     }
 
-    private static void postMessage(RabbitMessage message, String queue) throws IOException, TimeoutException {
+    static class MyShutdownListener implements ShutdownListener {
+
+        @Override
+        public void shutdownCompleted(ShutdownSignalException cause) {
+            cause.printStackTrace();
+        }
+    }
+
+    public static void postMessage(RabbitMessage message, String queue) throws IOException, TimeoutException {
         Connection connection = newConnection();
         try (Channel channel = connection.createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
@@ -57,7 +73,7 @@ public class RabbitUtils {
             postMessage(new RabbitMessage(chatId, text), queue);
         } else {
             for (String consumer : consumersId) {
-                postMessage(new RabbitMessage(chatId, text, consumer), queue);
+                postMessage(new RabbitMessage(chatId, text).addValue(RabbitMessage.KEYS.CONSUMER, consumer), queue);
             }
         }
     }
@@ -71,6 +87,7 @@ public class RabbitUtils {
             Thread.sleep(MEDIUM_PAUSE_MILIS);
         } catch (Exception e) {
             System.out.println("Consumer error! " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

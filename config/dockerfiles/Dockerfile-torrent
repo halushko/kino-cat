@@ -22,17 +22,18 @@ RUN cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.
 
 FROM openjdk:8-alpine
 RUN apk add transmission-daemon transmission-cli openrc
-
-RUN mkdir -p /home/media/torrent/downloads && \
-    mkdir -p /home/media/torrent/complete && \
-    mkdir -p /home/media/torrent/torrent_files
-
+VOLUME ["/sys/fs/cgroup"]
 COPY --from=build_image /home/gradle/app /home/app
 COPY --from=download_image /home/git/code/kino-cat/config/config_files/transmission /var/lib/transmission/config
 
-RUN chmod +x /etc/transmission-daemon/after_download.sh
+RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
-RUN echo 'rc_provide="loopback net"' >> /etc/rc.conf
 
-ENTRYPOINT ["java", "-jar", "/home/app/torrent.jar"]
+CMD mkdir -p /home/media/torrent/downloads && \
+    mkdir -p /home/media/torrent/complete && \
+    mkdir -p /home/media/torrent/torrent_files && \
+    chown transmission -R /home/media && \
+    echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
+    rc-service transmission-daemon start && \
+    java -jar /home/app/torrent.jar

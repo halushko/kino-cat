@@ -7,6 +7,13 @@ import com.halushko.rabKot.cli.ExecuteBash;
 import java.util.List;
 
 public class TorrentOperator extends InputMessageHandler {
+    public static final String EXECUTE_TORRENT_COMMAND;
+
+    static {
+        String str = System.getenv("EXECUTE_TORRENT_COMMAND");
+        EXECUTE_TORRENT_COMMAND = str != null ? str : "EXECUTE_TORRENT_COMMAND";
+    }
+
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         try {
@@ -22,6 +29,6 @@ public class TorrentOperator extends InputMessageHandler {
 
     @Override
     protected String getQueue() {
-        return "EXECUTE_TORRENT_COMMAND";
+        return EXECUTE_TORRENT_COMMAND;
     }
 }

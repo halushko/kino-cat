@@ -29,7 +29,7 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
         StringBuilder result = new StringBuilder();
 
         long userId = rabbitMessage.getUserId();
-        String script = rabbitMessage.getTextWithoutSomeId();
+        String script = rabbitMessage.getText();
 
         try {
             //TODO sudo is needed or not?
