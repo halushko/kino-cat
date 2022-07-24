@@ -27,7 +27,7 @@ public class TorrentOperator extends InputMessageHandler {
     static {
         String str = "TELEGRAM_OUTPUT_TEXT";
         try {
-            String str1 = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
+            String str1 = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
             if (!(str1 == null || str1.equals("") || str1.equalsIgnoreCase("null"))) {
                 str = str1;
             }
