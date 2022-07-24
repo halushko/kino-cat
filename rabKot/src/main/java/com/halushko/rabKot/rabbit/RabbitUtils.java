@@ -10,8 +10,8 @@ import static com.halushko.rabKot.handlers.input.InputMessageHandler.MEDIUM_PAUS
 
 public class RabbitUtils {
     private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");
-    private final static String RABBIT_USERNAME = System.getenv("RABBIT_USERNAME");
-    private final static String RABBIT_PASSWORD = System.getenv("RABBIT_PASSWORD");
+    private final static String RABBIT_USERNAME = System.getenv("RABBITMQ_DEFAULT_USER");
+    private final static String RABBIT_PASSWORD = System.getenv("RABBITMQ_DEFAULT_PASS");
     private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));
 
     private static Connection connection;
