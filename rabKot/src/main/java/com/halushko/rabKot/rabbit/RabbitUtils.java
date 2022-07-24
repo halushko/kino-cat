@@ -27,7 +27,12 @@ public class RabbitUtils {
     }
     static {
         String str = System.getenv("RABBIT_PORT");
-        RABBIT_PORT = str != null ? Integer.getInteger(str) : 5672;
+        int portNo = 5672;
+        try {
+            portNo = Integer.getInteger(str);
+        } catch (Exception ignore) {
+        }
+        RABBIT_PORT = portNo;
     }
 
     private static Connection connection;
