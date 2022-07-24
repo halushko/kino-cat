@@ -11,21 +11,27 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class KoTorrentBot extends TelegramLongPollingBot {
     public static KoTorrentBot BOT;
 
-    public static final String BOT_NAME;
     static {
-        String str = System.getenv("BOT_NAME");
-        BOT_NAME = str != null ? str : "koTorrentBot";
+        for (Map.Entry<String, String> a: System.getenv().entrySet()){
+            System.out.println(a.getKey() + " = [" + a.getValue() + "]");
+        }
     }
+    public static final String BOT_NAME = System.getenv("BOT_NAME");
+//    static {
+//        String str =
+//        BOT_NAME = str != null ? str : "koTorrentBot";
+//    }
 
-    public static final String BOT_TOKEN;
-    static {
-        String str = System.getenv("BOT_TOKEN");
-        BOT_TOKEN = str != null ? str : "1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8";
-    }
+    public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+//    static {
+//        String str = System.getenv("BOT_TOKEN");
+//        BOT_TOKEN = str != null ? str : "1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8";
+//    }
 
     public static void main(String[] args) {
         try {
