@@ -38,10 +38,10 @@ public class RabbitUtils {
     private static Connection connection;
 
     private static Connection newConnection() throws IOException, TimeoutException {
-//        if (connection != null && !connection.isOpen()) {
-//            connection.close();
-//            connection = null;
-//        }
+        if (connection != null && !connection.isOpen()) {
+            connection.close();
+            connection = null;
+        }
         if (connection == null) {
             connection = new ConnectionFactory() {
                 {
