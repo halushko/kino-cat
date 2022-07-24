@@ -1,6 +1,5 @@
 package com.halushko.rabKot.rabbit;
 
-import com.halushko.rabKot.handlers.input.InputMessageHandler;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;
@@ -10,35 +9,10 @@ import static com.halushko.rabKot.handlers.input.InputMessageHandler.LONG_PAUSE_
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.MEDIUM_PAUSE_MILIS;
 
 public class RabbitUtils {
-    private final static String RABBIT_HOST_IP;
-    private final static String RABBIT_USERNAME;
-    private final static String RABBIT_PASSWORD;
-    private final static int RABBIT_PORT;
-
-    static {
-        String str = System.getenv("RABBIT_HOST_IP");
-        RABBIT_HOST_IP = str != null ? str : "127.0.0.1";
-    }
-
-    static {
-        String str = System.getenv("RABBIT_USERNAME");
-        RABBIT_USERNAME = str != null ? str : "rabbit_user";
-    }
-
-    static {
-        String str = System.getenv("RABBIT_PASSWORD");
-        RABBIT_PASSWORD = str != null ? str : "rabbit_pswrd";
-    }
-
-    static {
-        String str = System.getenv("RABBIT_PORT");
-        int portNo = 5672;
-        try {
-            portNo = Integer.getInteger(str);
-        } catch (Exception ignore) {
-        }
-        RABBIT_PORT = portNo;
-    }
+    private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");
+    private final static String RABBIT_USERNAME = System.getenv("RABBIT_USERNAME");
+    private final static String RABBIT_PASSWORD = System.getenv("RABBIT_PASSWORD");
+    private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));
 
     private static Connection connection;
     private static final ConnectionFactory connectionFactory = new ConnectionFactory() {
@@ -52,24 +26,32 @@ public class RabbitUtils {
     };
 
     private static Connection newConnection() {
-        if (connection != null && !connection.isOpen()) {
-            try {
-                connection.close();
-            } catch (Exception ignore) {
-            } finally {
-                connection = null;
-            }
-        }
-        while (connection == null) {
+        do {
+            closeConnectionIfNeeded();
             try {
                 Thread.sleep(LONG_PAUSE_MILIS);
                 connection = connectionFactory.newConnection();
                 connection.addShutdownListener(new MyShutdownListener());
-            } catch (Exception ignore) {
+                return connection;
+            } catch (Exception e) {
+                System.out.println("Error while open connection. " + e.getMessage());
+                e.printStackTrace();
+                connection = null;
+            }
+        } while (true);
+    }
+
+    private static void closeConnectionIfNeeded() {
+        if (connection != null && !connection.isOpen()) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                System.out.println("Error while close connection. " + e.getMessage());
+                e.printStackTrace();
+            } finally {
                 connection = null;
             }
         }
-        return connection;
     }
 
     static class MyShutdownListener implements ShutdownListener {
@@ -85,6 +67,7 @@ public class RabbitUtils {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicPublish("", queue, null, message.getRabbitMessageBytes());
         } catch (Exception e) {
+            System.out.println("Error while post message. " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -105,6 +88,7 @@ public class RabbitUtils {
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
             Thread.sleep(MEDIUM_PAUSE_MILIS);
         } catch (Exception e) {
+            System.out.println("Error while read message. " + e.getMessage());
             e.printStackTrace();
         }
     }
