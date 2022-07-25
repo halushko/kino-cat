@@ -10,6 +10,7 @@ public class UserMessageHandler extends InputMessageHandler {
 
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
+        System.out.println("Start DeliverCallbackPrivate for " + getQueue());
         try {
             String text = rabbitMessage.getText();
             long userId = rabbitMessage.getUserId();
@@ -20,6 +21,7 @@ public class UserMessageHandler extends InputMessageHandler {
             } else {
                 RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue());
             }
+            System.out.println("Finish DeliverCallbackPrivate for " + getQueue());
         } catch (Exception e) {
             System.out.println("During message handle got an error: " + e.getMessage());
             e.printStackTrace();

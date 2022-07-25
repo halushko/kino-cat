@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.LONG_PAUSE_MILIS;
-import static com.halushko.rabKot.handlers.input.InputMessageHandler.MEDIUM_PAUSE_MILIS;
 
 public class RabbitUtils {
     private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");
@@ -20,7 +19,6 @@ public class RabbitUtils {
             setUsername(RABBIT_USERNAME);
             setPassword(RABBIT_PASSWORD);
             setPort(RABBIT_PORT);
-            setRequestedHeartbeat(20);
             setAutomaticRecoveryEnabled(false);
         }
     };

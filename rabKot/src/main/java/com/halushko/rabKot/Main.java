@@ -1,6 +1,12 @@
 package com.halushko.rabKot;
 
+import com.halushko.rabKot.handlers.input.InputMessageHandler;
 import com.halushko.rabKot.rabbit.RabbitJson;
+import com.halushko.rabKot.rabbit.RabbitMessage;
+import com.halushko.rabKot.rabbit.RabbitUtils;
+
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeoutException;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,6 +22,12 @@ public class Main {
 //        System.out.println(a.get());
 //        System.out.println(a.get().getParent().get("QWE"));
 
-        System.out.println(RabbitJson.create("{\"USER_ID\":\"43504868\",\"TEXT\":\"5\"}"));
+//        try {
+//            RabbitUtils.postMessage(43504868, "/restart", System.getenv("TELEGRAM_INPUT_TEXT_QUEUE"));
+//            RabbitUtils.readMessage(System.getenv("TELEGRAM_INPUT_TEXT_QUEUE"));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(RabbitJson.create("{\"USER_ID\":\"43504868\",\"TEXT\":\"5\"}"));
     }
 }

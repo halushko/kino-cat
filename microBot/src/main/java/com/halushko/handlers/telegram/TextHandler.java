@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-class TextHandler extends UserMessageHandler {
+public class TextHandler extends UserMessageHandler {
     public static final String TELEGRAM_INPUT_TEXT_QUEUE = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
 
     @Override

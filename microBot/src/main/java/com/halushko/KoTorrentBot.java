@@ -1,7 +1,9 @@
 package com.halushko;
 
 import com.halushko.handlers.input.SendTextMessageToUser;
-import com.halushko.handlers.telegram.KoTorrentUserMessageHandler;
+import com.halushko.handlers.telegram.MyPingHandler;
+import com.halushko.handlers.telegram.TextHandler;
+import com.halushko.handlers.telegram.TorrentFileHandler;
 import com.halushko.rabKot.handlers.telegram.UserMessageHandler;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -10,6 +12,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -40,7 +43,12 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        for (UserMessageHandler handler : KoTorrentUserMessageHandler.getHandlers()) {
+        Collection<UserMessageHandler> handlers = new ArrayList<UserMessageHandler>() {{
+            add(new MyPingHandler());
+            add(new TextHandler());
+            add(new TorrentFileHandler());
+        }};
+        for (UserMessageHandler handler : handlers) {
             handler.readMessage(update);
         }
     }

@@ -17,22 +17,6 @@ public abstract class InputMessageHandler implements Runnable {
     public void run() {
         for (; ; ) {
             try {
-                handle();
-            } catch (Exception e) {
-                System.out.println("Unknown koTorrent error: " + e.getMessage());
-                try {
-                    Thread.sleep(MEDIUM_PAUSE_MILIS);
-                } catch (InterruptedException ex) {
-                    System.out.println("Unknown koTorrent error: " + ex.getMessage());
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
-    protected void handle() {
-        for (; ; ) {
-            try {
                 readMessage(getQueue(), getDeliverCallback());
                 Thread.sleep(SMALL_PAUSE_MILIS);
             } catch (Exception e) {
@@ -48,6 +32,7 @@ public abstract class InputMessageHandler implements Runnable {
 
     protected DeliverCallback getDeliverCallback() {
         return (consumerTag, delivery) -> {
+            System.out.println("Get DeliverCallback for " + getQueue() + " started");
             String s = new String(delivery.getBody(), StandardCharsets.UTF_8);
             RabbitMessage message = new RabbitMessage(s);
             getDeliverCallbackPrivate(message);
