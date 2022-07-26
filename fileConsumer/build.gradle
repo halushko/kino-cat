@@ -29,9 +29,9 @@ artifacts {
 
 dependencies {
     implementation 'com.rabbitmq:amqp-client:+'
-    implementation files('/home/gradle/app/kot_utils.jar')
     implementation 'commons-io:commons-io:2.5'
     implementation 'org.json:json:+'
+    implementation files('/home/gradle/app/kot_utils.jar')
 //    implementation files('../rabKot/build/libs/rabKot-1.0-SNAPSHOT.jar')
 }
 
