@@ -12,7 +12,6 @@ public abstract class InputMessageHandler implements Runnable {
     public static final long MEDIUM_PAUSE_MILIS = Long.parseLong(System.getenv("MEDIUM_PAUSE_MILIS"));
     public static final long SMALL_PAUSE_MILIS = Long.parseLong(System.getenv("SMALL_PAUSE_MILIS"));
 
-    @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
     @Override
     public void run() {
         try {
@@ -20,10 +19,10 @@ public abstract class InputMessageHandler implements Runnable {
         } catch (InterruptedException ignored) {
         }
 
-        for (; ; ) {
             try {
+                System.out.println("Start connection");
                 readMessage(getQueue(), getDeliverCallback());
-                Thread.sleep(SMALL_PAUSE_MILIS);
+                System.out.println("Connected");
             } catch (Exception e) {
                 System.out.println("Unknown koTorrent error: " + e.getMessage());
                 try {
@@ -31,7 +30,6 @@ public abstract class InputMessageHandler implements Runnable {
                 } catch (InterruptedException ex) {
                     System.out.println("Unknown koTorrent error: " + ex.getMessage());
                 }
-            }
         }
     }
 

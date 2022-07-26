@@ -99,9 +99,9 @@ public class RabbitUtils {
     }
 
     public static void readMessage(String queue, DeliverCallback deliverCallback) {
-        try (Channel channel = newConnection().createChannel()) {
+        try {
+            Channel channel = newConnection().createChannel();
             channel.queueDeclare(queue, false, false, false, null);
-            channel.queueDeclare("TEST", false, false, false, null);
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
         } catch (Exception e) {
             System.out.println("Error while read message. " + e.getMessage());
