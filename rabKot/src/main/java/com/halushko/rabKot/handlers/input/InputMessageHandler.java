@@ -15,6 +15,11 @@ public abstract class InputMessageHandler implements Runnable {
     @SuppressWarnings({"InfiniteLoopStatement", "BusyWait"})
     @Override
     public void run() {
+        try {
+            Thread.sleep(LONG_PAUSE_MILIS*3);
+        } catch (InterruptedException ignored) {
+        }
+
         for (; ; ) {
             try {
                 readMessage(getQueue(), getDeliverCallback());
