@@ -2,9 +2,6 @@ package com.halushko.rabKot.rabbit;
 
 import com.rabbitmq.client.*;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.LONG_PAUSE_MILIS;
 
 public class RabbitUtils {
@@ -91,7 +88,7 @@ public class RabbitUtils {
         }
     }
 
-    public static void postMessage(long chatId, String text, String queue, String... consumersId) throws IOException, TimeoutException {
+    public static void postMessage(long chatId, String text, String queue, String... consumersId) {
         if (consumersId == null || consumersId.length == 0) {
             postMessage(new RabbitMessage(chatId, text), queue);
         } else {
@@ -104,6 +101,7 @@ public class RabbitUtils {
     public static void readMessage(String queue, DeliverCallback deliverCallback) {
         try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
+            channel.queueDeclare("TEST", false, false, false, null);
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
         } catch (Exception e) {
             System.out.println("Error while read message. " + e.getMessage());

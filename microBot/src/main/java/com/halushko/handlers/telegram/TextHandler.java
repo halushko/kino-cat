@@ -5,14 +5,11 @@ import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
 public class TextHandler extends UserMessageHandler {
     public static final String TELEGRAM_INPUT_TEXT_QUEUE = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
 
     @Override
-    protected void readMessagePrivate(Update update) throws IOException, TimeoutException {
+    protected void readMessagePrivate(Update update) {
         RabbitMessage rm = new RabbitMessage(update.getMessage().getChatId(), update.getMessage().getText());
         RabbitUtils.postMessage(rm, TELEGRAM_INPUT_TEXT_QUEUE);
     }

@@ -23,4 +23,5 @@ repositories {
 dependencies {
     implementation "org.telegram:telegrambots:4.1"
     implementation 'com.rabbitmq:amqp-client:+'
+    implementation 'org.json:json:+'
 }

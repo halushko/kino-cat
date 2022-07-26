@@ -29,5 +29,9 @@ public class Main {
 //            e.printStackTrace();
 //        }
 //        System.out.println(RabbitJson.create("{\"USER_ID\":\"43504868\",\"TEXT\":\"5\"}"));
+
+        String s = "{\"USER_ID\":\"43504868\",\"TEXT\":\"/restart\"}";
+        RabbitMessage rm = new RabbitMessage(s);
+        System.out.println(rm.getText());
     }
 }
