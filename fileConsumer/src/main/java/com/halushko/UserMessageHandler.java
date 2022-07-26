@@ -52,7 +52,7 @@ public class UserMessageHandler extends InputMessageHandler {
             long userId = rabbitMessage.getUserId();
             String fileName = rabbitMessage.getValue(FILE_NAME);
 
-            File localFile = new File(fileName);
+            File localFile = new File("/home/torrent_files/" + fileName);
             try (InputStream is = fileUrl.openStream()) {
                 FileUtils.copyInputStreamToFile(is, localFile);
             } catch (IOException e) {
