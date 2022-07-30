@@ -25,12 +25,14 @@ RUN apk add transmission-daemon transmission-cli openrc
 VOLUME ["/sys/fs/cgroup"]
 COPY --from=build_image /home/gradle/app /home/app
 COPY --from=download_image /home/git/code/kino-cat/config/config_files/transmission /var/lib/transmission/config
+COPY --from=download_image /home/git/code/kino-cat/config/commands/transmission /home/app
 
 RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 
-CMD mkdir -p /home/media/torrent/downloads && \
+CMD chmod +X /home/app/*.sh && /
+    mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files && \
     chown transmission -R /home/media && \
