@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+@SuppressWarnings("unused")
 public abstract class UserMessageHandler {
 
     public final void readMessage(Update update) {

@@ -7,6 +7,7 @@ import com.halushko.rabKot.rabbit.RabbitUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public abstract class CliCommandExecutor extends InputMessageHandler {
     public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
 
