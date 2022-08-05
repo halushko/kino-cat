@@ -11,7 +11,7 @@ public class ExecuteBash {
         List<String> result = new ArrayList<>();
 
         String[] sss = new String[args.length + 1];
-        sss[0] = script;
+        sss[0] = "/home/app/" + script;
         System.arraycopy(args, 0, sss, 1, args.length);
 
         try {
