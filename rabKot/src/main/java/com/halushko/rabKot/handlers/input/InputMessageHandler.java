@@ -2,6 +2,7 @@ package com.halushko.rabKot.handlers.input;
 
 import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.rabbitmq.client.DeliverCallback;
+import org.apache.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 
@@ -24,11 +25,19 @@ public abstract class InputMessageHandler implements Runnable {
                 readMessage(getQueue(), getDeliverCallback());
                 System.out.println("Connected");
             } catch (Exception e) {
-                System.out.println("Unknown koTorrent error: " + e.getMessage());
+                String text = "Unknown koTorrent error: " + e.getMessage();
+                System.out.println(text);
+                e.printStackTrace();
+                Logger.getRootLogger().error(text);
+                Logger.getRootLogger().error(e);
                 try {
                     Thread.sleep(MEDIUM_PAUSE_MILIS);
                 } catch (InterruptedException ex) {
-                    System.out.println("Unknown koTorrent error: " + ex.getMessage());
+                    text = "Unknown koTorrent error: " + e.getMessage();
+                    System.out.println(text);
+                    e.printStackTrace();
+                    Logger.getRootLogger().error(text);
+                    Logger.getRootLogger().error(e);
                 }
         }
     }

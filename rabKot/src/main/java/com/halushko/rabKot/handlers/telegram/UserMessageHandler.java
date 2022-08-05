@@ -1,5 +1,6 @@
 package com.halushko.rabKot.handlers.telegram;
 
+import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.IOException;
@@ -12,7 +13,12 @@ public abstract class UserMessageHandler {
             try {
                 readMessagePrivate(update);
             } catch (IOException | TimeoutException e) {
-                sendAnswer(update.getMessage().getChatId(), "Unknown koTorrent error: " + e.getMessage());
+                String text = "Unknown koTorrent error: " + e.getMessage();
+                sendAnswer(update.getMessage().getChatId(), text);
+                System.out.println(text);
+                e.printStackTrace();
+                Logger.getRootLogger().error(text);
+                Logger.getRootLogger().error(e);
             }
         }
     }

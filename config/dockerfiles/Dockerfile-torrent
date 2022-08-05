@@ -31,7 +31,7 @@ RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 
-CMD chmod +X /home/app/*.sh && /
+CMD chmod +X /home/app/*.sh && \
     mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files && \

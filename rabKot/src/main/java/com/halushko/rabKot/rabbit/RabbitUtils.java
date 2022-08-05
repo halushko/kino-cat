@@ -1,6 +1,7 @@
 package com.halushko.rabKot.rabbit;
 
 import com.rabbitmq.client.*;
+import org.apache.log4j.Logger;
 
 import static com.halushko.rabKot.handlers.input.InputMessageHandler.LONG_PAUSE_MILIS;
 
@@ -35,8 +36,11 @@ public class RabbitUtils {
                         Thread.sleep(LONG_PAUSE_MILIS);
                     } catch (InterruptedException ignored) {
                     }
-                    System.out.println("Error while open connection. " + e.getMessage());
+                    String text = "Error while open connection. " + e.getMessage();
+                    System.out.println(text);
                     e.printStackTrace();
+                    Logger.getRootLogger().error(text);
+                    Logger.getRootLogger().error(e);
                     connection = null;
                 }
             } while (true);
@@ -61,8 +65,11 @@ public class RabbitUtils {
                 try {
                     connection.close();
                 } catch (Exception e) {
-                    System.out.println("Error while close connection. " + e.getMessage());
+                    String text = "Error while close connection. " + e.getMessage();
+                    System.out.println(text);
                     e.printStackTrace();
+                    Logger.getRootLogger().error(text);
+                    Logger.getRootLogger().error(e);
                 } finally {
                     connection = null;
                 }
@@ -83,8 +90,11 @@ public class RabbitUtils {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicPublish("", queue, null, message.getRabbitMessageBytes());
         } catch (Exception e) {
-            System.out.println("Error while post message. " + e.getMessage());
+            String text = "Error while post message. " + e.getMessage();
+            System.out.println(text);
             e.printStackTrace();
+            Logger.getRootLogger().error(text);
+            Logger.getRootLogger().error(e);
         }
     }
 
@@ -104,8 +114,11 @@ public class RabbitUtils {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
         } catch (Exception e) {
-            System.out.println("Error while read message. " + e.getMessage());
+            String text = "Error while read message. " + e.getMessage();
+            System.out.println(text);
             e.printStackTrace();
+            Logger.getRootLogger().error(text);
+            Logger.getRootLogger().error(e);
         }
     }
 }
