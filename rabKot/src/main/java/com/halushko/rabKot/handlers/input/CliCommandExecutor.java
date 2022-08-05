@@ -10,9 +10,6 @@ import java.util.stream.Collectors;
 public abstract class CliCommandExecutor extends InputMessageHandler {
     public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
 
-    protected CliCommandExecutor() {
-    }
-
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         long userId = rabbitMessage.getUserId();
