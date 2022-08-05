@@ -30,12 +30,14 @@ COPY --from=download_image /home/git/code/kino-cat/config/commands/transmission 
 RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
+RUN chmod +X /home/app/*.sh
+RUN chown transmission -R /home/media
+RUN chmod 777 -R /home/app
 
-CMD chmod +X /home/app/*.sh && \
-    mkdir -p /home/media/torrent/downloads && \
+CMD mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files && \
-    chown transmission -R /home/media && \
+
     echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
     rc-service transmission-daemon start && \
     java -jar /home/app/torrent.jar

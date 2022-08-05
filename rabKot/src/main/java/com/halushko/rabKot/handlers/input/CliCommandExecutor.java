@@ -1,55 +1,31 @@
 package com.halushko.rabKot.handlers.input;
 
+import com.halushko.rabKot.cli.ExecuteBash;
 import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class CliCommandExecutor extends InputMessageHandler {
-    private final String parserId;
+    public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
 
-    public CliCommandExecutor(String parserId) {
-        this.parserId = parserId;
+    protected CliCommandExecutor() {
     }
+
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
-        Process p = null;
-        StringBuilder result = new StringBuilder();
-
         long userId = rabbitMessage.getUserId();
         String script = rabbitMessage.getText();
 
         try {
-            //TODO sudo is needed or not?
-//            p = Runtime.getRuntime().exec("ls -la");
-            p = Runtime.getRuntime().exec(script);
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-                for (String outputLine; (outputLine = br.readLine()) != null; )
-                    result.append(outputLine).append("\n");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (p != null) {
-                try {
-                    p.waitFor();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                p.destroy();
-            }
-        }
-
-        try {
-            RabbitUtils.postMessage(userId,  result.toString(), getParserId(), getParserId());
+            List<String> result = ExecuteBash.executeViaCLI(script);
+            String textResult = result.stream().map(a -> a + "\n").collect(Collectors.joining());
+            RabbitUtils.postMessage(userId, textResult, TELEGRAM_OUTPUT_TEXT_QUEUE, getParserId());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    public String getParserId() {
-        return parserId;
-    }
+    public abstract String getParserId();
 }
