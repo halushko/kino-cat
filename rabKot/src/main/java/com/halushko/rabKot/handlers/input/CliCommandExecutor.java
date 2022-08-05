@@ -22,7 +22,8 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
 
         try {
             //TODO sudo is needed or not?
-            p = Runtime.getRuntime().exec("sudo " + script);
+//            p = Runtime.getRuntime().exec("ls -la");
+            p = Runtime.getRuntime().exec(script);
             try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 for (String outputLine; (outputLine = br.readLine()) != null; )
                     result.append(outputLine).append("\n");
