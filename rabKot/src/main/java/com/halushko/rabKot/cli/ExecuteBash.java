@@ -6,21 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ExecuteBash {
-    public static List<String> executeViaCLI(String script, String... args) {
+    public static List<String> executeViaCLI(String script) {
         Process p = null;
         List<String> result = new ArrayList<>();
 
-        String[] sss = new String[args.length + 1];
-        sss[0] = "/bin/sh /home/app/" + script;
-        System.arraycopy(args, 0, sss, 1, args.length);
-
         try {
-            p = Runtime.getRuntime().exec(sss);
+            p = Runtime.getRuntime().exec(String.format("sh %s", "/home/app/" + script));
+            //p = Runtime.getRuntime().exec("/home/app/" + script);
             try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 for (String outputLine; (outputLine = br.readLine()) != null; )
                     result.add(outputLine);
             }
+            System.out.println(result.size());
         } catch (Exception e) {
+//            System.out.println("Error");
             e.printStackTrace();
         } finally {
             if (p != null) {
@@ -31,6 +30,7 @@ public class ExecuteBash {
                 }
                 p.destroy();
             }
+//            System.out.println("End");
         }
         result.forEach(System.out::println);
         return result;
