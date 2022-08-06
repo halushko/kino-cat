@@ -74,3 +74,20 @@ services:
     ports:
       - 9091:9091
       - 51413:51413
+  minidlna:
+    build:
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-minidlna
+    environment: *common-variables
+    restart: always
+    container_name: "minidlna"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./mediadata:/home/media/
+      - ./torrentdata/torrents:/var/lib/transmission/config/torrents
+      - ./torrentdata/resume:/var/lib/transmission/config/resume
+    ports:
+      - 8200:8200
+      - 1900:1900
