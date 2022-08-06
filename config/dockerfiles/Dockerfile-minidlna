@@ -26,8 +26,8 @@ VOLUME ["/sys/fs/cgroup"]
 COPY --from=build_image /home/gradle/app /home/app
 
 RUN apk add minidlna
-COPY --from=download_image /home/git/code/kino-cat/config/config_files/transmission /var/lib/transmission/config
-COPY --from=download_image /home/git/code/kino-cat/config/commands/transmission /home/app
+COPY --from=download_image /home/git/code/kino-cat/config/config_files/minidlna /etc
+COPY --from=download_image /home/git/code/kino-cat/config/commands/minidlna /home/app
 
 RUN openrc
 RUN touch /run/openrc/softlevel
