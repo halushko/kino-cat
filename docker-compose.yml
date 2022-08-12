@@ -5,17 +5,27 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
   RABBIT_HOST_IP: 172.17.0.1
+
   TELEGRAM_INPUT_FILE_QUEUE: TELEGRAM_INPUT_FILE
   TELEGRAM_INPUT_TEXT_QUEUE: TELEGRAM_INPUT_TEXT
   TELEGRAM_OUTPUT_TEXT_QUEUE: TELEGRAM_OUTPUT_TEXT
+
   EXECUTE_TORRENT_COMMAND_QUEUE: EXECUTE_TORRENT_COMMAND
+
   BOT_TOKEN: 1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8
   BOT_NAME: koTorrentBot
+
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000
   SMALL_PAUSE_MILIS: 500
+
   PING: /ping
   PONG: pong
+#  MINIDLNA_media_dir=V,/media
+#  MINIDLNA_friendly_name=MiniDLNA
+#  MINIDLNA_merge_media_dirs=yes
+#  MINIDLNA_force_sort_criteria= upnp:class, upnp:originalTrackNumber, dc:title
+#  MINIDLNA_root_container=B
 services:
   rabbitmq:
     image: rabbitmq:3.9.20-management-alpine
@@ -75,19 +85,32 @@ services:
       - 9091:9091
       - 51413:51413
   minidlna:
+    container_name: "minidlna"
     build:
       context: .
       #      context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/dockerfiles/Dockerfile-minidlna
-    environment: *common-variables
+    #image: sego/minidlna
+    #image: sego/minidlna-armhf
     restart: always
-    container_name: "minidlna"
+    environment:  *common-variables
     depends_on:
       - rabbitmq
     volumes:
-      - ./mediadata:/home/media/
-      - ./torrentdata/torrents:/var/lib/transmission/config/torrents
-      - ./torrentdata/resume:/var/lib/transmission/config/resume
-    ports:
-      - 8200:8200
-      - 1900:1900
+      - ./mediadata/torrent/complete:/home/media/:ro
+    network_mode: host
+#  minidlna2:
+#    build:
+#      context: .
+#      #      context: https://github.com/halushko/kino-cat.git
+#      dockerfile: ./config/dockerfiles/Dockerfile-minidlna
+#    environment: *common-variables
+#    restart: always
+#    container_name: "minidlna"
+#    depends_on:
+#      - rabbitmq
+#    volumes:
+#      - ./mediadata:/home/media/
+#    ports:
+#      - 8200:8200
+#      - 1900:1900
