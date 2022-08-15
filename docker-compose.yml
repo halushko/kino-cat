@@ -21,11 +21,6 @@ x-common-variables: &common-variables
 
   PING: /ping
   PONG: pong
-#  MINIDLNA_media_dir=V,/media
-#  MINIDLNA_friendly_name=MiniDLNA
-#  MINIDLNA_merge_media_dirs=yes
-#  MINIDLNA_force_sort_criteria= upnp:class, upnp:originalTrackNumber, dc:title
-#  MINIDLNA_root_container=B
 services:
   rabbitmq:
     image: rabbitmq:3.9.20-management-alpine
@@ -35,63 +30,61 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-#  bot:
-#    build:
-#      context: .
-#      #      context: https://github.com/halushko/kino-cat.git
-#      dockerfile: ./config/dockerfiles/Dockerfile-microBot
-#    environment: *common-variables
-#    restart: always
-#    container_name: "bot"
-#    depends_on:
-#      - rabbitmq
-#  text_handler:
-#    build:
-#      context: .
-#      #      context: https://github.com/halushko/kino-cat.git
-#      dockerfile: ./config/dockerfiles/Dockerfile-text
-#    environment: *common-variables
-#    restart: always
-#    container_name: "text_handler"
-#    depends_on:
-#      - rabbitmq
-#  file_handler:
-#    build:
-#      context: .
-#      #      context: https://github.com/halushko/kino-cat.git
-#      dockerfile: ./config/dockerfiles/Dockerfile-file
-#    environment: *common-variables
-#    restart: always
-#    container_name: "file_handler"
-#    depends_on:
-#      - rabbitmq
-#    volumes:
-#      - ./mediadata/torrent/torrent_files:/home/torrent_files/
-#  torrent:
-#    build:
-#      context: .
-#      #      context: https://github.com/halushko/kino-cat.git
-#      dockerfile: ./config/dockerfiles/Dockerfile-torrent
-#    environment: *common-variables
-#    restart: always
-#    container_name: "torrent"
-#    depends_on:
-#      - rabbitmq
-#    volumes:
-#      - ./mediadata:/home/media/
-#      - ./torrentdata/torrents:/var/lib/transmission/config/torrents
-#      - ./torrentdata/resume:/var/lib/transmission/config/resume
-#    ports:
-#      - 9091:9091
-#      - 51413:51413
+  bot:
+    build:
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-microBot
+    environment: *common-variables
+    restart: always
+    container_name: "bot"
+    depends_on:
+      - rabbitmq
+  text_handler:
+    build:
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-text
+    environment: *common-variables
+    restart: always
+    container_name: "text_handler"
+    depends_on:
+      - rabbitmq
+  file_handler:
+    build:
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-file
+    environment: *common-variables
+    restart: always
+    container_name: "file_handler"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./mediadata/torrent/torrent_files:/home/torrent_files/
+  torrent:
+    build:
+      context: .
+      #      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-torrent
+    environment: *common-variables
+    restart: always
+    container_name: "torrent"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./mediadata:/home/media/
+      - ./torrentdata/torrents:/var/lib/transmission/config/torrents
+      - ./torrentdata/resume:/var/lib/transmission/config/resume
+    ports:
+      - 9091:9091
+      - 51413:51413
   minidlna:
     container_name: "minidlna"
     build:
       context: .
       #      context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/dockerfiles/Dockerfile-minidlna
-    #image: sego/minidlna
-    #image: sego/minidlna-armhf
     restart: always
     environment:  *common-variables
     depends_on:
