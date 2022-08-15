@@ -23,6 +23,14 @@ RUN cd /home/gradle/code/kino-cat/minidlna && gradle fatJar && cp ./build/libs/*
 FROM openjdk:8-alpine
 RUN apk add openrc
 VOLUME ["/sys/fs/cgroup"]
+VOLUME ["/var/cache/minidlna"]
+VOLUME ["/var/db/minidlna"]
+VOLUME ["/var/log/"]
+VOLUME ["/home/media"]
+
+ENV PUID=minidlna
+ENV PGID=minidlna
+
 #ENV MINIDLNA_media_dir=V,/media
 #ENV MINIDLNA_friendly_name=MiniDLNA
 #ENV MINIDLNA_merge_media_dirs=yes
@@ -31,16 +39,26 @@ VOLUME ["/sys/fs/cgroup"]
 
 COPY --from=build_image /home/gradle/app /home/app
 
-RUN apk add minidlna
+RUN apk add minidlna sqlite
 COPY --from=download_image /home/git/code/kino-cat/config/config_files/minidlna /etc
 COPY --from=download_image /home/git/code/kino-cat/config/commands/minidlna /home/app
 
 RUN openrc
 RUN touch /run/openrc/softlevel
-RUN chmod +X /home/app/*.sh
-RUN chmod 777 -R /home/app
+RUN mkdir -p /var/db/minidlna && \
+    mkdir -p /home/media && \
+    chmod +X /home/app/*.sh
 
-CMD echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
-    rc-service minidlna stop && \
+#RUN rc-service minidlna start && \
+#    rc-update add minidlna default
+
+#    rc-service minidlna stop && \
+#
+CMD chmod 777 -R /home/app && \
+    chmod 777 -R /home/media && \
+    chmod 777 -R /var/db/minidlna && \
+    chmod 777 -R /var/cache/minidlna && \
+    chmod 777 -R /var/log/ && \
+    echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
     rc-service minidlna start && \
     java -jar /home/app/minidlna.jar
