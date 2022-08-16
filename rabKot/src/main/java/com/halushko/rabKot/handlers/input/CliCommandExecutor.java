@@ -15,15 +15,13 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         long userId = rabbitMessage.getUserId();
         String script = rabbitMessage.getText();
-
+        String parserId = rabbitMessage.getValue(RabbitMessage.KEYS.CONSUMER);
         try {
             List<String> result = ExecuteBash.executeViaCLI(script);
             String textResult = result.stream().map(a -> a + "\n").collect(Collectors.joining());
-            RabbitUtils.postMessage(userId, textResult, TELEGRAM_OUTPUT_TEXT_QUEUE, getParserId());
+            RabbitUtils.postMessage(userId, textResult, TELEGRAM_OUTPUT_TEXT_QUEUE, parserId);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public abstract String getParserId();
 }

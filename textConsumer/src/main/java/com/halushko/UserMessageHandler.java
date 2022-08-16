@@ -19,7 +19,7 @@ public class UserMessageHandler extends InputMessageHandler {
             if ( command.getCommand().equals("")) {
                 RabbitUtils.postMessage(rabbitMessage.getUserId(), "Command '"+ rabbitMessage.getText() + "' is not found", TELEGRAM_OUTPUT_TEXT_QUEUE);
             } else {
-                RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue());
+                RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue(), command.getScript());
             }
             System.out.println("Finish DeliverCallbackPrivate for " + getQueue());
         } catch (Exception e) {
