@@ -4,7 +4,7 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
-  RABBIT_HOST_IP: 172.17.0.1
+  RABBIT_HOST_IP: 192.168.50.132
 
   TELEGRAM_INPUT_FILE_QUEUE: TELEGRAM_INPUT_FILE
   TELEGRAM_INPUT_TEXT_QUEUE: TELEGRAM_INPUT_TEXT
@@ -28,33 +28,40 @@ services:
     restart: always
     environment: *common-variables
     ports:
-      - 5672:5672
-      - 15672:15672
+      - 192.168.50.132:5672:5672
+      - 192.168.50.132:15672:15672
+#    networks:
+#      - wlan0
   bot:
     build:
       context: .
-      #      context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-microBot
+      dockerfile: ./runner/Dockerfile-microBot
     environment: *common-variables
     restart: always
     container_name: "bot"
     depends_on:
       - rabbitmq
+    volumes:
+      - ./builder/jars:/home/jars
+#    networks:
+#      - wlan0
   text_handler:
     build:
       context: .
-      #      context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-text
+      dockerfile: ./runner/Dockerfile-text
     environment: *common-variables
     restart: always
     container_name: "text_handler"
     depends_on:
       - rabbitmq
+    volumes:
+      - ./builder/jars:/home/jars
+#    networks:
+#      - wlan0
   file_handler:
     build:
       context: .
-      #      context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-file
+      dockerfile: ./runner/Dockerfile-file
     environment: *common-variables
     restart: always
     container_name: "file_handler"
@@ -62,11 +69,13 @@ services:
       - rabbitmq
     volumes:
       - ./mediadata/torrent/torrent_files:/home/torrent_files/
+      - ./builder/jars:/home/jars
+#    networks:
+#      - wlan0
   torrent:
     build:
       context: .
-      #      context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-torrent
+      dockerfile: ./runner/Dockerfile-torrent
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -76,22 +85,30 @@ services:
       - ./mediadata:/home/media/
       - ./torrentdata/torrents:/var/lib/transmission/config/torrents
       - ./torrentdata/resume:/var/lib/transmission/config/resume
+      - ./builder/jars:/home/jars
     ports:
-      - 9091:9091
-      - 51413:51413
+      - 192.168.50.132:9091:9091
+      - 192.168.50.132:51413:51413
+#    networks:
+#      - wlan0
   minidlna:
     container_name: "minidlna"
     build:
       context: .
-      #      context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-minidlna
+      dockerfile: ./runner/Dockerfile-minidlna
     restart: always
     environment:  *common-variables
     depends_on:
       - rabbitmq
     volumes:
       - ./mediadata/torrent/complete:/home/media/
-#    network_mode: host
+      - ./builder/jars:/home/jars
+    #    network_mode: host
     ports:
-      - 8200:8200
-      - 1900:1900
+      - 192.168.50.132:8200:8200
+      - 192.168.50.132:1900:1900
+#    networks:
+#      - wlan0
+#networks:
+#  wlan0:
+#    external: true

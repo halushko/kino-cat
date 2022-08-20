@@ -1,0 +1,9 @@
+FROM openjdk:8-alpine as fileConsumer
+VOLUME ["/home/jars"]
+VOLUME ["/home/app"]
+RUN mkdir -p /home/jars
+RUN mkdir -p /home/app
+CMD chmod 777 -R /home/app && \
+    cp /home/jars/kot_utils.jar /home/app && \
+    cp /home/jars/file_consumer.jar /home/app && \
+    java -jar /home/app/file_consumer.jar
