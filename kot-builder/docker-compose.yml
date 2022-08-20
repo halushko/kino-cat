@@ -4,7 +4,7 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
-  RABBIT_HOST_IP: 192.168.50.132
+  RABBIT_HOST_IP: 172.17.0.1
 
   TELEGRAM_INPUT_FILE_QUEUE: TELEGRAM_INPUT_FILE
   TELEGRAM_INPUT_TEXT_QUEUE: TELEGRAM_INPUT_TEXT
@@ -28,10 +28,8 @@ services:
     restart: always
     environment: *common-variables
     ports:
-      - 192.168.50.132:5672:5672
-      - 192.168.50.132:15672:15672
-#    networks:
-#      - wlan0
+      - 5672:5672
+      - 15672:15672
   bot:
     build:
       context: .
@@ -43,8 +41,6 @@ services:
       - rabbitmq
     volumes:
       - ./builder/jars:/home/jars
-#    networks:
-#      - wlan0
   text_handler:
     build:
       context: .
@@ -56,8 +52,6 @@ services:
       - rabbitmq
     volumes:
       - ./builder/jars:/home/jars
-#    networks:
-#      - wlan0
   file_handler:
     build:
       context: .
@@ -70,8 +64,6 @@ services:
     volumes:
       - ./mediadata/torrent/torrent_files:/home/torrent_files/
       - ./builder/jars:/home/jars
-#    networks:
-#      - wlan0
   torrent:
     build:
       context: .
@@ -87,10 +79,9 @@ services:
       - ./torrentdata/resume:/var/lib/transmission/config/resume
       - ./builder/jars:/home/jars
     ports:
-      - 192.168.50.132:9091:9091
-      - 192.168.50.132:51413:51413
-#    networks:
-#      - wlan0
+      - 9091:9091
+      - 51413:51413
+    network_mode: host
   minidlna:
     container_name: "minidlna"
     build:
@@ -103,12 +94,7 @@ services:
     volumes:
       - ./mediadata/torrent/complete:/home/media/
       - ./builder/jars:/home/jars
-    #    network_mode: host
     ports:
-      - 192.168.50.132:8200:8200
-      - 192.168.50.132:1900:1900
-#    networks:
-#      - wlan0
-#networks:
-#  wlan0:
-#    external: true
+      - 8200:8200
+      - 1900:1900
+    network_mode: host
