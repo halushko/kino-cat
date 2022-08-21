@@ -81,10 +81,10 @@ services:
       - ./mediadata:/home/media/
       - ./torrentdata/torrents:/var/lib/transmission/config/torrents
       - ./torrentdata/resume:/var/lib/transmission/config/resume
-    network_mode: host
-#    ports:
-#      - 9091:9091
-#      - 51413:51413
+#    network_mode: host
+    ports:
+      - 9091:9091
+      - 51413:51413
   minidlna:
     container_name: "minidlna"
     build:
@@ -97,7 +97,7 @@ services:
       - rabbitmq
     volumes:
       - ./mediadata/torrent/complete:/home/media/
-    network_mode: host
-#    ports:
-#      - 8200:8200
-#      - 1900:1900
+#    network_mode: host
+    ports:
+      - 8200:8200
+      - 1900:1900

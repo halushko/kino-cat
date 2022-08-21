@@ -19,7 +19,7 @@ public class UserMessageHandler extends InputMessageHandler {
     public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
     public static final String TELEGRAM_INPUT_FILE_QUEUE= System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
     public static final String DIR_TORRENT_WATCH= System.getenv("DIR_TORRENT_WATCH");
-    public static final String   EXECUTE_TORRENT_COMMAND_QUEUE= System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
+    public static final String TELEGRAM_INPUT_TEXT_QUEUE= System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
 
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
@@ -31,7 +31,7 @@ public class UserMessageHandler extends InputMessageHandler {
             File localFile = new File("/home/torrent_files/" + fileName);
             try (InputStream is = fileUrl.openStream()) {
                 FileUtils.copyInputStreamToFile(is, localFile);
-                RabbitUtils.postMessage(userId, "/start_torrent " + DIR_TORRENT_WATCH + "/" + fileName,   EXECUTE_TORRENT_COMMAND_QUEUE);
+                RabbitUtils.postMessage(userId, "/start_torrent " + DIR_TORRENT_WATCH + fileName, TELEGRAM_INPUT_TEXT_QUEUE);
             } catch (IOException e) {
                 RabbitUtils.postMessage(userId, e.getMessage(), TELEGRAM_OUTPUT_TEXT_QUEUE);
             }
