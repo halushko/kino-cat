@@ -5,7 +5,7 @@ import java.util.*;
 public enum Scripts {
     RESTART_MEDIA_SERVER("/restart", "pause_torrent.sh", "EXECUTE_MEDIA_COMMAND"),
 
-    START_TORRENT_COMMAND("/start_", "start_torrent.sh", "EXECUTE_TORRENT_COMMAND"),
+    START_TORRENT_COMMAND("/start_torrent", "start_torrent.sh", "EXECUTE_TORRENT_COMMAND"),
     RESUME_TORRENT_COMMAND("/resume_", "resume_torrent.sh", "EXECUTE_TORRENT_COMMAND"),
     PAUSE_TORRENT_COMMAND("/pause_", "pause_torrent.sh", "EXECUTE_TORRENT_COMMAND"),
     SHOW_ALL_TORRENTS_LIST_COMMAND("/list", "list_torrents.sh", "EXECUTE_TORRENT_COMMAND");

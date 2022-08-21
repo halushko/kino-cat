@@ -19,7 +19,7 @@ public class UserMessageHandler extends InputMessageHandler {
     public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
     public static final String TELEGRAM_INPUT_FILE_QUEUE= System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
     public static final String DIR_TORRENT_WATCH= System.getenv("DIR_TORRENT_WATCH");
-    public static final String   EXECUTE_TORRENT_COMMAND_QUEUE= System.getenv("  EXECUTE_TORRENT_COMMAND_QUEUE");
+    public static final String   EXECUTE_TORRENT_COMMAND_QUEUE= System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
 
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
