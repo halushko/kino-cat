@@ -37,7 +37,7 @@ RUN chmod 777 -R /home/app
 
 CMD mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
-    mkdir -p /home/media/torrent/torrent_files && \
+    mkdir -p $DIR_TORRENT_WATCH && \
     chown transmission -R /home/media && \
 
     echo 'rc_provide="loopback net"' >> /etc/rc.conf && \

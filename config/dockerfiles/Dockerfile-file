@@ -19,7 +19,7 @@ RUN cd /home/gradle/code/kino-cat/rabKot && gradle jar && cp ./build/libs/*.jar 
 RUN cd /home/gradle/code/kino-cat/fileConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/file_consumer.jar
 
 FROM openjdk:8-alpine as fileConsumer
-RUN mkdir -p /home/media/torrent
+RUN mkdir -p /home/torrent_files/
 #COPY --from=download_image /home/git/code /home/app/code
 COPY --from=build_image /home/gradle/app /home/app
 ENTRYPOINT ["java", "-jar", "/home/app/file_consumer.jar"]
