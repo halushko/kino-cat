@@ -210,13 +210,18 @@ public class RabbitJson {
     }
 
     private static String normalizedValue(String value) {
-        value = value.replace("\n", "@\\\\n@").replace("\r", "@\\\\r@").replace("\t", "@\\\\t@");
+        value = value.replace("\n", "@\\\\n@")
+                .replace("\r", "@\\\\r@")
+                .replace("\t", "@\\\\t@")
+                .replace("\"", "@\\\"@");
         return value;
     }
 
     private static String unNormalizedValue(String value) {
         value = value.replace("@\\n@", "\n").replace("@\\r@", "\r").replace("@\\t@", "\t");
+        value = value.replace("@\"@", "\"");
         value = value.replace("@\\\\n@", "\n").replace("@\\\\r@", "\r").replace("@\\\\t@", "\t");
+        value = value.replace("@\\\"@", "\"");
         return value;
     }
 
