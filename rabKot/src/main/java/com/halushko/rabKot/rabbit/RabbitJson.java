@@ -213,13 +213,16 @@ public class RabbitJson {
         value = value.replace("\n", "@nnn@")
                 .replace("\r", "@rrr@")
                 .replace("\t", "@ttt@");
-//                .replace("\"", "@kkk@");
+        value = value.replaceAll("\"", "@kkk@").
+                replaceAll("\\{@kkk@", "{\"").replaceAll("@kkk@}", "\"}").
+                replaceAll("\\[@kkk@", "[\"").replaceAll("@kkk@]", "\"]").
+                replaceAll("@kkk@,@kkk@", "\",\"").replaceAll("@kkk@:@kkk@", "\":\"");
         return value;
     }
 
     private static String unNormalizedValue(String value) {
         value = value.replace("@nnn@", "\n").replace("@rrr@", "\r").replace("@ttt@", "\t");
-//        value = value.replace("@kkk@", "\"");
+        value = value.replace("@kkk@", "\"");
         return value;
     }
 
