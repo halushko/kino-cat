@@ -127,3 +127,4 @@ gradle-app.setting
 .classpath
 
 .idea/
+./workdir/
