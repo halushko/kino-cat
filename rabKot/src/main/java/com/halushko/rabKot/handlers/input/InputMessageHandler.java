@@ -21,30 +21,22 @@ public abstract class InputMessageHandler implements Runnable {
         }
 
             try {
-                System.out.println("Start connection");
+                Logger.getRootLogger().debug("Start connection");
                 readMessage(getQueue(), getDeliverCallback());
-                System.out.println("Connected");
+                Logger.getRootLogger().debug("Connected");
             } catch (Exception e) {
-                String text = "Unknown koTorrent error: " + e.getMessage();
-                System.out.println(text);
-                e.printStackTrace();
-                Logger.getRootLogger().error(text);
-                Logger.getRootLogger().error(e);
+                Logger.getRootLogger().error("Unknown koTorrent error: ", e);
                 try {
                     Thread.sleep(MEDIUM_PAUSE_MILIS);
                 } catch (InterruptedException ex) {
-                    text = "Unknown koTorrent error: " + e.getMessage();
-                    System.out.println(text);
-                    e.printStackTrace();
-                    Logger.getRootLogger().error(text);
-                    Logger.getRootLogger().error(e);
+                    Logger.getRootLogger().error("Unknown koTorrent error: ", e);
                 }
         }
     }
 
     protected DeliverCallback getDeliverCallback() {
         return (consumerTag, delivery) -> {
-            System.out.println("Get DeliverCallback for " + getQueue() + " started");
+            Logger.getRootLogger().debug("Get DeliverCallback for " + getQueue() + " started");
             String s = new String(delivery.getBody(), StandardCharsets.UTF_8);
             RabbitMessage message = new RabbitMessage(s);
             getDeliverCallbackPrivate(message);

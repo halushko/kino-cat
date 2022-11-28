@@ -3,6 +3,7 @@ package com.halushko;
 import com.halushko.rabKot.handlers.input.InputMessageHandler;
 import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
+import org.apache.log4j.Logger;
 
 public class UserMessageHandler extends InputMessageHandler {
     public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
@@ -10,7 +11,7 @@ public class UserMessageHandler extends InputMessageHandler {
 
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
-        System.out.println("Start DeliverCallbackPrivate for " + getQueue());
+        Logger.getRootLogger().debug("Start DeliverCallbackPrivate for " + getQueue());
         try {
             String text = rabbitMessage.getText();
             long userId = rabbitMessage.getUserId();
@@ -21,10 +22,9 @@ public class UserMessageHandler extends InputMessageHandler {
             } else {
                 RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue(), command.getScript());
             }
-            System.out.println("Finish DeliverCallbackPrivate for " + getQueue());
+            Logger.getRootLogger().debug("Finish DeliverCallbackPrivate for " + getQueue());
         } catch (Exception e) {
-            System.out.println("During message handle got an error: " + e.getMessage());
-            e.printStackTrace();
+            Logger.getRootLogger().error("During message handle got an error: ", e);
         }
     }
 

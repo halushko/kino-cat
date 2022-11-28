@@ -4,6 +4,7 @@ import com.halushko.KoTorrentBot;
 import com.halushko.rabKot.handlers.telegram.UserMessageHandler;
 import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
+import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -37,6 +38,6 @@ public class TorrentFileHandler extends UserMessageHandler {
 
     @Override
     public void sendAnswer(long userId, String messageText) {
-        System.out.println(new RabbitMessage(userId, messageText));
+        Logger.getRootLogger().debug(new RabbitMessage(userId, messageText));
     }
 }

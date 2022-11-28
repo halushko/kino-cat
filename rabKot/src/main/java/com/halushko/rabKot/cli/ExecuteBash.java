@@ -1,5 +1,7 @@
 package com.halushko.rabKot.cli;
 
+import org.apache.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -17,9 +19,9 @@ public class ExecuteBash {
                 for (String outputLine; (outputLine = br.readLine()) != null; )
                     result.add(outputLine);
             }
-            System.out.println(result.size());
+            Logger.getRootLogger().debug(result);
         } catch (Exception e) {
-//            System.out.println("Error");
+            Logger.getRootLogger().error("Execute CLI error: ", e);
             e.printStackTrace();
         } finally {
             if (p != null) {
@@ -30,9 +32,8 @@ public class ExecuteBash {
                 }
                 p.destroy();
             }
-//            System.out.println("End");
         }
-        result.forEach(System.out::println);
+//        result.forEach(System.out::println);
         return result;
     }
 }

@@ -5,6 +5,7 @@ import com.halushko.handlers.telegram.MyPingHandler;
 import com.halushko.handlers.telegram.TextHandler;
 import com.halushko.handlers.telegram.TorrentFileHandler;
 import com.halushko.rabKot.handlers.telegram.UserMessageHandler;
+import org.apache.log4j.Logger;
 import org.telegram.telegrambots.ApiContextInitializer;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -21,7 +22,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     static {
         for (Map.Entry<String, String> a: System.getenv().entrySet()){
-            System.out.println(a.getKey() + " = [" + a.getValue() + "]");
+            Logger.getRootLogger().debug(a.getKey() + " = [" + a.getValue() + "]");
         }
     }
     public static final String BOT_NAME = System.getenv("BOT_NAME");
@@ -35,8 +36,8 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             BOT = new KoTorrentBot();
             new Thread(new SendTextMessageToUser()).start();
             botapi.registerBot(BOT);
-        } catch (TelegramApiException e) {
-            System.out.println("Bot start has been fail: " + e.getMessage());
+        } catch (Exception e) {
+            Logger.getRootLogger().error("Bot start has been fail: ", e);
         }
     }
 
@@ -74,7 +75,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
                         }}
             );
         } catch (TelegramApiException ex) {
-            System.out.println("Unknown koTorrent error: " + ex.getMessage());
+            Logger.getRootLogger().error("Unknown koTorrent error: ", ex);
         }
     }
 

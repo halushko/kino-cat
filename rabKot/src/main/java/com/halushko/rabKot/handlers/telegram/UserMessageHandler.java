@@ -16,10 +16,7 @@ public abstract class UserMessageHandler {
             } catch (IOException | TimeoutException e) {
                 String text = "Unknown koTorrent error: " + e.getMessage();
                 sendAnswer(update.getMessage().getChatId(), text);
-                System.out.println(text);
-                e.printStackTrace();
-                Logger.getRootLogger().error(text);
-                Logger.getRootLogger().error(e);
+                Logger.getRootLogger().error(text, e);
             }
         }
     }

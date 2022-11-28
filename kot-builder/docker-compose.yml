@@ -62,7 +62,7 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./mediadata/torrent/torrent_files:/home/torrent_files/
+      - ./workdir/mediadata//torrent/torrent_files:/home/torrent_files/
       - ./builder/jars:/home/jars
   torrent:
     build:
@@ -74,9 +74,9 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./mediadata:/home/media/
-      - ./torrentdata/torrents:/var/lib/transmission/config/torrents
-      - ./torrentdata/resume:/var/lib/transmission/config/resume
+      - ./workdir/mediadata/:/home/media/
+      - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
+      - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
       - ./builder/jars:/home/jars
     ports:
       - 9091:9091
@@ -92,7 +92,7 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./mediadata/torrent/complete:/home/media/
+      - ./workdir/mediadata//torrent/complete:/home/media/
       - ./builder/jars:/home/jars
     ports:
       - 8200:8200

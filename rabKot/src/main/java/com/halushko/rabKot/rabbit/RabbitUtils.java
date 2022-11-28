@@ -36,11 +36,7 @@ public class RabbitUtils {
                         Thread.sleep(LONG_PAUSE_MILIS);
                     } catch (InterruptedException ignored) {
                     }
-                    String text = "Error while open connection. " + e.getMessage();
-                    System.out.println(text);
-                    e.printStackTrace();
-                    Logger.getRootLogger().error(text);
-                    Logger.getRootLogger().error(e);
+                    Logger.getRootLogger().error("Error while open connection. ", e);
                     connection = null;
                 }
             } while (true);
@@ -48,10 +44,13 @@ public class RabbitUtils {
     }
 
     private static Connection newConnection() {
+        Logger.getRootLogger().debug("Get Connection");
         synchronized (connectionFactory) {
             if (!connection.isOpen()) {
+                Logger.getRootLogger().debug("Connection is closed");
                 closeConnection();
                 connection = createConnection();
+                Logger.getRootLogger().debug("New connection created");
             }
             return connection;
         }
@@ -61,15 +60,12 @@ public class RabbitUtils {
     private static void closeConnection() {
         synchronized (connectionFactory) {
             if (connection != null) {
-                System.out.println("Connection closed");
                 try {
+                    Logger.getRootLogger().debug("Closing of Connection");
                     connection.close();
+                    Logger.getRootLogger().debug("Connection closed");
                 } catch (Exception e) {
-                    String text = "Error while close connection. " + e.getMessage();
-                    System.out.println(text);
-                    e.printStackTrace();
-                    Logger.getRootLogger().error(text);
-                    Logger.getRootLogger().error(e);
+                    Logger.getRootLogger().error("Error while close connection. ", e);
                 } finally {
                     connection = null;
                 }
@@ -90,11 +86,7 @@ public class RabbitUtils {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicPublish("", queue, null, message.getRabbitMessageBytes());
         } catch (Exception e) {
-            String text = "Error while post message. " + e.getMessage();
-            System.out.println(text);
-            e.printStackTrace();
-            Logger.getRootLogger().error(text);
-            Logger.getRootLogger().error(e);
+            Logger.getRootLogger().error("Error while post message. ", e);
         }
     }
 
@@ -114,11 +106,7 @@ public class RabbitUtils {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
         } catch (Exception e) {
-            String text = "Error while read message. " + e.getMessage();
-            System.out.println(text);
-            e.printStackTrace();
-            Logger.getRootLogger().error(text);
-            Logger.getRootLogger().error(e);
+            Logger.getRootLogger().error("Error while read message. ", e);
         }
     }
 }

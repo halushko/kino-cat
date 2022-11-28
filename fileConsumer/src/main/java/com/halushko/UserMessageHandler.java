@@ -4,6 +4,7 @@ import com.halushko.rabKot.handlers.input.InputMessageHandler;
 import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class UserMessageHandler extends InputMessageHandler {
                 RabbitUtils.postMessage(userId, e.getMessage(), TELEGRAM_OUTPUT_TEXT_QUEUE);
             }
         } catch (Exception e) {
-            System.out.println("During message handle got an error: " + e.getMessage());
+            Logger.getRootLogger().error("During message handle got an error: ", e);
         }
     }
 

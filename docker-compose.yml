@@ -12,7 +12,7 @@ x-common-variables: &common-variables
   EXECUTE_MINIDLNA_COMMAND_QUEUE: EXECUTE_MINIDLNA_COMMAND
   EXECUTE_TORRENT_COMMAND_QUEUE: EXECUTE_TORRENT_COMMAND
 
-  BOT_TOKEN: 1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8
+  BOT_TOKEN: 1859184957:AAEjxMMGmZsHrscgbImk6_jSTZYYmJ6QNeE
   BOT_NAME: koTorrentBot
 
   LONG_PAUSE_MILIS: 10000
@@ -66,7 +66,7 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./mediadata/torrent/torrent_files:/home/torrent_files/
+      - ./workdir/mediadata//torrent/torrent_files:/home/torrent_files/
   torrent:
     build:
 #      context: .
@@ -78,9 +78,9 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./mediadata:/home/media/
-      - ./torrentdata/torrents:/var/lib/transmission/config/torrents
-      - ./torrentdata/resume:/var/lib/transmission/config/resume
+      - ./workdir/mediadata/:/home/media/
+      - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
+      - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
 #    network_mode: host
     ports:
       - 9091:9091
@@ -96,8 +96,8 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./mediadata/torrent/complete:/home/media/
-#    network_mode: host
+      - ./workdir/mediadata//torrent/complete:/home/media/
+    network_mode: host
     ports:
       - 8200:8200
       - 1900:1900

@@ -3,6 +3,7 @@ package com.halushko.handlers.telegram;
 import com.halushko.rabKot.handlers.telegram.UserMessageHandler;
 import com.halushko.rabKot.rabbit.RabbitMessage;
 import com.halushko.rabKot.rabbit.RabbitUtils;
+import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class TextHandler extends UserMessageHandler {
@@ -21,6 +22,6 @@ public class TextHandler extends UserMessageHandler {
 
     @Override
     public void sendAnswer(long userId, String messageText) {
-        System.out.println(new RabbitMessage(userId, messageText));
+        Logger.getRootLogger().debug(new RabbitMessage(userId, messageText));
     }
 }
