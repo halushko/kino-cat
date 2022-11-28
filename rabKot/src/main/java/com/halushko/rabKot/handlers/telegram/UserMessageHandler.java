@@ -8,13 +8,12 @@ import java.util.concurrent.TimeoutException;
 
 @SuppressWarnings("unused")
 public abstract class UserMessageHandler {
-
     public final void readMessage(Update update) {
         if((isPing() && PingHandler.pingValidate(update)) || (!isPing() && !PingHandler.pingValidate(update) && validate(update))) {
             try {
                 readMessagePrivate(update);
             } catch (IOException | TimeoutException e) {
-                String text = "Unknown koTorrent error: " + e.getMessage();
+                String text = "[readMessage] Can't read message: " + e.getMessage();
                 sendAnswer(update.getMessage().getChatId(), text);
                 Logger.getRootLogger().error(text, e);
             }
@@ -28,5 +27,7 @@ public abstract class UserMessageHandler {
         return false;
     }
 
-    public abstract void sendAnswer(long userId, String messageText);
+    public void sendAnswer(long userId, String messageText) {
+        Logger.getRootLogger().debug(String.format("Dummy answer: userId:%s, message:%s", userId, messageText));
+    }
 }

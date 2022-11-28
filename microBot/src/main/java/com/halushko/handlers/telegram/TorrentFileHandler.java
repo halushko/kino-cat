@@ -15,29 +15,33 @@ public class TorrentFileHandler extends UserMessageHandler {
     public static final String TELEGRAM_INPUT_FILE_QUEUE = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
     @Override
     protected void readMessagePrivate(Update update) {
+        long chatId = update.getMessage().getChatId();
         String uploadedFileId = update.getMessage().getDocument().getFileId();
+        String fileName = update.getMessage().getDocument().getFileName();
+        String message = update.getMessage().getText();
+        String caption = update.getMessage().getCaption();
+        Logger.getRootLogger().debug(
+                String.format("[TorrentFileHandler] chatId:%s, uploadedFileId:%s, fileName:%s, message:%s, caption:%s", chatId, uploadedFileId, fileName, message, caption)
+        );
+
         GetFile uploadedFile = new GetFile();
         uploadedFile.setFileId(uploadedFileId);
 
         try {
-            RabbitMessage rm = new RabbitMessage(update.getMessage().getChatId());
+            RabbitMessage rm = new RabbitMessage(chatId);
             rm.addValue(FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath());
-            rm.addValue(FILE_NAME, update.getMessage().getDocument().getFileName());
-            rm.addValue(TEXT, update.getMessage().getText());
-            rm.addValue("CAPTION", update.getMessage().getCaption());
+            rm.addValue(FILE_NAME, fileName);
+            rm.addValue(TEXT, message);
+            rm.addValue("CAPTION", caption);
             RabbitUtils.postMessage(rm, TELEGRAM_INPUT_FILE_QUEUE);
         } catch (TelegramApiException e) {
-            KoTorrentBot.sendText(update.getMessage().getChatId(), e.getMessage());
+            Logger.getRootLogger().error("[TorrentFileHandler] Error during file processing", e);
+            KoTorrentBot.sendText(chatId, e.getMessage());
         }
     }
 
     @Override
     protected boolean validate(Update update) {
         return update != null && update.getMessage().hasDocument();
-    }
-
-    @Override
-    public void sendAnswer(long userId, String messageText) {
-        Logger.getRootLogger().debug(new RabbitMessage(userId, messageText));
     }
 }

@@ -9,31 +9,31 @@ import java.util.List;
 
 public class ExecuteBash {
     public static List<String> executeViaCLI(String script) {
+        String command = String.format("sh %s%s", "/home/app/", script);
+        Logger.getRootLogger().debug(String.format("[executeViaCLI] Execute script: %s", command));
         Process p = null;
         List<String> result = new ArrayList<>();
 
         try {
-            p = Runtime.getRuntime().exec(String.format("sh %s", "/home/app/" + script));
-            //p = Runtime.getRuntime().exec("/home/app/" + script);
+            p = Runtime.getRuntime().exec(command);
             try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 for (String outputLine; (outputLine = br.readLine()) != null; )
                     result.add(outputLine);
             }
-            Logger.getRootLogger().debug(result);
         } catch (Exception e) {
-            Logger.getRootLogger().error("Execute CLI error: ", e);
-            e.printStackTrace();
+            Logger.getRootLogger().error("[executeViaCLI] Execute CLI error: ", e);
         } finally {
             if (p != null) {
                 try {
                     p.waitFor();
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Logger.getRootLogger().error("[executeViaCLI] Execute CLI Wait error: ", e);
                 }
                 p.destroy();
             }
         }
-//        result.forEach(System.out::println);
+        Logger.getRootLogger().debug("[executeViaCLI] Execution of script finished. Result is:");
+        result.forEach(Logger.getRootLogger()::debug);
         return result;
     }
 }

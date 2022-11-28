@@ -11,17 +11,17 @@ public class TextHandler extends UserMessageHandler {
 
     @Override
     protected void readMessagePrivate(Update update) {
-        RabbitMessage rm = new RabbitMessage(update.getMessage().getChatId(), update.getMessage().getText());
+        long chatId = update.getMessage().getChatId();
+        String message = update.getMessage().getText();
+
+        Logger.getRootLogger().debug(String.format("[TextHandler] chatId:%s, message:%s", chatId, message));
+
+        RabbitMessage rm = new RabbitMessage(chatId, message);
         RabbitUtils.postMessage(rm, TELEGRAM_INPUT_TEXT_QUEUE);
     }
 
     @Override
     protected boolean validate(Update update) {
         return update != null && update.getMessage().hasText();
-    }
-
-    @Override
-    public void sendAnswer(long userId, String messageText) {
-        Logger.getRootLogger().debug(new RabbitMessage(userId, messageText));
     }
 }
