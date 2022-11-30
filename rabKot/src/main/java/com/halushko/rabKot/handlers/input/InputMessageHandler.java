@@ -41,9 +41,16 @@ public abstract class InputMessageHandler implements Runnable {
             Logger.getRootLogger().debug(String.format("[getDeliverCallback] body: '%s'", body));
             RabbitMessage message = new RabbitMessage(body);
             Logger.getRootLogger().debug(String.format("[getDeliverCallback] RabbitMessage: '%s'", message));
-            getDeliverCallbackPrivate(message);
+            getDeliverCallbackLog(message);
         };
     }
+
+    private void getDeliverCallbackLog(RabbitMessage message) {
+        Logger.getRootLogger().debug(String.format("[InputMessageHandler] Start processing message=%s", message.getRabbitMessageText()));
+        getDeliverCallbackPrivate(message);
+        Logger.getRootLogger().debug("[InputMessageHandler] Finish processing");
+    }
+
 
     protected abstract void getDeliverCallbackPrivate(RabbitMessage message);
 
