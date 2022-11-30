@@ -44,6 +44,6 @@ public class TorrentFileHandler extends UserMessageHandler {
 
     @Override
     protected boolean validate(Update update) {
-        return update != null && update.getMessage().hasDocument();
+        return update != null && update.getMessage().hasDocument() && update.getMessage().getDocument().getFileName().toLowerCase().endsWith(".torrent");
     }
 }

@@ -236,7 +236,7 @@ public class RabbitJson {
         return key == null || key.equals("") || key.equalsIgnoreCase("null") ? EMPTY_KEY : key;
     }
 
-    private static String normalizedValue(String value) {
+    public static String normalizedValue(String value) {
         value = value.replace("\n", "@nnn@")
                 .replace("\r", "@rrr@")
                 .replace("\t", "@ttt@");
@@ -245,6 +245,7 @@ public class RabbitJson {
                 replace("]", "@rkv@").
                 replace("{", "@lfig@").
                 replace("}", "@rfig@");
+        value = value.replace("\\", "@backsl@");
         value = value.replaceAll("@lfig@@kkk@", "{\"").replaceAll("@kkk@@rfig@", "\"}").
                 replaceAll("@lkv@\\s*@kkk@", "[\"").replaceAll("@kkk@\\s*@rkv@", "\"]").
                 replaceAll("@kkk@\\s*,\\s*@kkk@", "\",\"").replaceAll("@kkk@\\s*:\\s*@kkk@", "\":\"");
@@ -260,6 +261,9 @@ public class RabbitJson {
     public static String unNormalizeText(String value) {
         value = value.replace("@nnn@", "\n").replace("@rrr@", "\r").replace("@ttt@", "\t");
         value = value.replace("@kkk@", "\"");
+        value = value.replace("@backsl@", "\\");
+        value = value.replace("@lkv@", "[").replace("@rkv@", "]");
+        value = value.replace("@lfig@", "{").replace("@rfig@", "}");
         return value;
     }
 
