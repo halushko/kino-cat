@@ -245,9 +245,9 @@ public class RabbitJson {
                 replace("]", "@rkv@").
                 replace("{", "@lfig@").
                 replace("}", "@rfig@");
-        value = value.replaceAll("@lfig@@kkk@", "{\"").replaceAll("@kkk@rfig", "\"}").
-                replaceAll("@lkv@@kkk@", "[\"").replaceAll("@kkk@@rkv@", "\"]").
-                replaceAll("@kkk@,\\s*@kkk@", "\",\"").replaceAll("@kkk@:@kkk@", "\":\"");
+        value = value.replaceAll("@lfig@@kkk@", "{\"").replaceAll("@kkk@@rfig@", "\"}").
+                replaceAll("@lkv@\\s*@kkk@", "[\"").replaceAll("@kkk@\\s*@rkv@", "\"]").
+                replaceAll("@kkk@\\s*,\\s*@kkk@", "\",\"").replaceAll("@kkk@\\s*:\\s*@kkk@", "\":\"");
         return value;
     }
 
