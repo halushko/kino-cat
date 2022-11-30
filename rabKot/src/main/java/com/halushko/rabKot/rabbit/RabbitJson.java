@@ -248,6 +248,12 @@ public class RabbitJson {
     }
 
     private static String unNormalizedValue(String value) {
+//        value = value.replace("@nnn@", "\n").replace("@rrr@", "\r").replace("@ttt@", "\t");
+//        value = value.replace("@kkk@", "\"");
+        return value;
+    }
+
+    public static String unNormalizeText(String value) {
         value = value.replace("@nnn@", "\n").replace("@rrr@", "\r").replace("@ttt@", "\t");
         value = value.replace("@kkk@", "\"");
         return value;

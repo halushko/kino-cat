@@ -2,6 +2,7 @@ package com.halushko.rabKot.rabbit;
 
 import org.apache.log4j.Logger;
 
+import static com.halushko.rabKot.rabbit.RabbitJson.unNormalizeText;
 import static com.halushko.rabKot.rabbit.RabbitMessage.KEYS.*;
 
 public class RabbitMessage {
@@ -55,6 +56,9 @@ public class RabbitMessage {
 
     public String getRabbitMessageText() {
         return json.toString();
+    }
+    public String getNormalisedText() {
+        return unNormalizeText(json.toString());
     }
 
     public byte[] getRabbitMessageBytes() {
