@@ -44,13 +44,13 @@ public class RabbitUtils {
     }
 
     private static Connection newConnection() {
-        Logger.getRootLogger().debug("Get Connection");
+        Logger.getRootLogger().debug("[newConnection] Get Connection");
         synchronized (connectionFactory) {
             if (!connection.isOpen()) {
-                Logger.getRootLogger().debug("Connection is closed");
+                Logger.getRootLogger().debug("[newConnection] Connection is closed");
                 closeConnection();
                 connection = createConnection();
-                Logger.getRootLogger().debug("New connection created");
+                Logger.getRootLogger().debug("[newConnection] New connection created");
             }
             return connection;
         }
@@ -61,11 +61,11 @@ public class RabbitUtils {
         synchronized (connectionFactory) {
             if (connection != null) {
                 try {
-                    Logger.getRootLogger().debug("Closing of Connection");
+                    Logger.getRootLogger().debug("[closeConnection] Closing of Connection");
                     connection.close();
-                    Logger.getRootLogger().debug("Connection closed");
+                    Logger.getRootLogger().debug("[closeConnection] Connection closed");
                 } catch (Exception e) {
-                    Logger.getRootLogger().error("Error while close connection. ", e);
+                    Logger.getRootLogger().error("[closeConnection] Error while close connection. ", e);
                 } finally {
                     connection = null;
                 }
@@ -74,7 +74,6 @@ public class RabbitUtils {
     }
 
     static class MyShutdownListener implements ShutdownListener {
-
         @Override
         public void shutdownCompleted(ShutdownSignalException cause) {
             cause.printStackTrace();
@@ -82,19 +81,22 @@ public class RabbitUtils {
     }
 
     public static void postMessage(RabbitMessage message, String queue) {
+        Logger.getRootLogger().debug(String.format("[postMessage] Start post message. message=%s, queue=%s", message.getRabbitMessageText(), queue));
         try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicPublish("", queue, null, message.getRabbitMessageBytes());
         } catch (Exception e) {
-            Logger.getRootLogger().error("Error while post message. ", e);
+            Logger.getRootLogger().error("[postMessage] Error while post message. ", e);
         }
     }
 
     public static void postMessage(long chatId, String text, String queue, String... consumersId) {
         if (consumersId == null || consumersId.length == 0) {
+            Logger.getRootLogger().debug(String.format("[postMessage] Start post message. text=%s, queue=%s", text, queue));
             postMessage(new RabbitMessage(chatId, text), queue);
         } else {
             for (String consumer : consumersId) {
+                Logger.getRootLogger().debug(String.format("[postMessage] Start post message. text=%s, queue=%s, consumer=%s", text, queue, consumer));
                 postMessage(new RabbitMessage(chatId, text).addValue(RabbitMessage.KEYS.CONSUMER, consumer), queue);
             }
         }
@@ -102,11 +104,12 @@ public class RabbitUtils {
 
     public static void readMessage(String queue, DeliverCallback deliverCallback) {
         try {
+            Logger.getRootLogger().debug(String.format("[readMessage] Start read message for queue=%s", queue));
             Channel channel = newConnection().createChannel();
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
         } catch (Exception e) {
-            Logger.getRootLogger().error("Error while read message. ", e);
+            Logger.getRootLogger().error("[readMessage] Error while read message. ", e);
         }
     }
 }

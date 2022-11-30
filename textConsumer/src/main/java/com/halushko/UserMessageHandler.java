@@ -11,20 +11,23 @@ public class UserMessageHandler extends InputMessageHandler {
 
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
-        Logger.getRootLogger().debug("Start DeliverCallbackPrivate for " + getQueue());
+        Logger.getRootLogger().debug("[UserMessageHandler] Start DeliverCallbackPrivate for " + getQueue());
         try {
             String text = rabbitMessage.getText();
             long userId = rabbitMessage.getUserId();
-
+            Logger.getRootLogger().debug(String.format("[UserMessageHandler] user_id=%s, text=%s", userId, text));
             Command command = Scripts.getCommand(text);
             if ( command.getCommand().equals("")) {
-                RabbitUtils.postMessage(rabbitMessage.getUserId(), "Command '"+ rabbitMessage.getText() + "' is not found", TELEGRAM_OUTPUT_TEXT_QUEUE);
+                String message = String.format("[UserMessageHandler] Command %s not found", text);
+                Logger.getRootLogger().debug(message);
+                RabbitUtils.postMessage(rabbitMessage.getUserId(), message, TELEGRAM_OUTPUT_TEXT_QUEUE);
             } else {
+                Logger.getRootLogger().debug(String.format("[UserMessageHandler] Command %s found", text));
                 RabbitUtils.postMessage(userId, command.getCommand(), command.getQueue(), command.getScript());
             }
-            Logger.getRootLogger().debug("Finish DeliverCallbackPrivate for " + getQueue());
+            Logger.getRootLogger().debug("[UserMessageHandler] Finish DeliverCallbackPrivate for " + getQueue());
         } catch (Exception e) {
-            Logger.getRootLogger().error("During message handle got an error: ", e);
+            Logger.getRootLogger().error("[UserMessageHandler] During message handle got an error: ", e);
         }
     }
 

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class RabbitJson {
     private final static String EMPTY_KEY = "EMPTY_KEY";
     public final static double DEFAULT_DOUBLE_VALUE = 0;
@@ -74,20 +75,23 @@ public class RabbitJson {
         List<String> nvalues = values.stream().map(RabbitJson::normalizedValue).collect(Collectors.toList());
         return create(key, new JSONArray(nvalues).toString());
     }
+
     public static RabbitJson create(RabbitMessage.KEYS key, Collection<String> values) {
         return create(key.name(), values);
-    }
-    public RabbitJson add(String value) {
-        return add("", normalizedValue(value));
     }
 
     public RabbitJson getParent() {
         return parent == null ? this : parent;
     }
 
+    public RabbitJson add(String value) {
+        return add("", normalizedValue(value));
+    }
+
     public RabbitJson add(RabbitMessage.KEYS key, String value) {
         return add(key.name(), value);
     }
+
     public RabbitJson add(String key, String value) {
         value = value == null ? "" : value;
         value = value.trim();
@@ -105,12 +109,32 @@ public class RabbitJson {
         return this;
     }
 
+    public RabbitJson removeKey(String key) {
+        rj = normalizeValue(rj.removeKey(EMPTY_KEY));
+        return this;
+    }
+
+    public RabbitJson removeValue(String value) {
+        return remove(EMPTY_KEY, normalizedValue(value));
+    }
+
+    public RabbitJson remove(RabbitMessage.KEYS key, String value) {
+        return remove(key.name(), value);
+    }
+
+    public RabbitJson remove(String key, String value) {
+        rj = normalizeValue(rj.remove(key, new ValueRabbitJson(value)));
+        return this;
+    }
+
     public RabbitJson get() {
         return get("");
     }
+
     public RabbitJson get(RabbitMessage.KEYS key) {
         return get(key.name());
     }
+
     public RabbitJson get(String key) {
         key = normalizedKey(key);
         if (rj instanceof MapRabbitJson) {
@@ -159,6 +183,7 @@ public class RabbitJson {
     public long getLong(RabbitMessage.KEYS key) {
         return getLong(key.name());
     }
+
     public long getLong(String key) {
         try {
             return Long.parseLong(getString(key));
@@ -170,6 +195,7 @@ public class RabbitJson {
     public int getInteger(RabbitMessage.KEYS key) {
         return getInteger(key.name());
     }
+
     public int getInteger(String key) {
         try {
             return Integer.getInteger(getString(key));
@@ -181,6 +207,7 @@ public class RabbitJson {
     public double getDouble(RabbitMessage.KEYS key) {
         return getDouble(key.name());
     }
+
     public double getDouble(String key) {
         try {
             return Double.parseDouble(getString(key));
@@ -287,10 +314,19 @@ public class RabbitJson {
         public abstract IRabbitJson add(IRabbitJson value);
 
         public abstract IRabbitJson add(String key, IRabbitJson value);
+
+        public abstract IRabbitJson clear();
+
+        public abstract IRabbitJson removeKey(String key);
+
+        public abstract IRabbitJson removeValue(IRabbitJson value);
+
+        public abstract IRabbitJson remove(String key, IRabbitJson value);
+
     }
 
     static class ValueRabbitJson extends IRabbitJson {
-        private final String value;
+        private String value;
 
         private ValueRabbitJson(String string) {
             string = string == null ? DEFAULT_STRING_VALUE : string.trim();
@@ -307,6 +343,41 @@ public class RabbitJson {
         public IRabbitJson add(String key, IRabbitJson value) {
             key = normalizedKey(key);
             return normalizeValue(new MapRabbitJson().add(EMPTY_KEY, this).add(key, value));
+        }
+
+        @Override
+        public IRabbitJson clear() {
+            value = "";
+            return this;
+        }
+
+        @Override
+        public IRabbitJson removeKey(String key) {
+            key = normalizedKey(key);
+            return EMPTY_KEY.equals(key) ? clear() : this;
+        }
+
+        @Override
+        public IRabbitJson removeValue(IRabbitJson value) {
+            return remove(EMPTY_KEY, normalizeValue(value));
+        }
+
+        @Override
+        public IRabbitJson remove(String key, IRabbitJson value) {
+            key = normalizedKey(key);
+            IRabbitJson valueToRemove = normalizeValue(value);
+            if (EMPTY_KEY.equals(key)) {
+                if (valueToRemove instanceof ValueRabbitJson && this.equals(valueToRemove)) {
+                    clear();
+                } else if (valueToRemove instanceof ArrayRabbitJson) {
+                    for (IRabbitJson v : ((ArrayRabbitJson) valueToRemove).values) {
+                        if (v instanceof ValueRabbitJson) {
+                            removeValue(v);
+                        }
+                    }
+                }
+            }
+            return this;
         }
 
         @Override
@@ -335,9 +406,10 @@ public class RabbitJson {
         }
 
         public IRabbitJson add(String key, IRabbitJson value) {
+            key = normalizedKey(key);
+            IRabbitJson newValue = normalizeValue(value);
             if (map.containsKey(key)) {
                 IRabbitJson currentValue = map.get(key);
-                IRabbitJson newValue = normalizeValue(value);
                 if (currentValue instanceof ArrayRabbitJson) {
                     ((ArrayRabbitJson) currentValue).values.add(newValue);
                 } else if (!currentValue.equals(newValue)) {
@@ -347,7 +419,68 @@ public class RabbitJson {
                     map.put(key, array);
                 }
             } else {
-                map.put(key, value);
+                map.put(key, newValue);
+            }
+            return this;
+        }
+
+        @Override
+        public IRabbitJson clear() {
+            map.clear();
+            return this;
+        }
+
+        @Override
+        public IRabbitJson removeKey(String key) {
+            key = normalizedKey(key);
+            map.remove(key);
+            return this;
+        }
+
+        @Override
+        public IRabbitJson removeValue(IRabbitJson value1) {
+            Collection<String> keysToRemove = new HashSet<>();
+            IRabbitJson valueToRemove = normalizeValue(value1);
+
+            map.forEach((k, v) -> {
+                if (v.equals(valueToRemove)) {
+                    keysToRemove.add(k);
+                }
+            });
+            keysToRemove.forEach(map::remove);
+            return this;
+        }
+
+        @Override
+        public IRabbitJson remove(String key, IRabbitJson value1) {
+            key = normalizedKey(key);
+            IRabbitJson valueToRemove = normalizeValue(value1);
+            if (map.containsKey(key)) {
+                if (valueToRemove instanceof ValueRabbitJson) {
+                    map.remove(key, valueToRemove);
+                } else if (valueToRemove instanceof ArrayRabbitJson) {
+                    IRabbitJson myValue = map.get(key);
+                    if (myValue instanceof ValueRabbitJson) {
+                        for (IRabbitJson v : ((ArrayRabbitJson) valueToRemove).values) {
+                            if (myValue.equals(v)) {
+                                map.remove(key);
+                            }
+                        }
+                    } else if (myValue instanceof ArrayRabbitJson) {
+                        for (IRabbitJson v : ((ArrayRabbitJson) valueToRemove).values) {
+                            ((ArrayRabbitJson) valueToRemove).values.remove(v);
+                        }
+                    }
+                } else {
+                    IRabbitJson myValue = map.get(key);
+                    if (myValue instanceof MapRabbitJson) {
+                        for (Map.Entry<String, IRabbitJson> kv : ((MapRabbitJson) valueToRemove).map.entrySet()) {
+                            if (myValue.equals(kv.getValue())) {
+                                this.map.remove(key);
+                            }
+                        }
+                    }
+                }
             }
             return this;
         }
@@ -369,7 +502,7 @@ public class RabbitJson {
                         comma = true;
                     }
                     sb.append("\"").append(keyValue.getKey()).append("\":");
-                    String quotes = keyValue.getValue() instanceof ValueRabbitJson ? "\"": "";
+                    String quotes = keyValue.getValue() instanceof ValueRabbitJson ? "\"" : "";
                     sb.append(quotes).append(keyValue.getValue()).append(quotes);
                 }
                 sb.append("}");
@@ -399,7 +532,7 @@ public class RabbitJson {
     }
 
     private static class ArrayRabbitJson extends IRabbitJson {
-        private final Set<IRabbitJson> values = new LinkedHashSet<>();
+        private final Collection<IRabbitJson> values = new LinkedHashSet<>();
 
         private ArrayRabbitJson() {
 
@@ -417,7 +550,40 @@ public class RabbitJson {
         }
 
         public IRabbitJson add(String key, IRabbitJson value) {
-            return null;
+            return normalizedKey(key).equals(EMPTY_KEY) ? add(value) : null;
+        }
+
+        @Override
+        public IRabbitJson clear() {
+            values.clear();
+            return this;
+        }
+
+        @Override
+        public IRabbitJson removeKey(String key) {
+            return normalizedKey(key).equals(EMPTY_KEY) ? clear() : this;
+        }
+
+        @Override
+        public IRabbitJson removeValue(IRabbitJson value) {
+            IRabbitJson valueToRemove = normalizeValue(value);
+            if (this.equals(valueToRemove)) {
+                clear();
+            } else {
+                if (value instanceof ValueRabbitJson) {
+                    values.remove(valueToRemove);
+                } else if (value instanceof ArrayRabbitJson) {
+                    for (IRabbitJson v : ((ArrayRabbitJson) valueToRemove).values) {
+                        removeValue(v);
+                    }
+                }
+            }
+            return this;
+        }
+
+        @Override
+        public IRabbitJson remove(String key, IRabbitJson value) {
+            return normalizedKey(key).equals(EMPTY_KEY) ? removeValue(value) : this;
         }
 
         @Override
@@ -431,7 +597,7 @@ public class RabbitJson {
                 } else {
                     comma = true;
                 }
-                String quotes = a instanceof ValueRabbitJson ? "\"": "";
+                String quotes = a instanceof ValueRabbitJson ? "\"" : "";
                 sb.append(quotes).append(a).append(quotes);
             }
             sb.append("]");

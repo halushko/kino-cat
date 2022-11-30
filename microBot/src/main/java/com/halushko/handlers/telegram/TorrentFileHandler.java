@@ -21,7 +21,9 @@ public class TorrentFileHandler extends UserMessageHandler {
         String message = update.getMessage().getText();
         String caption = update.getMessage().getCaption();
         Logger.getRootLogger().debug(
-                String.format("[TorrentFileHandler] chatId:%s, uploadedFileId:%s, fileName:%s, message:%s, caption:%s", chatId, uploadedFileId, fileName, message, caption)
+                String.format("[TorrentFileHandler] chatId:%s, uploadedFileId:%s, fileName:%s, message:%s, caption:%s",
+                        chatId, uploadedFileId, fileName, message, caption
+                )
         );
 
         GetFile uploadedFile = new GetFile();

@@ -1,5 +1,7 @@
 package com.halushko;
 
+import org.apache.log4j.Logger;
+
 import java.util.*;
 
 public enum Scripts {
@@ -23,12 +25,12 @@ public enum Scripts {
     }
 
     public static Command getCommand(String text) {
+        Logger.getRootLogger().debug(String.format("Try to get command from text [%s]", text));
         if(text == null) return new Command("");
 
         Command tmp = new Command(text);
-        for(Scripts savedCommands: getCommandList()) {
-            tmp.tryToSetScript(savedCommands);
-        }
+        getCommandList().forEach(tmp::tryToSetScript);
+        Logger.getRootLogger().debug(String.format("Command is command=%s, script=%s, queue=%s", tmp.getCommand(), tmp.getScript(), tmp.getQueue()));
         return tmp;
     }
 
@@ -63,5 +65,8 @@ public enum Scripts {
             });
             if (values().length != allCommandsTemp.size()) throw new RuntimeException("Commands are configured incorrectly");
         }
+        StringBuilder sb = new StringBuilder("All commands:\n");
+        allCommands.forEach((key, value) -> sb.append(String.format("%s = %s\n", key, value)));
+        Logger.getRootLogger().debug(sb.toString());
     }
 }
