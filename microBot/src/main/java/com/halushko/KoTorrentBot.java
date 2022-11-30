@@ -75,7 +75,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
                         }}
             );
         } catch (TelegramApiException ex) {
-            Logger.getRootLogger().error("Can't send text: ", ex);
+            Logger.getRootLogger().error("Can't send text message to user: ", ex);
         }
     }
 
