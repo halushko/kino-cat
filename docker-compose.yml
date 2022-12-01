@@ -39,7 +39,7 @@ services:
     build:
 #      context: .
       context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-microBot
+      dockerfile: ./config/dockerfiles/Dockerfile-bot
     environment: *common-variables
     restart: always
     container_name: "bot"

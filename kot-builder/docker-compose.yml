@@ -33,7 +33,7 @@ services:
   bot:
     build:
       context: .
-      dockerfile: ./runner/Dockerfile-microBot
+      dockerfile: ./runner/Dockerfile-bot
     environment: *common-variables
     restart: always
     container_name: "bot"

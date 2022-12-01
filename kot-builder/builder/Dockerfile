@@ -23,7 +23,7 @@ COPY --chown=gradle:gradle --from=download_image /home/git/code /home/gradle/cod
 RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
 RUN cd /home/gradle/code/kino-cat/fileConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/file_consumer.jar
 RUN cd /home/gradle/code/kino-cat/textConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/text_consumer.jar
-RUN cd /home/gradle/code/kino-cat/bot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/micro_bot.jar
+RUN cd /home/gradle/code/kino-cat/bot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/bot.jar
 RUN cd /home/gradle/code/kino-cat/minidlna && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/minidlna.jar
 RUN cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/torrent.jar
 
