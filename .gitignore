@@ -129,3 +129,5 @@ gradle-app.setting
 .idea/
 /workdir/
 /*/gradle/wrapper/
+/*/gradlew
+/*/gradlew.bat
