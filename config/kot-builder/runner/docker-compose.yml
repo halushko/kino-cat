@@ -12,12 +12,17 @@ x-common-variables: &common-variables
   EXECUTE_MINIDLNA_COMMAND_QUEUE: EXECUTE_MINIDLNA_COMMAND
   EXECUTE_TORRENT_COMMAND_QUEUE: EXECUTE_TORRENT_COMMAND
 
-  BOT_TOKEN: 1859184957:AAG24FRjQND5gSaiblsaQgZe_nLNId8sOx8
+  BOT_TOKEN: 1859184957:AAEjxMMGmZsHrscgbImk6_jSTZYYmJ6QNeE
   BOT_NAME: koTorrentBot
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000
   SMALL_PAUSE_MILIS: 500
+
+  DIR_TORRENT_COMPLETE: /home/media/torrent/complete/
+  DIR_TORRENT_INCOMPLETE: /home/media/torrent/downloads/
+  DIR_TORRENT_WATCH: /home/media/torrent/torrent_files/
+  DIR_MEDIA_SHOW: /home/media/
 
   PING: /ping
   PONG: pong
@@ -32,30 +37,29 @@ services:
       - 15672:15672
   bot:
     build:
-      context: .
-      dockerfile: ./runner/Dockerfile-bot
+#      context: .
+      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./kot-builder/runner/Dockerfile-bot
     environment: *common-variables
     restart: always
     container_name: "bot"
     depends_on:
       - rabbitmq
-    volumes:
-      - ./builder/jars:/home/jars
   text_handler:
     build:
-      context: .
-      dockerfile: ./runner/Dockerfile-text
+#      context: .
+      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-text
     environment: *common-variables
     restart: always
     container_name: "text_handler"
     depends_on:
       - rabbitmq
-    volumes:
-      - ./builder/jars:/home/jars
   file_handler:
     build:
-      context: .
-      dockerfile: ./runner/Dockerfile-file
+#      context: .
+      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-file
     environment: *common-variables
     restart: always
     container_name: "file_handler"
@@ -63,11 +67,11 @@ services:
       - rabbitmq
     volumes:
       - ./workdir/mediadata//torrent/torrent_files:/home/torrent_files/
-      - ./builder/jars:/home/jars
   torrent:
     build:
-      context: .
-      dockerfile: ./runner/Dockerfile-torrent
+#      context: .
+      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-torrent
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -77,24 +81,23 @@ services:
       - ./workdir/mediadata/:/home/media/
       - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
       - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
-      - ./builder/jars:/home/jars
+#    network_mode: host
     ports:
       - 9091:9091
       - 51413:51413
-    network_mode: host
   minidlna:
     container_name: "minidlna"
     build:
-      context: .
-      dockerfile: ./runner/Dockerfile-minidlna
+#      context: .
+      context: https://github.com/halushko/kino-cat.git
+      dockerfile: ./config/dockerfiles/Dockerfile-minidlna
     restart: always
     environment:  *common-variables
     depends_on:
       - rabbitmq
     volumes:
       - ./workdir/mediadata//torrent/complete:/home/media/
-      - ./builder/jars:/home/jars
+    network_mode: host
     ports:
       - 8200:8200
       - 1900:1900
-    network_mode: host

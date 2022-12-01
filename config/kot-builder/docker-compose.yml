@@ -35,4 +35,4 @@ services:
     environment: *common-variables
     container_name: "jars_builder"
     volumes:
-      - ./kot-builder/builder/jars:/home/gradle/jars
+      - ./runner/jars:/home/gradle/jars

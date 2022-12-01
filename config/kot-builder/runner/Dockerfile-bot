@@ -1,0 +1,4 @@
+FROM openjdk:8-alpine as bot
+COPY ./jars/kot_utils.jar /home/gradle/app /home/app/kot_utils.jar
+COPY ./jars/bot.jar /home/gradle/app /home/app/bot.jar
+ENTRYPOINT ["java", "-jar", "/home/app/bot.jar"]
