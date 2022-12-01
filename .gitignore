@@ -131,3 +131,4 @@ gradle-app.setting
 /*/gradle/wrapper/
 /*/gradlew
 /*/gradlew.bat
+/config/kot-builder/jars/

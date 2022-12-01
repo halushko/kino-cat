@@ -46,7 +46,7 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./jars:/home/app
+      - ./jars/:/home/app/
   text_handler:
     build:
 #      context: .
@@ -70,11 +70,12 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./workdir/mediadata/torrent/torrent_files:/home/torrent_files/
-      - ./jars:/home/app
+      - ./workdir/mediadata/torrent/torrent_files/:/home/torrent_files/
+      - ./jars/:/home/app/
   torrent:
     build:
 #      context: .
+#      dockerfile: ./Dockerfile-torrent
       context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/kot-builder/runner/Dockerfile-torrent
     environment: *common-variables
@@ -84,9 +85,9 @@ services:
       - rabbitmq
     volumes:
       - ./workdir/mediadata/:/home/media/
-      - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
-      - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
-      - ./jars:/home/app
+      - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents/
+      - ./workdir/torrentdata/resume/:/var/lib/transmission/config/resume/
+      - ./jars/:/home/app/
 #    network_mode: host
     ports:
       - 9091:9091
@@ -95,6 +96,7 @@ services:
     container_name: "minidlna"
     build:
 #      context: .
+#      dockerfile: ./Dockerfile-minidlna
       context: https://github.com/halushko/kino-cat.git
       dockerfile: ./config/kot-builder/runner/Dockerfile-minidlna
     restart: always
@@ -102,8 +104,8 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./workdir/mediadata//torrent/complete:/home/media/
-      - ./jars:/home/app
+      - ./workdir/mediadata/torrent/complete/:/home/media/
+      - ./jars/:/home/app/
     network_mode: host
     ports:
       - 8200:8200
