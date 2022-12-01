@@ -45,16 +45,20 @@ services:
     container_name: "bot"
     depends_on:
       - rabbitmq
+    volumes:
+      - ./jars:/home/app
   text_handler:
     build:
 #      context: .
       context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/kot-builder/runner//Dockerfile-text
+      dockerfile: ./config/kot-builder/runner/Dockerfile-text
     environment: *common-variables
     restart: always
     container_name: "text_handler"
     depends_on:
       - rabbitmq
+    volumes:
+      - ./jars:/home/app
   file_handler:
     build:
 #      context: .
@@ -66,7 +70,8 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./workdir/mediadata//torrent/torrent_files:/home/torrent_files/
+      - ./workdir/mediadata/torrent/torrent_files:/home/torrent_files/
+      - ./jars:/home/app
   torrent:
     build:
 #      context: .
@@ -81,6 +86,7 @@ services:
       - ./workdir/mediadata/:/home/media/
       - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
       - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
+      - ./jars:/home/app
 #    network_mode: host
     ports:
       - 9091:9091
@@ -97,6 +103,7 @@ services:
       - rabbitmq
     volumes:
       - ./workdir/mediadata//torrent/complete:/home/media/
+      - ./jars:/home/app
     network_mode: host
     ports:
       - 8200:8200

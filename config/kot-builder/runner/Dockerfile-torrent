@@ -5,19 +5,16 @@ RUN apk add openrc
 
 RUN apk add transmission-daemon transmission-cli
 
-COPY ./jars/kot_utils.jar /home/gradle/app /home/app/kot_utils.jar
-COPY ./jars/torrent.jar /home/gradle/app /home/app/torrent.jar
-COPY ./jars/config/config_files/transmission /var/lib/transmission/config
-COPY ./jars/config/commands/transmission /home/app
-
 RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 
+RUN cp -rf /home/app/config/config_files/transmission /var/lib/transmission/config && \
+    cp -rf /home/app/config/commands/transmission /home/app
+
+
 CMD chmod 777 -R /home/app && \
     chmod +X /home/app/*.sh && \
-    cp /home/jars/kot_utils.jar /home/app && \
-    cp /home/jars/torrent.jar /home/app && \
     mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files && \
