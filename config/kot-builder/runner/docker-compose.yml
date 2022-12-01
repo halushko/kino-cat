@@ -39,7 +39,7 @@ services:
     build:
 #      context: .
       context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./kot-builder/runner/Dockerfile-bot
+      dockerfile: ./config/kot-builder/runner/Dockerfile-bot
     environment: *common-variables
     restart: always
     container_name: "bot"
@@ -49,7 +49,7 @@ services:
     build:
 #      context: .
       context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-text
+      dockerfile: ./config/kot-builder/runner//Dockerfile-text
     environment: *common-variables
     restart: always
     container_name: "text_handler"
@@ -59,7 +59,7 @@ services:
     build:
 #      context: .
       context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-file
+      dockerfile: ./config/kot-builder/runner/Dockerfile-file
     environment: *common-variables
     restart: always
     container_name: "file_handler"
@@ -71,7 +71,7 @@ services:
     build:
 #      context: .
       context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-torrent
+      dockerfile: ./config/kot-builder/runner/Dockerfile-torrent
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -90,7 +90,7 @@ services:
     build:
 #      context: .
       context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/dockerfiles/Dockerfile-minidlna
+      dockerfile: ./config/kot-builder/runner/Dockerfile-minidlna
     restart: always
     environment:  *common-variables
     depends_on:

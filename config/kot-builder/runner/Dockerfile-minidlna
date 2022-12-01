@@ -1,20 +1,4 @@
-FROM alpine/git as download_image
-RUN mkdir -p /home/git/code
-RUN cd /home/git/code && \
-    git init kino-cat && \
-    cd kino-cat && \
-    git remote add origin https://github.com/halushko/kino-cat.git && \
-    git config core.sparseCheckout true && \
-    echo "config/commands/minidlna/" >> .git/info/sparse-checkout && \
-    echo "config/config_files/minidlna/" >> .git/info/sparse-checkout && \
-    git pull origin master
-
 FROM openjdk:8-alpine as mediaServer
-VOLUME ["/home/jars"]
-VOLUME ["/home/app"]
-RUN mkdir -p /home/jars
-RUN mkdir -p /home/app
-
 VOLUME ["/sys/fs/cgroup"]
 RUN apk add openrc
 
@@ -33,8 +17,11 @@ ENV PGID=minidlna
 #ENV MINIDLNA_root_container=B
 
 RUN apk add minidlna
-COPY --from=download_image /home/git/code/kino-cat/config/config_files/minidlna /etc
-COPY --from=download_image /home/git/code/kino-cat/config/commands/minidlna /home/app
+
+COPY ./jars/kot_utils.jar /home/gradle/app /home/app/kot_utils.jar
+COPY ./jars/minidlna.jar /home/gradle/app /home/app/torrent.jar
+COPY ./jars/config/config_files/minidlna /etc
+COPY ./jars/config/commands/minidlna /home/app
 
 RUN openrc
 RUN touch /run/openrc/softlevel
