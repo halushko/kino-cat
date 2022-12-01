@@ -18,6 +18,10 @@ ENV PGID=minidlna
 
 RUN apk add minidlna
 
+RUN ls /home/app/config/config_files/minidlna
+RUN ls /home/app/commands/minidlna
+RUN ls /home/app
+
 RUN cp -rf /home/app/config/config_files/minidlna /etc && \
     cp -rf /home/app/commands/minidlna /home/app
 
