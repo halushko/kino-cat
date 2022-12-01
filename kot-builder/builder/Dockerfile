@@ -5,10 +5,10 @@ RUN cd /home/git/code && \
     cd kino-cat && \
     git remote add origin https://github.com/halushko/kino-cat.git && \
     git config core.sparseCheckout true && \
-    echo "rabKot/" >> .git/info/sparse-checkout && \
+    echo "middleware/" >> .git/info/sparse-checkout && \
     echo "fileConsumer/" >> .git/info/sparse-checkout && \
     echo "textConsumer/" >> .git/info/sparse-checkout && \
-    echo "microBot/" >> .git/info/sparse-checkout && \
+    echo "bot/" >> .git/info/sparse-checkout && \
     echo "minidlna/" >> .git/info/sparse-checkout && \
     echo "torrent/" >> .git/info/sparse-checkout && \
     git pull origin master
@@ -20,10 +20,10 @@ RUN mkdir -p /home/gradle/app
 
 COPY --chown=gradle:gradle --from=download_image /home/git/code /home/gradle/code
 
-RUN cd /home/gradle/code/kino-cat/rabKot && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
+RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
 RUN cd /home/gradle/code/kino-cat/fileConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/file_consumer.jar
 RUN cd /home/gradle/code/kino-cat/textConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/text_consumer.jar
-RUN cd /home/gradle/code/kino-cat/microBot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/micro_bot.jar
+RUN cd /home/gradle/code/kino-cat/bot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/micro_bot.jar
 RUN cd /home/gradle/code/kino-cat/minidlna && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/minidlna.jar
 RUN cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/torrent.jar
 
