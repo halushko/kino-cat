@@ -1,4 +1,4 @@
-group 'com.halushko.kotorrent.textConsumer'
+group 'com.halushko.kinocat.textConsumer'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
