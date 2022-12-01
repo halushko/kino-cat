@@ -28,8 +28,7 @@ RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.
     cd /home/gradle/code/kino-cat/textConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/text_consumer.jar && \
     cd /home/gradle/code/kino-cat/bot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/bot.jar && \
     cd /home/gradle/code/kino-cat/minidlna && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/minidlna.jar && \
-    cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/torrent.jar && \
-    cp -rf /home/gradle/code/kino-cat/config /home/gradle/app/config
+    cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/torrent.jar
 
 ENTRYPOINT cp /home/gradle/app/*.jar /home/gradle/jars && \
-    cp -rf /home/gradle/app/config /home/gradle/jars/config/
+    cp -rf /home/git/code/config /home/gradle/jars/config/

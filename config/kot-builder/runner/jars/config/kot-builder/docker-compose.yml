@@ -30,9 +30,8 @@ services:
   jars_builder:
     build:
 #      context: .
-#      dockerfile: ./builder/Dockerfile
       context: https://github.com/halushko/kino-cat.git
-      dockerfile: ./config/kot-builder/builder/Dockerfile
+      dockerfile: ./kot-builder/Dockerfile
     environment: *common-variables
     container_name: "jars_builder"
     volumes:
