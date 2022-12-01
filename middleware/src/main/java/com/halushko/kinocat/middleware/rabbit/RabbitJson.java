@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 public class RabbitJson {
@@ -37,14 +36,13 @@ public class RabbitJson {
     }
 
     public static RabbitJson create(String string) {
-        string = normalizedValue(string);
         JSONObject json = toJsonObject(string);
         if (json != null) {
             MapRabbitJson rabbit = new MapRabbitJson();
             for (Iterator<String> it = json.keys(); it.hasNext(); ) {
                 String key = normalizedKey(it.next());
                 String value = json.optString(key);
-                value = unNormalizedValue(value);
+//                value = unNormalizedValue(value);
                 IRabbitJson jsonValue = create(value).rj;
                 rabbit.map.put(key, jsonValue);
             }
@@ -57,23 +55,21 @@ public class RabbitJson {
                 return new RabbitJson(newArray);
             } else if (newArray.values.size() == 1) {
                 String value = newArray.values.iterator().next().toString();
-                value = unNormalizedValue(value);
+//                value = unNormalizedValue(value);
                 return new RabbitJson(new ValueRabbitJson(value));
             } else {
                 return new RabbitJson(new ValueRabbitJson(""));
             }
         }
-        return new RabbitJson(new ValueRabbitJson(unNormalizedValue(string)));
+        return new RabbitJson(new ValueRabbitJson(string));
     }
 
     public static RabbitJson create(Collection<String> values) {
-        List<String> nvalues = values.stream().map(RabbitJson::normalizedValue).collect(Collectors.toList());
-        return create(new JSONArray(nvalues).toString());
+        return create(new JSONArray(values).toString());
     }
 
     public static RabbitJson create(String key, Collection<String> values) {
-        List<String> nvalues = values.stream().map(RabbitJson::normalizedValue).collect(Collectors.toList());
-        return create(key, new JSONArray(nvalues).toString());
+        return create(key, new JSONArray(values).toString());
     }
 
     public static RabbitJson create(RabbitMessage.KEYS key, Collection<String> values) {
@@ -85,7 +81,7 @@ public class RabbitJson {
     }
 
     public RabbitJson add(String value) {
-        return add("", normalizedValue(value));
+        return add("", value);
     }
 
     public RabbitJson add(RabbitMessage.KEYS key, String value) {
@@ -115,7 +111,7 @@ public class RabbitJson {
     }
 
     public RabbitJson removeValue(String value) {
-        return remove(EMPTY_KEY, normalizedValue(value));
+        return remove(EMPTY_KEY, value);
     }
 
     public RabbitJson remove(RabbitMessage.KEYS key, String value) {
@@ -250,12 +246,6 @@ public class RabbitJson {
         value = value.replaceAll("@lfig@@kkk@", "{\"").replaceAll("@kkk@@rfig@", "\"}").
                 replaceAll("@lkv@\\s*@kkk@", "[\"").replaceAll("@kkk@\\s*@rkv@", "\"]").
                 replaceAll("@kkk@\\s*,\\s*@kkk@", "\",\"").replaceAll("@kkk@\\s*:\\s*@kkk@", "\":\"");
-        return value;
-    }
-
-    private static String unNormalizedValue(String value) {
-//        value = value.replace("@nnn@", "\n").replace("@rrr@", "\r").replace("@ttt@", "\t");
-//        value = value.replace("@kkk@", "\"");
         return value;
     }
 
