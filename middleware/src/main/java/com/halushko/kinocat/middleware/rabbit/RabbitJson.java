@@ -234,24 +234,28 @@ public class RabbitJson {
 
     public static String normalizedValue(String value) {
         if (value == null) return "";
-        value = value.replace("\n", "@nnn@")
-                .replace("\r", "@rrr@")
-                .replace("\t", "@ttt@");
+        value = value.replaceAll("\\n", "@nnn@")
+                .replaceAll("\\r", "@rrr@")
+                .replaceAll("\\t", "@ttt@");
+        value = value.replace("\n", "@nnn2@")
+                .replace("\r", "@rrr2@")
+                .replace("\t", "@ttt2@");
         value = value.replaceAll("\"", "@kkk@").
                 replace("[", "@lkv@").
                 replace("]", "@rkv@").
                 replace("{", "@lfig@").
                 replace("}", "@rfig@");
         value = value.replace("\\", "@backsl@");
-        value = value.replaceAll("@lfig@@kkk@", "{\"").replaceAll("@kkk@@rfig@", "\"}").
-                replaceAll("@lkv@\\s*@kkk@", "[\"").replaceAll("@kkk@\\s*@rkv@", "\"]").
-                replaceAll("@kkk@\\s*,\\s*@kkk@", "\",\"").replaceAll("@kkk@\\s*:\\s*@kkk@", "\":\"");
+//        value = value.replaceAll("@lfig@@kkk@", "{\"").replaceAll("@kkk@@rfig@", "\"}").
+//                replaceAll("@lkv@\\s*@kkk@", "[\"").replaceAll("@kkk@\\s*@rkv@", "\"]").
+//                replaceAll("@kkk@\\s*,\\s*@kkk@", "\",\"").replaceAll("@kkk@\\s*:\\s*@kkk@", "\":\"");
         return value;
     }
 
     public static String unNormalizeText(String value) {
         if (value == null) return "";
-        value = value.replace("@nnn@", "\n").replace("@rrr@", "\r").replace("@ttt@", "\t");
+        value = value.replace("@nnn@", "\n").replaceAll("@rrr@", "\r").replaceAll("@ttt@", "\t");
+        value = value.replaceAll("@nnn2@", "\n").replaceAll("@rrr2@", "\r").replaceAll("@ttt2@", "\t");
         value = value.replace("@kkk@", "\"");
         value = value.replace("@backsl@", "\\");
         value = value.replace("@lkv@", "[").replace("@rkv@", "]");

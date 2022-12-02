@@ -69,6 +69,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             return;
         }
         try {
+            Logger.getRootLogger().debug(String.format("[BOT.sendText] Send text chatId:%s, text:%s", chatId, str));
             BOT.execute(new SendMessage() {{
                             setChatId(chatId);
                             setText(str);

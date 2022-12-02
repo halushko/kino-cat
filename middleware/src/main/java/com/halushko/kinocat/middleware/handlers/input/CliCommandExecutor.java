@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.halushko.kinocat.middleware.rabbit.RabbitJson.normalizedValue;
+
 @SuppressWarnings("unused")
 public abstract class CliCommandExecutor extends InputMessageHandler {
     public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
@@ -22,7 +24,7 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
 
         try {
             List<String> result = ExecuteBash.executeViaCLI(script);
-            String textResult = result.stream().map(a -> a + "\n").collect(Collectors.joining());
+            String textResult = normalizedValue(result.stream().map(a -> a + "\n").collect(Collectors.joining()));
             Logger.getRootLogger().debug(String.format("[CliCommandExecutor] textResult:%s, ", textResult));
             RabbitUtils.postMessage(userId, textResult, TELEGRAM_OUTPUT_TEXT_QUEUE, parserId);
         } catch (Exception e) {

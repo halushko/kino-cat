@@ -4,7 +4,6 @@ VOLUME ["/var/cache/minidlna"]
 VOLUME ["/var/db/minidlna"]
 VOLUME ["/var/log/"]
 VOLUME ["/home/media"]
-VOLUME ["/home/app"]
 
 RUN apk add openrc
 
@@ -24,15 +23,19 @@ RUN openrc
 RUN touch /run/openrc/softlevel
 RUN mkdir -p /var/db/minidlna && \
     mkdir -p /home/media && \
-    mkdir -p /home/app
+    mkdir -p /home/app && \
+    mkdir -p /home/jars
+
 
 #RUN rc-service minidlna start && \
 #    rc-update add minidlna default
 
 #    rc-service minidlna stop && \
 #
-CMD cp -rf /home/app/config/config_files/minidlna/* /etc/ && \
-    cp -rf /home/app/config/commands/minidlna/*.sh /home/app/ && \
+CMD cp -rf /home/jars/config/config_files/minidlna/* /etc/ && \
+    cp -rf /home/jars/config/commands/minidlna/*.sh /home/app/ && \
+    cp /home/jars/minidlna.jar /home/app/ && \
+    cp /home/jars/kot_utils.jar /home/app/ && \
     chmod +X /home/app/*.sh && \
     chmod 777 -R /home/app && \
     chmod 777 -R /home/app && \
