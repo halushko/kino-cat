@@ -90,6 +90,7 @@ public class RabbitUtils {
     }
 
     public static void postMessage(long chatId, String text, String queue, String... consumersId) {
+        text = RabbitJson.normalizedValue(text);
         if (consumersId == null || consumersId.length == 0) {
             Logger.getRootLogger().debug(String.format("[postMessage] Start post message. text=%s, queue=%s", text, queue));
             postMessage(new RabbitMessage(chatId, text), queue);

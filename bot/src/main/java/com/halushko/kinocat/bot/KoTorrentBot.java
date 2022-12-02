@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+import static com.halushko.kinocat.middleware.rabbit.RabbitJson.unNormalizeText;
+
 public class KoTorrentBot extends TelegramLongPollingBot {
     public static KoTorrentBot BOT;
 
@@ -69,10 +71,11 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             return;
         }
         try {
-            Logger.getRootLogger().debug(String.format("[BOT.sendText] Send text chatId:%s, text:%s", chatId, str));
+            final String text = unNormalizeText(str);
+            Logger.getRootLogger().debug(String.format("[BOT.sendText] Send text chatId:%s, text:%s", chatId, text));
             BOT.execute(new SendMessage() {{
                             setChatId(chatId);
-                            setText(str);
+                            setText(text);
                         }}
             );
         } catch (TelegramApiException ex) {
