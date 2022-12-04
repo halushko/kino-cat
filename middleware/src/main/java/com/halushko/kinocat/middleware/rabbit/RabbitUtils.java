@@ -22,6 +22,7 @@ public class RabbitUtils {
 
     private static Connection connection = createConnection();
 
+    @SuppressWarnings("BusyWait")
     private static Connection createConnection() {
         synchronized (connectionFactory) {
             do {
@@ -80,7 +81,7 @@ public class RabbitUtils {
     }
 
     public static void postMessage(RabbitMessage message, String queue) {
-        Logger.getRootLogger().debug(String.format("[postMessage] Start post message. message=%s, queue=%s", message.getRabbitMessageText(), queue));
+        Logger.getRootLogger().debug(String.format("[postMessage] Start post rabbit message. message=%s, queue=%s", message.getRabbitMessageText(), queue));
         try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicPublish("", queue, null, message.getRabbitMessageBytes());
@@ -90,13 +91,14 @@ public class RabbitUtils {
     }
 
     public static void postMessage(long chatId, String text, String queue, String... consumersId) {
+        Logger.getRootLogger().debug(String.format("[postMessage] Start post text message. text=%s, queue=%s", text, queue));
         text = RabbitJson.normalizedValue(text);
         if (consumersId == null || consumersId.length == 0) {
-            Logger.getRootLogger().debug(String.format("[postMessage] Start post message. text=%s, queue=%s", text, queue));
+            Logger.getRootLogger().debug(String.format("[postMessage] Post text message. text=%s, queue=%s", text, queue));
             postMessage(new RabbitMessage(chatId, text), queue);
         } else {
             for (String consumer : consumersId) {
-                Logger.getRootLogger().debug(String.format("[postMessage] Start post message. text=%s, queue=%s, consumer=%s", text, queue, consumer));
+                Logger.getRootLogger().debug(String.format("[postMessage] Post message. text=%s, queue=%s, consumer=%s", text, queue, consumer));
                 postMessage(new RabbitMessage(chatId, text).addValue(RabbitMessage.KEYS.CONSUMER, consumer), queue);
             }
         }

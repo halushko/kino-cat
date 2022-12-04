@@ -40,7 +40,7 @@ public abstract class InputMessageHandler implements Runnable {
             String body = new String(delivery.getBody(), StandardCharsets.UTF_8);
             Logger.getRootLogger().debug(String.format("[getDeliverCallback] body: '%s'", body));
             RabbitMessage message = new RabbitMessage(body);
-            Logger.getRootLogger().debug(String.format("[getDeliverCallback] RabbitMessage: '%s'", message));
+            Logger.getRootLogger().debug(String.format("[getDeliverCallback] RabbitMessage: '%s'", message.getRabbitMessageText()));
             getDeliverCallbackLog(message);
         };
     }
