@@ -13,7 +13,7 @@ public abstract class UserMessageHandler {
             try {
                 readMessagePrivate(update);
             } catch (IOException | TimeoutException e) {
-                String text = "[readMessage] Can't read message: " + e.getMessage();
+                String text = "[UserMessageHandler] Can't read message: " + e.getMessage();
                 sendAnswer(update.getMessage().getChatId(), text);
                 Logger.getRootLogger().error(text, e);
             }

@@ -25,7 +25,7 @@ public class RabbitMessage {
     public RabbitMessage(long userId, String text) {
         Logger.getRootLogger().debug(String.format("[RabbitMessage] Start create RabbitMessage user=%s, text=%s", userId, text));
         text = normalizedValue(text);
-        Logger.getRootLogger().debug(String.format("[RabbitMessage] SNormalized text=%s", text));
+        Logger.getRootLogger().debug(String.format("[RabbitMessage] Normalized text=%s", text));
         json = RabbitJson.create(USER_ID, String.valueOf(userId)).add(TEXT, text);
         Logger.getRootLogger().debug(String.format("[RabbitMessage] Result RabbitMessage for user=%s is json=%s", userId, json));
     }
