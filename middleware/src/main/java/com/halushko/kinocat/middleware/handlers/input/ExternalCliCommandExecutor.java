@@ -11,24 +11,25 @@ import java.util.stream.Collectors;
 import static com.halushko.kinocat.middleware.rabbit.RabbitJson.normalizedValue;
 
 @SuppressWarnings("unused")
-public abstract class CliCommandExecutor extends InputMessageHandler {
+public abstract class ExternalCliCommandExecutor extends InputMessageHandler {
     public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
 
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         long userId = rabbitMessage.getUserId();
         String script = rabbitMessage.getText();
-        String parserId = rabbitMessage.getValue(RabbitMessage.KEYS.CONSUMER);
 
-        Logger.getRootLogger().debug(String.format("[CliCommandExecutor] userId:%s, script:%s, parserId:%s", userId, script, parserId));
+        Logger.getRootLogger().debug(String.format("[ExternalCliCommandExecutor] userId:%s, script:%s", userId, script));
 
         try {
-            List<String> result = ExecuteBash.executeViaCLI(script);
-            String textResult = normalizedValue(result.stream().map(a -> a + "\n").collect(Collectors.joining()));
-            Logger.getRootLogger().debug(String.format("[CliCommandExecutor] textResult:%s, ", textResult));
-            RabbitUtils.postMessage(userId, textResult, TELEGRAM_OUTPUT_TEXT_QUEUE, parserId);
+            String textResult = getResultString(ExecuteBash.executeViaCLI(script));
+            Logger.getRootLogger().debug(String.format("[ExternalCliCommandExecutor] textResult:%s, ", textResult));
+            RabbitUtils.postMessage(userId, textResult, getQueue());
         } catch (Exception e) {
-            Logger.getRootLogger().error("[CliCommandExecutor] Error during CLI execution: ", e);
+            Logger.getRootLogger().error("[ExternalCliCommandExecutor] Error during CLI execution: ", e);
         }
+    }
+    protected String getResultString(List<String> lines) {
+        return lines == null || lines.isEmpty() ? "" : normalizedValue(lines.stream().map(a -> a + "\n").collect(Collectors.joining()));
     }
 }

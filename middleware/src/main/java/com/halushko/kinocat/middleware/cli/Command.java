@@ -1,8 +1,8 @@
-package com.halushko.kinocat.textConsumer;
+package com.halushko.kinocat.middleware.cli;
 
 public class Command {
     private final String fullText;
-    private String parserQueue;
+    private String executorQueue;
     private String command = "";
     private String script = "";
     private String arguments = "";
@@ -11,7 +11,7 @@ public class Command {
         this.fullText = str;
     }
 
-    public void tryToSetScript(Scripts candidate) {
+    public void tryToSetScript(Script candidate) {
         if (candidate == null) return;
 
         String fullCommand = fullText.split(" ")[0];
@@ -26,12 +26,12 @@ public class Command {
         }
     }
 
-    private void setCommandText(Scripts pojo) {
+    private void setCommandText(Script pojo) {
         this.command = pojo.getCommand();
         this.script = pojo.getScript();
         this.arguments = fullText.replaceAll(this.command, "").trim();
         this.arguments = this.arguments.length() > 0 ? " " + this.arguments : "";
-        this.parserQueue = pojo.getQueue();
+        this.executorQueue = pojo.getQueue();
     }
 
     public String getScript() {
@@ -42,16 +42,15 @@ public class Command {
         return arguments == null || arguments.trim().equals("") ? "" : arguments;
     }
 
-    public String getCommand() {
+    public String getFinalCommand() {
         if (getScript().equals("") ) {
             return "";
         } else {
-            return getArguments().equals("") ? getScript() : getScript() + " " + getArguments();
+            return String.format("%s%s%s", getScript(), "".equals(getArguments()) ? "" : " ", getArguments());
         }
     }
 
     public String getQueue() {
-        return parserQueue;
+        return executorQueue;
     }
-
 }

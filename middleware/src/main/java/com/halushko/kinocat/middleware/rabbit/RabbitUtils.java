@@ -90,18 +90,11 @@ public class RabbitUtils {
         }
     }
 
-    public static void postMessage(long chatId, String text, String queue, String... consumersId) {
+    public static void postMessage(long chatId, String text, String queue) {
         Logger.getRootLogger().debug(String.format("[postMessage] Start post text message. text=%s, queue=%s", text, queue));
         text = RabbitJson.normalizedValue(text);
-        if (consumersId == null || consumersId.length == 0) {
-            Logger.getRootLogger().debug(String.format("[postMessage] Post text message. text=%s, queue=%s", text, queue));
-            postMessage(new RabbitMessage(chatId, text), queue);
-        } else {
-            for (String consumer : consumersId) {
-                Logger.getRootLogger().debug(String.format("[postMessage] Post message. text=%s, queue=%s, consumer=%s", text, queue, consumer));
-                postMessage(new RabbitMessage(chatId, text).addValue(RabbitMessage.KEYS.CONSUMER, consumer), queue);
-            }
-        }
+        Logger.getRootLogger().debug(String.format("[postMessage] Post text message. text=%s, queue=%s", text, queue));
+        postMessage(new RabbitMessage(chatId, text), queue);
     }
 
     public static void readMessage(String queue, DeliverCallback deliverCallback) {
@@ -109,7 +102,8 @@ public class RabbitUtils {
             Logger.getRootLogger().debug(String.format("[readMessage] Start read message for queue=%s", queue));
             Channel channel = newConnection().createChannel();
             channel.queueDeclare(queue, false, false, false, null);
-            channel.basicConsume(queue, true, deliverCallback, consumerTag -> {});
+            channel.basicConsume(queue, true, deliverCallback, consumerTag -> {
+            });
         } catch (Exception e) {
             Logger.getRootLogger().error("[readMessage] Error while read message. ", e);
         }

@@ -1,10 +1,9 @@
-package com.halushko.kinocat.torrent;
+package com.halushko.kinocat.torrent.consumers;
 
-import com.halushko.kinocat.middleware.handlers.input.CliCommandExecutor;
+import com.halushko.kinocat.middleware.handlers.input.ExternalCliCommandExecutor;
 
-public class TorrentOperator extends CliCommandExecutor {
+public class VoidTorrentOperator extends ExternalCliCommandExecutor {
     public static final String EXECUTE_TORRENT_COMMAND_QUEUE = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
-
     @Override
     protected String getQueue() {
         return EXECUTE_TORRENT_COMMAND_QUEUE;
