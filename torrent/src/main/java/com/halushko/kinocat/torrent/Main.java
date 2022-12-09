@@ -1,6 +1,6 @@
 package com.halushko.kinocat.torrent;
 
-import com.halushko.kinocat.torrent.consumers.VoidTorrentOperator;
+import com.halushko.kinocat.torrent.externalCalls.VoidTorrentOperator;
 
 public class Main {
     public static void main(String[] args) {

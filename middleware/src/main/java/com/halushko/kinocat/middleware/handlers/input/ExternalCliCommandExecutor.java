@@ -12,8 +12,6 @@ import static com.halushko.kinocat.middleware.rabbit.RabbitJson.normalizedValue;
 
 @SuppressWarnings("unused")
 public abstract class ExternalCliCommandExecutor extends InputMessageHandler {
-    public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
-
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         long userId = rabbitMessage.getUserId();

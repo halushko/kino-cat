@@ -1,6 +1,7 @@
 package com.halushko.kinocat.textConsumer;
 
 import com.halushko.kinocat.middleware.cli.Command;
+import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.cli.ScriptsCollection;
 import com.halushko.kinocat.middleware.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
@@ -8,20 +9,15 @@ import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
 
 public class UserMessageHandler extends InputMessageHandler {
-    public static final String TELEGRAM_OUTPUT_TEXT_QUEUE = System.getenv("TELEGRAM_OUTPUT_TEXT_QUEUE");
-    public static final String TELEGRAM_INPUT_TEXT_QUEUE = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
-
-    public static final String EXECUTE_MINIDLNA_COMMAND_QUEUE = System.getenv("EXECUTE_MINIDLNA_COMMAND_QUEUE");
-    public static final String EXECUTE_VOID_TORRENT_COMMAND_QUEUE = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
-
     private static final ScriptsCollection scripts = new ScriptsCollection() {{
-        addValue("/restart", "restart.sh", EXECUTE_MINIDLNA_COMMAND_QUEUE);
+        addValue("/restart_media_server", "restart.sh", Constants.Queues.MediaServer.EXECUTE_MINIDLNA_COMMAND);
 
-        addValue("/start_torrent", "start_torrent.sh", EXECUTE_VOID_TORRENT_COMMAND_QUEUE);
-        addValue("/resume_", "resume_torrent.sh", EXECUTE_VOID_TORRENT_COMMAND_QUEUE);
-        addValue("/pause_", "pause_torrent.sh", EXECUTE_VOID_TORRENT_COMMAND_QUEUE);
-        addValue("/list", "list_torrents.sh","EXECUTE_TORRENT_COMMAND_LIST");
-        addValue("/torrent_", "info_torrent.sh", "EXECUTE_TORRENT_COMMAND_INFO");
+        addValue(Constants.Commands.Torrent.START_TORRENT_FILE, "start_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue("/list", "list_torrents.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST);
+        addValue(Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, "info_torrent.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_COMMANDS);
+        addValue(Constants.Commands.Torrent.LIST_TORRENT_RESUME, "resume_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.LIST_TORRENT_PAUSE, "pause_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.LIST_TORRENT_INFO, "info_torrent.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_INFO);
     }};
 
     @Override
@@ -35,7 +31,7 @@ public class UserMessageHandler extends InputMessageHandler {
             if (command.getFinalCommand().equals("")) {
                 String message = String.format("[UserMessageHandler] Command %s not found", text);
                 Logger.getRootLogger().debug(message);
-                RabbitUtils.postMessage(rabbitMessage.getUserId(), message, TELEGRAM_OUTPUT_TEXT_QUEUE);
+                RabbitUtils.postMessage(rabbitMessage.getUserId(), message, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
             } else {
                 Logger.getRootLogger().debug(String.format("[UserMessageHandler] Command %s found", text));
                 RabbitUtils.postMessage(userId, command.getFinalCommand(), command.getQueue());
@@ -48,6 +44,6 @@ public class UserMessageHandler extends InputMessageHandler {
 
     @Override
     protected String getQueue() {
-        return TELEGRAM_INPUT_TEXT_QUEUE;
+        return Constants.Queues.Telegram.TELEGRAM_INPUT_TEXT;
     }
 }

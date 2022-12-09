@@ -1,11 +1,11 @@
-package com.halushko.kinocat.torrent.consumers;
+package com.halushko.kinocat.torrent.externalCalls;
 
+import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.handlers.input.ExternalCliCommandExecutor;
 
 public class VoidTorrentOperator extends ExternalCliCommandExecutor {
-    public static final String EXECUTE_TORRENT_COMMAND_QUEUE = System.getenv("EXECUTE_TORRENT_COMMAND_QUEUE");
     @Override
     protected String getQueue() {
-        return EXECUTE_TORRENT_COMMAND_QUEUE;
+        return Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND;
     }
 }

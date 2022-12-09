@@ -1,6 +1,7 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
 import com.halushko.kinocat.bot.KoTorrentBot;
+import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.handlers.telegram.UserMessageHandler;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
 import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
@@ -13,7 +14,6 @@ import static com.halushko.kinocat.middleware.rabbit.RabbitJson.normalizedValue;
 import static com.halushko.kinocat.middleware.rabbit.RabbitMessage.KEYS.*;
 
 public class TorrentFileHandler extends UserMessageHandler {
-    public static final String TELEGRAM_INPUT_FILE_QUEUE = System.getenv("TELEGRAM_INPUT_FILE_QUEUE");
     @Override
     protected void readMessagePrivate(Update update) {
         long chatId = update.getMessage().getChatId();
@@ -36,7 +36,7 @@ public class TorrentFileHandler extends UserMessageHandler {
             rm.addValue(FILE_NAME, fileName);
             rm.addValue(TEXT, normalizedValue(message));
             rm.addValue("CAPTION", caption);
-            RabbitUtils.postMessage(rm, TELEGRAM_INPUT_FILE_QUEUE);
+            RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_FILE);
         } catch (TelegramApiException e) {
             Logger.getRootLogger().error("[TorrentFileHandler] Error during file processing", e);
             KoTorrentBot.sendText(chatId, e.getMessage());

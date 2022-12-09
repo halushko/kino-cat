@@ -1,5 +1,6 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
+import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.handlers.telegram.UserMessageHandler;
 import com.halushko.kinocat.middleware.rabbit.RabbitJson;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
@@ -8,8 +9,6 @@ import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class TextHandler extends UserMessageHandler {
-    public static final String TELEGRAM_INPUT_TEXT_QUEUE = System.getenv("TELEGRAM_INPUT_TEXT_QUEUE");
-
     @Override
     protected void readMessagePrivate(Update update) {
         long chatId = update.getMessage().getChatId();
@@ -18,7 +17,7 @@ public class TextHandler extends UserMessageHandler {
         Logger.getRootLogger().debug(String.format("[TextHandler] chatId:%s, message:%s", chatId, message));
 
         RabbitMessage rm = new RabbitMessage(chatId, message);
-        RabbitUtils.postMessage(rm, TELEGRAM_INPUT_TEXT_QUEUE);
+        RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_TEXT);
     }
 
     @Override
