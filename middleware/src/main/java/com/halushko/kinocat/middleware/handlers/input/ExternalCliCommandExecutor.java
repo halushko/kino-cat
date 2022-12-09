@@ -1,5 +1,6 @@
 package com.halushko.kinocat.middleware.handlers.input;
 
+import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.cli.ExecuteBash;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
 import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
@@ -22,7 +23,7 @@ public abstract class ExternalCliCommandExecutor extends InputMessageHandler {
         try {
             String textResult = getResultString(ExecuteBash.executeViaCLI(script));
             Logger.getRootLogger().debug(String.format("[ExternalCliCommandExecutor] textResult:%s", textResult));
-            RabbitUtils.postMessage(userId, textResult, getQueue());
+            RabbitUtils.postMessage(userId, textResult, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         } catch (Exception e) {
             Logger.getRootLogger().error("[ExternalCliCommandExecutor] Error during CLI execution: ", e);
         }
