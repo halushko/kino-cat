@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TorrentCommands extends ExternalCliCommandExecutor {
-    private final static String REGEX_GET_NAME = ".*Name:\\s+(.+?)";
+    private final static String REGEX_GET_NAME = ".*Name:\\s+(.+?)\n.*$";
     private final static Pattern PATTERN_GET_NAME = Pattern.compile(REGEX_GET_NAME);
 
     @Override
