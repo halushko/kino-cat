@@ -1,6 +1,8 @@
 package com.halushko.kinocat.fileConsumer;
 
+import com.halushko.kinocat.middleware.cli.Command;
 import com.halushko.kinocat.middleware.cli.Constants;
+import com.halushko.kinocat.middleware.cli.ScriptsCollection;
 import com.halushko.kinocat.middleware.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
 import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
@@ -19,6 +21,10 @@ public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
     public static final String DIR_TORRENT_WATCH = System.getenv("DIR_TORRENT_WATCH");
 
+    private static final ScriptsCollection scripts = new ScriptsCollection() {{
+        addValue(Constants.Commands.Torrent.START_TORRENT_FILE, "start_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+    }};
+
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         try {
@@ -29,7 +35,8 @@ public class UserMessageHandler extends InputMessageHandler {
             File localFile = new File("/home/torrent_files/" + fileName);
             try (InputStream is = fileUrl.openStream()) {
                 FileUtils.copyInputStreamToFile(is, localFile);
-                RabbitUtils.postMessage(userId, String.format("%s %s%s", Constants.Commands.Torrent.START_TORRENT_FILE, DIR_TORRENT_WATCH, fileName), Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+                Command command = scripts.getCommand(Constants.Commands.Torrent.START_TORRENT_FILE);
+                RabbitUtils.postMessage(userId, String.format("%s %s%s", command.getScript(), DIR_TORRENT_WATCH, fileName), command.getQueue());
             } catch (IOException e) {
                 RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
             }
