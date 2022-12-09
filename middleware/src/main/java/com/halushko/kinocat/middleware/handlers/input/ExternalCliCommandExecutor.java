@@ -21,7 +21,7 @@ public abstract class ExternalCliCommandExecutor extends InputMessageHandler {
 
         try {
             String textResult = getResultString(ExecuteBash.executeViaCLI(script));
-            Logger.getRootLogger().debug(String.format("[ExternalCliCommandExecutor] textResult:%s, ", textResult));
+            Logger.getRootLogger().debug(String.format("[ExternalCliCommandExecutor] textResult:%s", textResult));
             RabbitUtils.postMessage(userId, textResult, getQueue());
         } catch (Exception e) {
             Logger.getRootLogger().error("[ExternalCliCommandExecutor] Error during CLI execution: ", e);

@@ -1,6 +1,7 @@
 package com.halushko.kinocat.torrent.entities;
 
 import com.halushko.kinocat.torrent.internalScripts.ViewTorrentInfo;
+import org.apache.log4j.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,8 +56,9 @@ public class ActiveTorrentEntity {
 
     public ActiveTorrentEntity(String line) {
         Matcher m = PATTERN_LIST.matcher(line);
-
+        Logger.getRootLogger().debug(String.format("[ActiveTorrentEntity] line = %s", line));
         if (m.find()) {
+            Logger.getRootLogger().debug("[ActiveTorrentEntity] found");
             id = m.group(1).replaceAll("\\*", "");
             done = Double.parseDouble(m.group(2));
             have = m.group(3);
