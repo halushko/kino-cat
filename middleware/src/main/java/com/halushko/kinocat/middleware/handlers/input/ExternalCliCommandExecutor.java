@@ -2,7 +2,6 @@ package com.halushko.kinocat.middleware.handlers.input;
 
 import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.cli.ExecuteBash;
-import com.halushko.kinocat.middleware.cli.Script;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
 import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
