@@ -30,7 +30,7 @@ public class Command {
         this.command = pojo.getCommand();
         this.script = pojo.getScript();
         this.arguments = fullText.replaceAll(this.command, "").trim();
-        this.arguments = this.arguments.length() > 0 ? " " + this.arguments : "";
+//        this.arguments = this.arguments.length() > 0 ? " " + this.arguments : "";
         this.executorQueue = pojo.getQueue();
     }
 

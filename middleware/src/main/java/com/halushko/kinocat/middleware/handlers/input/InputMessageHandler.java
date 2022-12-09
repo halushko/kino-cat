@@ -16,21 +16,19 @@ public abstract class InputMessageHandler implements Runnable {
     public void run() {
         String queue = getQueue();
         Logger.getRootLogger().debug(String.format("[run] Start Input Message Handler. Queue: %s", queue));
+
         try {
-            Thread.sleep(LONG_PAUSE_MILIS*3);
-        } catch (InterruptedException ignored) {
-        }
+            Logger.getRootLogger().debug(String.format("[run] Start connection for queue: %s", queue));
+            readMessage(getQueue(), getDeliverCallback());
+            Logger.getRootLogger().debug(String.format("[run] '%s' connected", queue));
+        } catch (Exception e) {
+            Logger.getRootLogger().error(String.format("[run] Unknown error during connection to queue '%s'", queue), e);
             try {
-                Logger.getRootLogger().debug(String.format("[run] Start connection for queue: %s", queue));
-                readMessage(getQueue(), getDeliverCallback());
-                Logger.getRootLogger().debug(String.format("[run] '%s' connected", queue));
-            } catch (Exception e) {
-                Logger.getRootLogger().error(String.format("[run] Unknown error during connection to queue '%s'", queue), e);
-                try {
-                    Thread.sleep(MEDIUM_PAUSE_MILIS);
-                } catch (InterruptedException ex) {
-                    Logger.getRootLogger().error(String.format("[run] InterruptedException error. Queue '%s'", queue), e);
-                }
+                Thread.sleep(MEDIUM_PAUSE_MILIS);
+            } catch (InterruptedException ex) {
+                Logger.getRootLogger().error(String.format("[run] InterruptedException error. Queue '%s'", queue), e);
+            }
+            throw new RuntimeException("exit");
         }
     }
 
