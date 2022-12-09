@@ -33,7 +33,9 @@ public class UserMessageHandler extends InputMessageHandler {
                 RabbitUtils.postMessage(rabbitMessage.getUserId(), message, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
             } else {
                 Logger.getRootLogger().debug(String.format("[UserMessageHandler] Command %s found", text));
-                RabbitUtils.postMessage(userId, command.getFinalCommand(), command.getQueue());
+                RabbitMessage message = new RabbitMessage(userId, command.getFinalCommand());
+                message.addValue("ARG", command.getArguments());
+                RabbitUtils.postMessage(message, command.getQueue());
             }
             Logger.getRootLogger().debug("[UserMessageHandler] Finish DeliverCallbackPrivate for " + getQueue());
         } catch (Exception e) {

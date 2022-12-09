@@ -2,6 +2,7 @@ package com.halushko.kinocat.middleware.handlers.input;
 
 import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.cli.ExecuteBash;
+import com.halushko.kinocat.middleware.cli.Script;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
 import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
@@ -21,14 +22,14 @@ public abstract class ExternalCliCommandExecutor extends InputMessageHandler {
         Logger.getRootLogger().debug(String.format("[ExternalCliCommandExecutor] userId:%s, script:%s", userId, script));
 
         try {
-            String textResult = getResultString(ExecuteBash.executeViaCLI(script));
+            String textResult = getResultString(ExecuteBash.executeViaCLI(script), rabbitMessage);
             Logger.getRootLogger().debug(String.format("[ExternalCliCommandExecutor] textResult:%s", textResult));
             RabbitUtils.postMessage(userId, textResult, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         } catch (Exception e) {
             Logger.getRootLogger().error("[ExternalCliCommandExecutor] Error during CLI execution: ", e);
         }
     }
-    protected String getResultString(List<String> lines) {
+    protected String getResultString(List<String> lines, RabbitMessage rabbitMessage) {
         return lines == null || lines.isEmpty() ? "" : normalizedValue(lines.stream().map(a -> a + "\n").collect(Collectors.joining()));
     }
 }
