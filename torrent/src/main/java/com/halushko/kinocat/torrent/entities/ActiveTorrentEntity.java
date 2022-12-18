@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class ActiveTorrentEntity {
     private final static String REGEX_LIST = "\\s*(.+?)\\s{2,}(.+?)%\\s{2,}(.+?)\\s{2,}(.*?)\\s{2,}(.+?)\\s{2,}(.+?)\\s{2,}(.+?)\\s{2,}(\\w+?)\\s{2,}(.+?)$";
@@ -34,16 +35,23 @@ public class ActiveTorrentEntity {
                 return done == 100.0 ? "✅" : "\uD83D\uDCA4";
             case "DOWNLOADING":
                 return "\uD83D\uDFE2";
-            case "VERIFYING": return "♻";
+            case "VERIFYING":
+                return "♻";
             default:
                 return "Status=\"" + status + "\"";
         }
     }
 
     public String getPercents() {
-        return done == 100.0
-                ? "100% (done)"
-                : (int) done + "% (" + Math.round((totalSize - totalSize * done / 100.0) * 1000.0) / 1000.0 + " Gb left)";
+        int blackBlocks = (int) (done / 10.0);
+        StringBuilder line = new StringBuilder();
+
+        IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
+        IntStream.range(blackBlocks, 10).mapToObj(i -> "░").forEach(line::append);
+
+        return line + (done == 100.0
+                ? " (done)"
+                : "% (" + Math.round((totalSize - totalSize * done / 100.0) * 1000.0) / 1000.0 + " Gb left)");
     }
 
 //    private String getLeft() {

@@ -31,12 +31,6 @@ VOLUME ["/home/media"]
 ENV PUID=minidlna
 ENV PGID=minidlna
 
-#ENV MINIDLNA_media_dir=V,/media
-#ENV MINIDLNA_friendly_name=MiniDLNA
-#ENV MINIDLNA_merge_media_dirs=yes
-#ENV MINIDLNA_force_sort_criteria="upnp:class, upnp:originalTrackNumber, dc:title"
-#ENV MINIDLNA_root_container=B
-
 COPY --from=build_image /home/gradle/app /home/app
 
 RUN apk add minidlna sqlite
@@ -46,14 +40,15 @@ COPY --from=download_image /home/git/code/kino-cat/config/commands/minidlna /hom
 RUN openrc
 RUN touch /run/openrc/softlevel
 RUN mkdir -p /var/db/minidlna && \
+    mkdir -p /var/cache/minidlna && \
+    mkdir -p /var/log/ && \
     mkdir -p /home/media && \
+    chown minidlna /var/cache/minidlna && \
+    chown minidlna /var/db/minidlna && \
+    chown minidlna /var/log/ && \
+    chown minidlna /home/media && \
     chmod +X /home/app/*.sh
 
-#RUN rc-service minidlna start && \
-#    rc-update add minidlna default
-
-#    rc-service minidlna stop && \
-#
 CMD chmod 777 -R /home/app && \
     chmod 777 -R /home/media && \
     chmod 777 -R /var/db/minidlna && \

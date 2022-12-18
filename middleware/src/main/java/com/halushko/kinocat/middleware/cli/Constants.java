@@ -1,5 +1,6 @@
 package com.halushko.kinocat.middleware.cli;
 
+@SuppressWarnings("unused")
 public interface Constants {
     interface Queues {
         interface Telegram {
@@ -24,7 +25,7 @@ public interface Constants {
     interface Commands {
         interface Torrent {
             String START_TORRENT_FILE = "/start_torrent";
-            String LIST_TORRENT_COMMANDS = "/commands_";
+            String LIST_TORRENT_COMMANDS = "/more_";
             String LIST_TORRENT_RESUME ="/resume_";
             String LIST_TORRENT_PAUSE = "/pause_";
             String LIST_TORRENT_INFO ="/full_info_";

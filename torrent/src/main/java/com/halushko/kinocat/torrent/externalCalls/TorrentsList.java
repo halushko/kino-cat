@@ -4,6 +4,7 @@ import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.handlers.input.ExternalCliCommandExecutor;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
 import com.halushko.kinocat.torrent.entities.ActiveTorrentEntity;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 public class TorrentsList extends ExternalCliCommandExecutor {
     @Override
     protected String getResultString(List<String> lines, RabbitMessage rabbitMessage) {
+        Logger.getRootLogger().debug(String.format("[TorrentsList] lines=%s", lines));
         if (lines == null || lines.isEmpty()) return "";
 
         return super.getResultString(lines.stream()

@@ -1,2 +1,0 @@
-FROM openjdk:8-alpine as textConsumer
-ENTRYPOINT ["java", "-jar", "/home/app/text_consumer.jar"]
