@@ -46,19 +46,17 @@ public class ActiveTorrentEntity {
 
     public String getPercents() {
         int blocks = 20;
-        int blackBlocks = (int) (done / blocks);
+        int blackBlocks = (int) (done * blocks/ 100);
         StringBuilder line = new StringBuilder();
 
         IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
         IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
 
-        return "||"
-                + line
+        return "||" + line + "||"
                 + (done == 100.0
-                    ? " (done)"
-                    : " % (" + Math.round((totalSize - totalSize * done / 100.0) * 1000.0) / 1000.0 + " Gb left)"
-                )
-                + "||";
+                ? " (done)"
+                : " % (" + Math.round((totalSize - totalSize * done / 100.0) * 1000.0) / 1000.0 + " Gb left)"
+        );
     }
 
     public ActiveTorrentEntity(String line) {
