@@ -34,33 +34,32 @@ public class ActiveTorrentEntity {
             case "IDLE":
                 return done == 100.0 ? "✅" : "\uD83D\uDCA4";
             case "DOWNLOADING":
-                return "\uD83D\uDFE2";
+                return "⬇️";
             case "VERIFYING":
                 return "♻";
+            case "SEEDING":
+                return "⬆️";
             default:
                 return "Status=\"" + status + "\"";
         }
     }
 
     public String getPercents() {
-        int blackBlocks = (int) (done / 10.0);
+        int blocks = 20;
+        int blackBlocks = (int) (done / blocks);
         StringBuilder line = new StringBuilder();
 
         IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
-        IntStream.range(blackBlocks, 10).mapToObj(i -> "░").forEach(line::append);
+        IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
 
-        return line + (done == 100.0
-                ? " (done)"
-                : "% (" + Math.round((totalSize - totalSize * done / 100.0) * 1000.0) / 1000.0 + " Gb left)");
+        return "||"
+                + line
+                + (done == 100.0
+                    ? " (done)"
+                    : " % (" + Math.round((totalSize - totalSize * done / 100.0) * 1000.0) / 1000.0 + " Gb left)"
+                )
+                + "||";
     }
-
-//    private String getLeft() {
-//        if (have == null) return "error";
-//        if ("NONE".equalsIgnoreCase(have)) {
-//            return "other";
-//        }
-//        return "no";
-//    }
 
     public ActiveTorrentEntity(String line) {
         Matcher m = PATTERN_LIST.matcher(line);
