@@ -1,6 +1,6 @@
 version: '3.7'
 
-x-common-variables:
+x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
@@ -25,23 +25,27 @@ services:
     image: rabbitmq:3.9.20-management-alpine
     hostname: rabbitmq
     restart: always
+    environment: *common-variables
     ports:
       - 5672:5672
       - 15672:15672
   bot:
     image: halushko/cinema-bot:0.1-pi
+    environment: *common-variables
     restart: always
     container_name: "bot"
     depends_on:
       - rabbitmq
   text_handler:
     image: halushko/cinema-text:0.1-pi
+    environment: *common-variables
     restart: always
     container_name: "text_handler"
     depends_on:
       - rabbitmq
   file_handler:
     image: halushko/cinema-file:0.1-pi
+    environment: *common-variables
     restart: always
     container_name: "file_handler"
     depends_on:
@@ -50,6 +54,7 @@ services:
       - ./workdir/mediadata/torrent/torrent_files:/home/torrent_files/
   torrent:
     image: halushko/cinema-torrent:0.1-pi
+    environment: *common-variables
     restart: always
     container_name: "torrent"
     depends_on:
@@ -65,6 +70,7 @@ services:
     container_name: "minidlna"
     image: halushko/cinema-media:0.1-pi
     restart: always
+    environment:  *common-variables
     depends_on:
       - rabbitmq
     volumes:
