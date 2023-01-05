@@ -1,4 +1,5 @@
 FROM alpine/git as download_image
+ARG BRANCH=master
 RUN mkdir -p /home/git/code
 RUN cd /home/git/code && \
     git init kino-cat && \
@@ -9,7 +10,7 @@ RUN cd /home/git/code && \
     echo "torrent/" >> .git/info/sparse-checkout && \
     echo "config/commands/transmission/" >> .git/info/sparse-checkout && \
     echo "config/config_files/transmission/" >> .git/info/sparse-checkout && \
-    git pull origin master
+    git pull origin $BRANCH
 
 FROM gradle:jdk8-alpine as build_image
 RUN mkdir -p /home/gradle/code

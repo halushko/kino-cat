@@ -53,7 +53,7 @@ done
 
 docker-compose down
 
-if [[ V_CLEAR_IMAGES == true ]]; then
+if [[ $V_CLEAR_IMAGES == true ]]; then
     docker system prune -fa
 elif [[ $V_CLEAR_CONTAINERS == true ]]; then
     docker container prune -f
