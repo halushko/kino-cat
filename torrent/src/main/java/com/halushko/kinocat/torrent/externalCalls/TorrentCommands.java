@@ -30,10 +30,11 @@ public class TorrentCommands extends ExternalCliCommandExecutor {
         }
 
         return RabbitJson.normalizedValue(
-                String.format("%s\n%s%s\n%s%s\n%s%s", name,
-                        Constants.Commands.Torrent.LIST_TORRENT_PAUSE, arg,
-                        Constants.Commands.Torrent.LIST_TORRENT_RESUME, arg,
-                        Constants.Commands.Torrent.LIST_TORRENT_INFO, arg
+                String.format("%s\n%s%s\n%s%s\n%s%s\n%s%s", name,
+                        Constants.Commands.Torrent.PAUSE, arg,
+                        Constants.Commands.Torrent.RESUME, arg,
+                        Constants.Commands.Torrent.TORRENT_INFO, arg,
+                        Constants.Commands.Text.REMOVE_COMMAND, arg
                 )
         );
     }

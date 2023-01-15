@@ -8,8 +8,8 @@ public class ScriptsCollection {
     private Map<String, Script> allCommands;
     private final List<Script> values = new ArrayList<>();
 
-    public void addValue(String command, String script, String queue) {
-        values.add(new Script(command, script, queue));
+    public void addValue(String command, String script, String queue, String... args) {
+        values.add(new Script(command, script, queue, args));
     }
 
     public Command getCommand(String text) {

@@ -1,13 +1,15 @@
 FROM alpine/git as download_image
+ARG BRANCH=master
+ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code
 RUN cd /home/git/code && \
     git init kino-cat && \
     cd kino-cat && \
-    git remote add origin https://github.com/halushko/kino-cat.git && \
+    git remote add origin $REPO && \
     git config core.sparseCheckout true && \
     echo "middleware/" >> .git/info/sparse-checkout && \
     echo "fileConsumer/" >> .git/info/sparse-checkout && \
-    git pull origin master
+    git pull origin $BRANCH
 
 FROM gradle:jdk8-alpine as build_image
 RUN mkdir -p /home/gradle/code

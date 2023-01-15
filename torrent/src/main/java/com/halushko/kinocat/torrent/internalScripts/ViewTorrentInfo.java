@@ -15,7 +15,7 @@ public class ViewTorrentInfo extends PrivateCliCommandExecutor {
     }
     @Override
     protected String getScript() {
-        return Constants.Commands.Torrent.LIST_TORRENT_INFO;
+        return Constants.Commands.Torrent.TORRENT_INFO;
     }
 
     @Override

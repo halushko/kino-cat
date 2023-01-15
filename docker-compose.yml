@@ -6,8 +6,8 @@ x-common-variables: &common-variables
   RABBIT_PORT: 5672
   RABBIT_HOST_IP: 172.17.0.1
 
-  BOT_TOKEN: <input bot token>
-  BOT_NAME: koTorrentBot
+  BOT_TOKEN: <input bot token here>
+  BOT_NAME: <input name of torrent here>
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000

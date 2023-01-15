@@ -1,11 +1,16 @@
 package com.halushko.kinocat.middleware.cli;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Command {
     private final String fullText;
     private String executorQueue;
     private String command = "";
     private String script = "";
     private String arguments = "";
+
+    private List<String> additionalArguments = new ArrayList<>();
 
     public Command(String str) {
         this.fullText = str;
@@ -32,6 +37,8 @@ public class Command {
         this.arguments = fullText.replaceAll(this.command, "").trim();
 //        this.arguments = this.arguments.length() > 0 ? " " + this.arguments : "";
         this.executorQueue = pojo.getQueue();
+        this.additionalArguments.clear();
+        this.additionalArguments.addAll(pojo.getParams());
     }
 
     public String getScript() {
@@ -52,5 +59,13 @@ public class Command {
 
     public String getQueue() {
         return executorQueue;
+    }
+
+    public List<String> getAdditionalArguments() {
+        return additionalArguments;
+    }
+
+    public String getCommand() {
+        return command;
     }
 }
