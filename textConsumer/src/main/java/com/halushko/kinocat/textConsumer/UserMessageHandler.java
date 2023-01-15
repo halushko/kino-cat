@@ -36,11 +36,13 @@ public class UserMessageHandler extends InputMessageHandler {
             long userId = rabbitMessage.getUserId();
             Logger.getRootLogger().debug(String.format("[UserMessageHandler] user_id=%s, text=%s", userId, text));
             Command command = scripts.getCommand(text);
-            if (command.getFinalCommand().equals("")) {
+            String finalCommand = command.getFinalCommand();
+            Logger.getRootLogger().debug(String.format("[UserMessageHandler] Command: [getFinalCommand=%s]", finalCommand));
+            if (finalCommand == null || finalCommand.equals("")) {
                 String message = String.format("[UserMessageHandler] Command %s not found", text);
                 Logger.getRootLogger().debug(message);
                 RabbitUtils.postMessage(userId, message, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
-            } else if (command.getFinalCommand().equals(Constants.Commands.Text.SEND_TEXT_TO_USER)) {
+            } else if (finalCommand.equals(Constants.Commands.Text.SEND_TEXT_TO_USER)) {
                 List<String> additionalArguments = command.getAdditionalArguments();
                 String methodName = additionalArguments.get(0);
                 Logger.getRootLogger().debug(String.format("[UserMessageHandler] The text will be send by method %s to user", methodName));
