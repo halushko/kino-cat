@@ -22,8 +22,8 @@ public class UserMessageHandler extends InputMessageHandler {
         addValue(Constants.Commands.Torrent.RESUME, "resume_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
         addValue(Constants.Commands.Torrent.PAUSE, "pause_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
         addValue(Constants.Commands.Torrent.TORRENT_INFO, "info_torrent.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_INFO);
-        addValue(Constants.Commands.Torrent.REMOVE_WITH_FILES, "remove_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
-        addValue(Constants.Commands.Torrent.REMOVE_JUST_TORRENT, "remove_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.REMOVE_WITH_FILES, "remove_with_files.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.REMOVE_JUST_TORRENT, "remove_only_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
 
         addValue(Constants.Commands.Text.REMOVE_COMMAND, Constants.Commands.Text.SEND_TEXT_TO_USER, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT, Constants.Commands.Text.REMOVE_WARN_TEXT_FUNC);
     }};

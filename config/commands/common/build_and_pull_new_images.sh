@@ -13,7 +13,7 @@ function usage() {
         --branch      :   see flag [-d]. This flag used to specify which branch of github is need to be used. By
                           default the "master" branch is used
         -p            :   pull images to DockerHub after completion
-        -t            :   tax (name) of images that will be built
+        -t            :   tag (name) of images that will be built
         --not_pi      :   suffix PI is used for arm64 architecture. If you will use this flag then images will not
                                   have suffix "PI"
         --release     :   build images with tag [-t] and also build with tag "LATEST" or "LATEST-PI"
@@ -123,6 +123,7 @@ if [[ $V_BUILD == true ]]; then
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media$V_LATEST_TAG -f Dockerfile-minidlna .
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text$V_LATEST_TAG -f Dockerfile-text .
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_LATEST_TAG -f Dockerfile-torrent .
+#    docker build --build-arg BRANCH=delete_torrents_implementation -t halushko/cinema-torrent:0.3-pi -f Dockerfile-torrent .
   fi
 
   cd ../../..
