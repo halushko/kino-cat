@@ -33,32 +33,30 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:0.3-pi
+    image: halushko/cinema-bot:0.4-pi
     environment: *common-variables
     restart: always
     container_name: "bot"
     depends_on:
       - rabbitmq
     networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.2
+      cat_private_network: {}
     deploy:
       resources:
         limits:
           cpus: '1'
           memory: 256Mb
   text_handler:
-    image: halushko/cinema-text:0.3-pi
+    image: halushko/cinema-text:0.4-pi
     environment: *common-variables
     restart: always
     container_name: "text_handler"
     networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.3
+      cat_private_network: {}
     depends_on:
       - rabbitmq
   file_handler:
-    image: halushko/cinema-file:0.3-pi
+    image: halushko/cinema-file:0.4-pi
     environment: *common-variables
     restart: always
     container_name: "file_handler"
@@ -67,10 +65,9 @@ services:
     volumes:
       - ./workdir/mediadata/torrent/torrent_files:/home/torrent_files/
     networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.4
+      cat_private_network: {}
   torrent:
-    image: halushko/cinema-torrent:0.3-pi
+    image: halushko/cinema-torrent:0.4-pi
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -81,8 +78,7 @@ services:
       - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
       - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
     networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.5
+      cat_private_network: {}
     ports:
       - 9091:9091
       - 51413:51413
