@@ -1,2 +1,2 @@
 #!/bin/bash
-transmission-remote -b -a "$0"
+transmission-remote -b -a "$1"
