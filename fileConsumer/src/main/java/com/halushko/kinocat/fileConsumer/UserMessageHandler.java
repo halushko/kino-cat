@@ -36,7 +36,7 @@ public class UserMessageHandler extends InputMessageHandler {
             try (InputStream is = fileUrl.openStream()) {
                 FileUtils.copyInputStreamToFile(is, localFile);
                 Command command = scripts.getCommand(Constants.Commands.Torrent.START_TORRENT_FILE);
-                RabbitUtils.postMessage(userId, String.format("%s %s%s", command.getScript(), DIR_TORRENT_WATCH, fileName), command.getQueue());
+                RabbitUtils.postMessage(userId, String.format("%s \"%s%s\"", command.getScript(), DIR_TORRENT_WATCH, fileName), command.getQueue());
             } catch (IOException e) {
                 RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
             }
