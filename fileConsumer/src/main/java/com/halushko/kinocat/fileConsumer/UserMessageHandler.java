@@ -52,7 +52,7 @@ public class UserMessageHandler extends InputMessageHandler {
         try (InputStream is = fileUrl.openStream()) {
             FileUtils.copyInputStreamToFile(is, localFile);
             Command command = scripts.getCommand(Constants.Commands.Torrent.START_TORRENT_FILE);
-            RabbitUtils.postMessage(userId, String.format("%s %s", command.getScript(), fileName), command.getQueue());
+            RabbitUtils.postMessage(userId, String.format("%s %s%s", command.getScript(), "/home/media/torrent/torrent_files/", fileName), command.getQueue());
         } catch (IOException e) {
             RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         }
