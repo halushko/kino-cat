@@ -122,7 +122,7 @@ if [[ $V_BUILD == true ]]; then
   docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text$V_TAG -f Dockerfile-text .
   docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_TAG -f Dockerfile-torrent .
 
-  if [[ $V_PUSH_LATEST == true ]]; then
+  if [[ $V_LATEST == true ]]; then
     echo "Start build LATEST tag $V_LATEST_TAG"
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot$V_LATEST_TAG -f Dockerfile-bot .
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file$V_LATEST_TAG -f Dockerfile-file .
