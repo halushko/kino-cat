@@ -12,14 +12,15 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.UUID;
 
 import static com.halushko.kinocat.middleware.rabbit.RabbitMessage.KEYS.FILE_NAME;
 import static com.halushko.kinocat.middleware.rabbit.RabbitMessage.KEYS.FILE_PATH;
 
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
-    public static final String DIR_TORRENT_WATCH = System.getenv("DIR_TORRENT_WATCH");
 
     private static final ScriptsCollection scripts = new ScriptsCollection() {{
         addValue(Constants.Commands.Torrent.START_TORRENT_FILE, "start_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
@@ -28,20 +29,32 @@ public class UserMessageHandler extends InputMessageHandler {
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         try {
-            URL fileUrl = new URL(FILE_URL_PREFIX + rabbitMessage.getValue(FILE_PATH));
-            long userId = rabbitMessage.getUserId();
-            String fileName = rabbitMessage.getValue(FILE_NAME);
-
-            File localFile = new File("/home/torrent_files/" + fileName);
-            try (InputStream is = fileUrl.openStream()) {
-                FileUtils.copyInputStreamToFile(is, localFile);
-                Command command = scripts.getCommand(Constants.Commands.Torrent.START_TORRENT_FILE);
-                RabbitUtils.postMessage(userId, String.format("%s %s%s", command.getScript(), DIR_TORRENT_WATCH, fileName), command.getQueue());
-            } catch (IOException e) {
-                RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+            String mimeType = rabbitMessage.getValue("MIME_TYPE");
+            if ("application/x-bittorrent".equalsIgnoreCase(mimeType)) {
+                handleTorrent(rabbitMessage);
             }
         } catch (Exception e) {
             Logger.getRootLogger().error("During message handle got an error: ", e);
+        }
+    }
+
+    protected void handleTorrent(RabbitMessage rm) throws MalformedURLException {
+        long fileSize = Long.parseLong(rm.getValue("SIZE"));
+        if (fileSize > 524288L) {
+            Logger.getRootLogger().warn(String.format("Whe filesize is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
+            return;
+        }
+        URL fileUrl = new URL(FILE_URL_PREFIX + rm.getValue(FILE_PATH));
+        long userId = rm.getUserId();
+        String fileName = String.format("%s%s", UUID.randomUUID(), ".torrent");
+
+        File localFile = new File("/home/torrent_files/" + fileName);
+        try (InputStream is = fileUrl.openStream()) {
+            FileUtils.copyInputStreamToFile(is, localFile);
+            Command command = scripts.getCommand(Constants.Commands.Torrent.START_TORRENT_FILE);
+            RabbitUtils.postMessage(userId, String.format("%s %s%s", command.getScript(), "/home/media/torrent/torrent_files/", fileName), command.getQueue());
+        } catch (IOException e) {
+            RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         }
     }
 

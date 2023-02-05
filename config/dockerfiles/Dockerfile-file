@@ -1,4 +1,5 @@
 FROM alpine/git as download_image
+LABEL VERSION=0.5.2
 ARG BRANCH=master
 ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code

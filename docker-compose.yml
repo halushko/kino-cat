@@ -8,15 +8,11 @@ x-common-variables: &common-variables
 
   BOT_TOKEN: <input bot token here>
   BOT_NAME: <input name of torrent here>
+  BOT_TRUSTED_USERS: <Telegram user IDs, splitted by ",">
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000
   SMALL_PAUSE_MILIS: 500
-
-  DIR_TORRENT_COMPLETE: /home/media/torrent/complete/
-  DIR_TORRENT_INCOMPLETE: /home/media/torrent/downloads/
-  DIR_TORRENT_WATCH: /home/media/torrent/torrent_files/
-  DIR_MEDIA_SHOW: /home/media/
 
   PING: /ping
   PONG: pong
@@ -33,7 +29,7 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:0.3-pi
+    image: halushko/cinema-bot:LATEST-pi
     environment: *common-variables
     restart: always
     container_name: "bot"
@@ -48,7 +44,7 @@ services:
           cpus: '1'
           memory: 256Mb
   text_handler:
-    image: halushko/cinema-text:0.3-pi
+    image: halushko/cinema-text:LATEST-pi
     environment: *common-variables
     restart: always
     container_name: "text_handler"
@@ -58,7 +54,7 @@ services:
     depends_on:
       - rabbitmq
   file_handler:
-    image: halushko/cinema-file:0.3-pi
+    image: halushko/cinema-file:LATEST-pi
     environment: *common-variables
     restart: always
     container_name: "file_handler"
@@ -70,7 +66,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.4
   torrent:
-    image: halushko/cinema-torrent:0.3-pi
+    image: halushko/cinema-torrent:LATEST-pi
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -93,7 +89,7 @@ services:
           memory: 1G
   minidlna:
     container_name: "minidlna"
-    image: halushko/cinema-media:0.3-pi
+    image: halushko/cinema-media:LATEST-pi
     restart: always
     environment:  *common-variables
     depends_on:
@@ -115,4 +111,3 @@ networks:
     ipam:
       config:
         - subnet: 10.10.0.0/16
-#        - gateway: 10.10.0.1

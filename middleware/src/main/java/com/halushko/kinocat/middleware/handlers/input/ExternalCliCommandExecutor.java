@@ -2,6 +2,7 @@ package com.halushko.kinocat.middleware.handlers.input;
 
 import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.cli.ExecuteBash;
+import com.halushko.kinocat.middleware.rabbit.RabbitJson;
 import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
 import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
@@ -16,7 +17,7 @@ public abstract class ExternalCliCommandExecutor extends InputMessageHandler {
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
         long userId = rabbitMessage.getUserId();
-        String script = rabbitMessage.getText();
+        String script = RabbitJson.unNormalizeText(rabbitMessage.getText());
 
         Logger.getRootLogger().debug(String.format("[ExternalCliCommandExecutor] userId:%s, script:%s", userId, script));
 
