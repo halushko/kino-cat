@@ -1,5 +1,5 @@
 FROM alpine/git as download_image
-LABEL VERSION=0.5
+LABEL VERSION=0.5.1
 ARG BRANCH=master
 ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code
@@ -39,6 +39,7 @@ RUN chmod +X /home/app/*.sh
 RUN chmod 777 -R /home/app && \
     mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
+    mkdir -p /home/media/torrent/torrent_files && \
     chmod 777 -R /home/media
 
 #    mkdir -p $DIR_TORRENT_WATCH && \

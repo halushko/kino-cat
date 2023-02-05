@@ -21,7 +21,6 @@ import static com.halushko.kinocat.middleware.rabbit.RabbitMessage.KEYS.FILE_PAT
 
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
-    public static final String DIR_TORRENT_WATCH = System.getenv("DIR_TORRENT_WATCH");
 
     private static final ScriptsCollection scripts = new ScriptsCollection() {{
         addValue(Constants.Commands.Torrent.START_TORRENT_FILE, "start_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
@@ -53,7 +52,7 @@ public class UserMessageHandler extends InputMessageHandler {
         try (InputStream is = fileUrl.openStream()) {
             FileUtils.copyInputStreamToFile(is, localFile);
             Command command = scripts.getCommand(Constants.Commands.Torrent.START_TORRENT_FILE);
-            RabbitUtils.postMessage(userId, String.format("%s \"%s%s\"", command.getScript(), DIR_TORRENT_WATCH, fileName), command.getQueue());
+            RabbitUtils.postMessage(userId, String.format("%s %s", command.getScript(), fileName), command.getQueue());
         } catch (IOException e) {
             RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         }

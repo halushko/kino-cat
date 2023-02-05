@@ -14,11 +14,6 @@ x-common-variables: &common-variables
   MEDIUM_PAUSE_MILIS: 5000
   SMALL_PAUSE_MILIS: 500
 
-  DIR_TORRENT_COMPLETE: /home/media/torrent/complete/
-  DIR_TORRENT_INCOMPLETE: /home/media/torrent/downloads/
-  DIR_TORRENT_WATCH: /home/media/torrent/torrent_files/
-  DIR_MEDIA_SHOW: /home/media/
-
   PING: /ping
   PONG: pong
 services:
