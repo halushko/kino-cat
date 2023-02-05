@@ -78,7 +78,9 @@ public class KoTorrentBot extends TelegramLongPollingBot {
         if (trustedUserIds.isEmpty()) {
             parseTrustedUsersEnv();
         }
-        return trustedUserIds.contains(userId);
+        boolean valid = trustedUserIds.contains(userId);
+        Logger.getRootLogger().debug(String.format("[validateUser] The user %s is %svalid", userId, valid ? "" : "in"));
+        return valid;
     }
 
     public static void sendText(long chatId, String str) {
