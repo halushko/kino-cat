@@ -39,11 +39,13 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     }};
 
     public static void main(String[] args) {
+        Logger.getRootLogger().debug("Bot starting");
         try {
             TelegramBotsApi botapi = new TelegramBotsApi(DefaultBotSession.class);
             BOT = new KoTorrentBot();
             new Thread(new SendTextMessageToUser()).start();
             botapi.registerBot(BOT);
+            Logger.getRootLogger().debug("Bot has been started");
         } catch (Exception e) {
             Logger.getRootLogger().error("Bot start has been fail: ", e);
         }
