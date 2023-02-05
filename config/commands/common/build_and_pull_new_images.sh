@@ -122,14 +122,14 @@ if [[ $V_BUILD == true ]]; then
   docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text$V_TAG -f Dockerfile-text .
   docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_TAG -f Dockerfile-torrent .
 
-  if [[ $V_LATEST == true ]]; then
-    echo "Start build LATEST tag $V_LATEST_TAG"
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot$V_LATEST_TAG -f Dockerfile-bot .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file$V_LATEST_TAG -f Dockerfile-file .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media$V_LATEST_TAG -f Dockerfile-minidlna .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text$V_LATEST_TAG -f Dockerfile-text .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_LATEST_TAG -f Dockerfile-torrent .
-  fi
+#  if [[ $V_LATEST == true ]]; then
+#    echo "Start build LATEST tag $V_LATEST_TAG"
+#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot$V_LATEST_TAG -f Dockerfile-bot .
+#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file$V_LATEST_TAG -f Dockerfile-file .
+#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media$V_LATEST_TAG -f Dockerfile-minidlna .
+#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text$V_LATEST_TAG -f Dockerfile-text .
+#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_LATEST_TAG -f Dockerfile-torrent .
+#  fi
 
   cd ../../..
   echo "Finish build"
@@ -143,13 +143,13 @@ if [[ $V_PUSH == true && $V_TAG != "LATEST" ]]; then
   docker push halushko/cinema-text$V_TAG
   docker push halushko/cinema-torrent$V_TAG
 
-  if [[ $V_PUSH_LATEST == true ]]; then
-    docker push halushko/cinema-bot$V_LATEST_TAG
-    docker push halushko/cinema-file$V_LATEST_TAG
-    docker push halushko/cinema-media$V_LATEST_TAG
-    docker push halushko/cinema-text$V_LATEST_TAG
-    docker push halushko/cinema-torrent$V_LATEST_TAG
-  fi
+#  if [[ $V_PUSH_LATEST == true ]]; then
+#    docker push halushko/cinema-bot$V_LATEST_TAG
+#    docker push halushko/cinema-file$V_LATEST_TAG
+#    docker push halushko/cinema-media$V_LATEST_TAG
+#    docker push halushko/cinema-text$V_LATEST_TAG
+#    docker push halushko/cinema-torrent$V_LATEST_TAG
+#  fi
 fi
 
 cd ..
