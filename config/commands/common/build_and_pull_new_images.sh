@@ -80,6 +80,7 @@ mkdir tmp
 cd tmp || exit 0
 
 if [[ $V_DOWNLOAD == true ]]; then
+  echo "Download Dockerfiles from repo"
   git init kino-cat
   cd kino-cat || exit 0
   git remote add origin https://github.com/halushko/kino-cat.git
@@ -88,6 +89,7 @@ if [[ $V_DOWNLOAD == true ]]; then
   git pull origin "$V_BRANCH"
   cd ..
 else
+  echo "Copy Dockerfiles from current directory"
   mkdir -p ./kino-cat/config/dockerfiles
   cp ../Dockerfile-* ./kino-cat/config/dockerfiles
 fi
@@ -108,7 +110,10 @@ if [[ $V_PI == true ]]; then
   V_TAG=":$V_TAG-pi"
 fi
 
+echo "The TAG is $V_TAG"
+
 if [[ $V_BUILD == true ]]; then
+  echo "Start build from branch $V_BRANCH"
   cd ./kino-cat/config/dockerfiles || exit 0
 
   docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot$V_TAG -f Dockerfile-bot .
@@ -118,18 +123,20 @@ if [[ $V_BUILD == true ]]; then
   docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_TAG -f Dockerfile-torrent .
 
   if [[ $V_PUSH_LATEST == true ]]; then
+    echo "Start build LATEST tag $V_LATEST_TAG"
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot$V_LATEST_TAG -f Dockerfile-bot .
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file$V_LATEST_TAG -f Dockerfile-file .
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media$V_LATEST_TAG -f Dockerfile-minidlna .
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text$V_LATEST_TAG -f Dockerfile-text .
     docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_LATEST_TAG -f Dockerfile-torrent .
-#    docker build --build-arg BRANCH=delete_torrents_implementation -t halushko/cinema-torrent:0.3-pi -f Dockerfile-torrent .
   fi
 
   cd ../../..
+  echo "Finish build"
 fi
 
 if [[ $V_PUSH == true && $V_TAG != "LATEST" ]]; then
+  echo "Start push to Docker Hub"
   docker push halushko/cinema-bot$V_TAG
   docker push halushko/cinema-file$V_TAG
   docker push halushko/cinema-media$V_TAG
