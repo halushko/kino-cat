@@ -8,6 +8,7 @@ x-common-variables: &common-variables
 
   BOT_TOKEN: <input bot token here>
   BOT_NAME: <input name of torrent here>
+  BOT_TRUSTED_USERS: <Telegram user IDs, splitted by ",">
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000

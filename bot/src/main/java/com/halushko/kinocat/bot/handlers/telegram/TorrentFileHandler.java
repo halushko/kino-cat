@@ -18,7 +18,9 @@ public class TorrentFileHandler extends UserMessageHandler {
     protected void readMessagePrivate(Update update) {
         long chatId = update.getMessage().getChatId();
         String uploadedFileId = update.getMessage().getDocument().getFileId();
+        long fileSize = update.getMessage().getDocument().getFileSize();
         String fileName = update.getMessage().getDocument().getFileName();
+        String mimeType = update.getMessage().getDocument().getMimeType();
         String message = update.getMessage().getText();
         String caption = update.getMessage().getCaption();
         Logger.getRootLogger().debug(
@@ -36,6 +38,9 @@ public class TorrentFileHandler extends UserMessageHandler {
             rm.addValue(FILE_NAME, fileName);
             rm.addValue(TEXT, normalizedValue(message));
             rm.addValue("CAPTION", caption);
+            rm.addValue("SIZE", String.valueOf(fileSize));
+            rm.addValue("MIME_TYPE", mimeType);
+
             RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_FILE);
         } catch (TelegramApiException e) {
             Logger.getRootLogger().error("[TorrentFileHandler] Error during file processing", e);

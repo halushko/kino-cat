@@ -35,12 +35,13 @@ RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 RUN chmod +X /home/app/*.sh
-RUN chmod 777 -R /home/app
+RUN chmod 777 -R /home/app && \
+    chmod 777 -R /home/media
+#    mkdir -p /home/media/torrent/downloads && \
+#    mkdir -p /home/media/torrent/complete && \
+#    mkdir -p $DIR_TORRENT_WATCH && \
 
-CMD mkdir -p /home/media/torrent/downloads && \
-    mkdir -p /home/media/torrent/complete && \
-    mkdir -p $DIR_TORRENT_WATCH && \
-    chown transmission -R /home/media && \
+CMD chown transmission -R /home/media && \
 
     echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
     rc-service transmission-daemon stop && \
