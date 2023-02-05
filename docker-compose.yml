@@ -34,7 +34,7 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:0.4-pi
+    image: halushko/cinema-bot:LATEST-pi
     environment: *common-variables
     restart: always
     container_name: "bot"
@@ -49,7 +49,7 @@ services:
           cpus: '1'
           memory: 256Mb
   text_handler:
-    image: halushko/cinema-text:0.4-pi
+    image: halushko/cinema-text:LATEST-pi
     environment: *common-variables
     restart: always
     container_name: "text_handler"
@@ -59,7 +59,7 @@ services:
     depends_on:
       - rabbitmq
   file_handler:
-    image: halushko/cinema-file:0.4-pi
+    image: halushko/cinema-file:LATEST-pi
     environment: *common-variables
     restart: always
     container_name: "file_handler"
@@ -71,7 +71,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.4
   torrent:
-    image: halushko/cinema-torrent:0.4-pi
+    image: halushko/cinema-torrent:LATEST-pi
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -94,7 +94,7 @@ services:
           memory: 1G
   minidlna:
     container_name: "minidlna"
-    image: halushko/cinema-media:0.4-pi
+    image: halushko/cinema-media:LATEST-pi
     restart: always
     environment:  *common-variables
     depends_on:
