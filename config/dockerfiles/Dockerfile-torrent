@@ -36,10 +36,10 @@ RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 RUN chmod +X /home/app/*.sh
-RUN chmod 777 -R /home/app && \
-    mkdir -p /home/media/torrent/downloads && \
+RUN mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files && \
+    chmod 777 -R /home/app && \
     chmod 777 -R /home/media
 
 #    mkdir -p $DIR_TORRENT_WATCH && \
