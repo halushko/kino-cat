@@ -32,11 +32,11 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     private static final Set<Long> trustedUserIds = new HashSet<>();
 
-    private static final Collection<UserMessageHandler> handlers = new ArrayList<UserMessageHandler>() {{
-        add(new MyPingHandler());
-        add(new TextHandler());
-        add(new TorrentFileHandler());
-    }};
+//    private static final Collection<UserMessageHandler> handlers = new ArrayList<UserMessageHandler>() {{
+//        add(new MyPingHandler());
+//        add(new TextHandler());
+//        add(new TorrentFileHandler());
+//    }};
 
     public static void main(String[] args) {
         Logger.getRootLogger().debug("Bot starting");
@@ -54,6 +54,11 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        Collection<UserMessageHandler> handlers = new ArrayList<>();
+        handlers.add(new MyPingHandler());
+        handlers.add(new TextHandler());
+        handlers.add(new TorrentFileHandler());
+
         if (validateUser(update.getMessage().getChatId())) {
             handlers.forEach(i -> i.readMessage(update));
         }
