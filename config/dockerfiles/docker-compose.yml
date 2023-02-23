@@ -21,10 +21,7 @@ services:
     environment: *common-variables
     restart: always
     hostname: rabbitmq
-    container_name: "rabbitmq_bot"
-#    networks:
-#      cat_private_network:
-#        ipv4_address: 10.10.255.254
+    container_name: "rabbitmq"
     ports:
       - 5672:5672
       - 15672:15672
@@ -32,39 +29,25 @@ services:
     image: halushko/cinema-bot:0.6-PI
     environment: *common-variables
     restart: always
-    container_name: "torrent_bot"
+    container_name: "bot"
     depends_on:
       - rabbitmq
-#    networks:
-#      cat_private_network:
-#        ipv4_address: 10.10.0.2
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 256Mb
   text_handler:
     image: halushko/cinema-text:0.6-PI
     environment: *common-variables
     restart: always
-    container_name: "text_handler"
-#    networks:
-#      cat_private_network:
-#        ipv4_address: 10.10.0.3
+    container_name: "text"
     depends_on:
       - rabbitmq
   file_handler:
     image: halushko/cinema-file:0.6-PI
     environment: *common-variables
     restart: always
-    container_name: "file_handler"
+    container_name: "file"
     depends_on:
       - rabbitmq
     volumes:
       - ./workdir/mediadata/torrent/torrent_files:/home/torrent_files/
-#    networks:
-#      cat_private_network:
-#        ipv4_address: 10.10.0.4
   torrent:
     image: halushko/cinema-torrent:0.6-PI
     environment: *common-variables
@@ -76,19 +59,11 @@ services:
       - ./workdir/mediadata/:/home/media/
       - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
       - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
-#    networks:
-#      cat_private_network:
-#        ipv4_address: 10.10.0.5
     ports:
       - 9091:9091
       - 51413:51413
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 1G
   minidlna:
-    container_name: "minidlna"
+    container_name: "media"
     image: halushko/cinema-media:0.6-PI
     restart: always
     environment:  *common-variables
@@ -97,17 +72,3 @@ services:
     volumes:
       - ./workdir/mediadata/torrent/complete:/home/media/
     network_mode: host
-    ports:
-      - 8200:8200
-      - 1900:1900/udp
-#    deploy:
-#      resources:
-#        limits:
-#          cpus: '1'
-#          memory: 1G
-#networks:
-#  cat_private_network:
-#    driver: bridge
-#    ipam:
-#      config:
-#        - subnet: 10.10.0.0/16
