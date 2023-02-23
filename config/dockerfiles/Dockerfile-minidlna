@@ -32,7 +32,7 @@ RUN mkdir -p /home/gradle/app
 COPY --chown=gradle:gradle --from=download_middleware /home/git/code /home/gradle/code
 RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
 
-FROM gradle:jdk8-alpine as build_bot
+FROM gradle:jdk8-alpine as build_minidlna
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 
@@ -52,7 +52,7 @@ VOLUME ["/home/media"]
 ENV PUID=minidlna
 ENV PGID=minidlna
 
-COPY --from=build_image /home/gradle/app /home/app
+COPY --from=build_minidlna /home/gradle/app /home/app
 
 RUN apk add minidlna sqlite
 COPY --from=download_minidlna /home/git/code/kino-cat/config/config_files/minidlna /etc
