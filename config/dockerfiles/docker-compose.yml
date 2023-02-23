@@ -15,16 +15,14 @@ x-common-variables: &common-variables
 
   PING: /ping
   PONG: pong
+  HOST_IP: <Input the IP of Host here>
 services:
   rabbitmq:
     image: rabbitmq:management-alpine
     environment: *common-variables
     restart: always
-    hostname: rabbitmq
-    container_name: "rabbitmq"
-    ports:
-      - 5672:5672
-      - 15672:15672
+    container_name: "rabbit"
+    network_mode: host
   bot:
     image: halushko/cinema-bot:0.6-PI
     environment: *common-variables
