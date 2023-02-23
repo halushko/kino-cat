@@ -33,11 +33,9 @@ RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.
 FROM gradle:jdk8-alpine as build_textConsumer
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
-
 COPY --chown=gradle:gradle --from=build_middleware /home/gradle/app /home/gradle/app
 COPY --chown=gradle:gradle --from=download_textConsumer /home/git/code /home/gradle/code
-
-RUN cd /home/gradle/code/kino-cat/textConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/textConsumer.jar
+RUN cd /home/gradle/code/kino-cat/textConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/text_consumer.jar
 
 FROM openjdk:8-alpine as textConsumer
 COPY --from=build_textConsumer /home/gradle/app /home/app

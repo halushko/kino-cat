@@ -33,10 +33,8 @@ RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.
 FROM gradle:jdk8-alpine as build_fileConsumer
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
-
 COPY --chown=gradle:gradle --from=build_middleware /home/gradle/app /home/gradle/app
 COPY --chown=gradle:gradle --from=download_fileConsumer /home/git/code /home/gradle/code
-
 RUN cd /home/gradle/code/kino-cat/fileConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/file_consumer.jar
 
 FROM openjdk:8-alpine as fileConsumer

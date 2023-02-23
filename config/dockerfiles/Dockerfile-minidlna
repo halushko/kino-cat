@@ -35,10 +35,8 @@ RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.
 FROM gradle:jdk8-alpine as build_minidlna
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
-
 COPY --chown=gradle:gradle --from=build_middleware /home/gradle/app /home/gradle/app
 COPY --chown=gradle:gradle --from=download_minidlna /home/git/code /home/gradle/code
-
 RUN cd /home/gradle/code/kino-cat/minidlna && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/minidlna.jar
 
 FROM openjdk:8-alpine
@@ -48,12 +46,9 @@ VOLUME ["/var/cache/minidlna"]
 VOLUME ["/var/db/minidlna"]
 VOLUME ["/var/log/"]
 VOLUME ["/home/media"]
-
 ENV PUID=minidlna
 ENV PGID=minidlna
-
 COPY --from=build_minidlna /home/gradle/app /home/app
-
 RUN apk add minidlna sqlite
 COPY --from=download_minidlna /home/git/code/kino-cat/config/config_files/minidlna /etc
 COPY --from=download_minidlna /home/git/code/kino-cat/config/commands/minidlna /home/app
