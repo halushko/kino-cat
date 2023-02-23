@@ -4,7 +4,6 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
-  RABBIT_HOST_IP: 10.10.255.254
 
   BOT_TOKEN: <input bot token here>
   BOT_NAME: <input name of torrent here>
@@ -18,43 +17,44 @@ x-common-variables: &common-variables
   PONG: pong
 services:
   rabbitmq:
-    image: rabbitmq:3.9.20-management-alpine
-    hostname: rabbitmq
-    restart: always
+    image: rabbitmq:management-alpine
     environment: *common-variables
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.255.254
+    restart: always
+    hostname: rabbitmq
+    container_name: "rabbitmq_bot"
+#    networks:
+#      cat_private_network:
+#        ipv4_address: 10.10.255.254
     ports:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:LATEST-pi
+    image: halushko/cinema-bot:0.6-PI
     environment: *common-variables
     restart: always
-    container_name: "bot"
+    container_name: "torrent_bot"
     depends_on:
       - rabbitmq
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.2
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256Mb
+#    networks:
+#      cat_private_network:
+#        ipv4_address: 10.10.0.2
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 256Mb
   text_handler:
-    image: halushko/cinema-text:LATEST-pi
+    image: halushko/cinema-text:0.6-PI
     environment: *common-variables
     restart: always
     container_name: "text_handler"
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.3
+#    networks:
+#      cat_private_network:
+#        ipv4_address: 10.10.0.3
     depends_on:
       - rabbitmq
   file_handler:
-    image: halushko/cinema-file:LATEST-pi
+    image: halushko/cinema-file:0.6-PI
     environment: *common-variables
     restart: always
     container_name: "file_handler"
@@ -62,11 +62,11 @@ services:
       - rabbitmq
     volumes:
       - ./workdir/mediadata/torrent/torrent_files:/home/torrent_files/
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.4
+#    networks:
+#      cat_private_network:
+#        ipv4_address: 10.10.0.4
   torrent:
-    image: halushko/cinema-torrent:LATEST-pi
+    image: halushko/cinema-torrent:0.6-PI
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -76,20 +76,20 @@ services:
       - ./workdir/mediadata/:/home/media/
       - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
       - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.5
+#    networks:
+#      cat_private_network:
+#        ipv4_address: 10.10.0.5
     ports:
       - 9091:9091
       - 51413:51413
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 1G
   minidlna:
     container_name: "minidlna"
-    image: halushko/cinema-media:LATEST-pi
+    image: halushko/cinema-media:0.6-PI
     restart: always
     environment:  *common-variables
     depends_on:
@@ -100,14 +100,14 @@ services:
     ports:
       - 8200:8200
       - 1900:1900/udp
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
-networks:
-  cat_private_network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.10.0.0/16
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '1'
+#          memory: 1G
+#networks:
+#  cat_private_network:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: 10.10.0.0/16

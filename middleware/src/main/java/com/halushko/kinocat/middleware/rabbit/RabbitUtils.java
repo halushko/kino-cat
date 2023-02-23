@@ -5,7 +5,7 @@ import com.rabbitmq.client.*;
 import org.apache.log4j.Logger;
 
 public class RabbitUtils {
-    private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");
+    private final static String RABBIT_HOST_IP = "rabbitmq_bot";
     private final static String RABBIT_USERNAME = System.getenv("RABBITMQ_DEFAULT_USER");
     private final static String RABBIT_PASSWORD = System.getenv("RABBITMQ_DEFAULT_PASS");
     private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));

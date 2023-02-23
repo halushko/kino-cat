@@ -21,10 +21,11 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     public static KoTorrentBot BOT;
 
     static {
-        for (Map.Entry<String, String> a: System.getenv().entrySet()){
+        for (Map.Entry<String, String> a : System.getenv().entrySet()) {
             Logger.getRootLogger().debug(a.getKey() + " = [" + a.getValue() + "]");
         }
     }
+
     public static final String BOT_NAME = System.getenv("BOT_NAME");
 
     public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
@@ -101,7 +102,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     private static void parseTrustedUsersEnv() {
         String[] userIds = BOT_TRUSTED_USERS.split(",");
-        for(String userId: userIds) {
+        for (String userId : userIds) {
             try {
                 trustedUserIds.add(new Long(userId));
                 Logger.getRootLogger().warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is trusted", userId));

@@ -1,5 +1,5 @@
 FROM alpine/git as download_middleware
-LABEL VERSION=0.6.1
+LABEL VERSION=0.6.2
 ARG BRANCH=master
 ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code
@@ -12,7 +12,7 @@ RUN cd /home/git/code && \
     git pull origin $BRANCH
 
 FROM alpine/git as download_textConsumer
-LABEL VERSION=0.6.1
+LABEL VERSION=0.6.2
 ARG BRANCH=master
 ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code
