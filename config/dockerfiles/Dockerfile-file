@@ -1,5 +1,5 @@
-FROM alpine/git as download_image
-LABEL VERSION=0.5.2
+FROM alpine/git as download_middleware
+LABEL VERSION=0.6.1
 ARG BRANCH=master
 ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code
@@ -9,20 +9,37 @@ RUN cd /home/git/code && \
     git remote add origin $REPO && \
     git config core.sparseCheckout true && \
     echo "middleware/" >> .git/info/sparse-checkout && \
+    git pull origin $BRANCH
+
+FROM alpine/git as download_fileConsumer
+LABEL VERSION=0.6.1
+ARG BRANCH=master
+ARG REPO=https://github.com/halushko/kino-cat.git
+RUN mkdir -p /home/git/code
+RUN cd /home/git/code && \
+    git init kino-cat && \
+    cd kino-cat && \
+    git remote add origin $REPO && \
+    git config core.sparseCheckout true && \
     echo "fileConsumer/" >> .git/info/sparse-checkout && \
     git pull origin $BRANCH
 
-FROM gradle:jdk8-alpine as build_image
+FROM gradle:jdk8-alpine as build_middleware
+RUN mkdir -p /home/gradle/code
+RUN mkdir -p /home/gradle/app
+COPY --chown=gradle:gradle --from=download_middleware /home/git/code /home/gradle/code
+RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
+
+FROM gradle:jdk8-alpine as build_fileConsumer
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 
-COPY --chown=gradle:gradle --from=download_image /home/git/code /home/gradle/code
+COPY --chown=gradle:gradle --from=build_middleware /home/gradle/app /home/gradle/app
+COPY --chown=gradle:gradle --from=download_fileConsumer /home/git/code /home/gradle/code
 
-RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
-RUN cd /home/gradle/code/kino-cat/fileConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/file_consumer.jar
+RUN cd /home/gradle/code/kino-cat/middleware && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/file_consumer.jar
 
 FROM openjdk:8-alpine as fileConsumer
 RUN mkdir -p /home/torrent_files/
-#COPY --from=download_image /home/git/code /home/app/code
-COPY --from=build_image /home/gradle/app /home/app
+COPY --from=build_fileConsumer /home/gradle/app /home/app
 ENTRYPOINT ["java", "-jar", "/home/app/file_consumer.jar"]
