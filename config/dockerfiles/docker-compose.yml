@@ -4,25 +4,31 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
+  RABBIT_HOST_IP: 10.10.255.254
 
   BOT_TOKEN: <input bot token here>
   BOT_NAME: <input name of torrent here>
   BOT_TRUSTED_USERS: <Telegram user IDs, splitted by ",">
 
   LONG_PAUSE_MILIS: 10000
-  MEDIUM_PAUSE_MILIS: 5000
+  MEDIUM_PAUSE_MILIS: 5000k
   SMALL_PAUSE_MILIS: 500
 
   PING: /ping
   PONG: pong
-  HOST_IP: <Input the IP of Host here>
 services:
   rabbitmq:
-    image: rabbitmq:management-alpine
-    environment: *common-variables
-    restart: always
+    image: rabbitmq:3.9.20-management-alpine
+    hostname: rabbitmq
     container_name: "rabbit"
-    network_mode: host
+    restart: always
+    environment: *common-variables
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.255.254
+    ports:
+      - 5672:5672
+      - 15672:15672
   bot:
     image: halushko/cinema-bot:0.6-PI
     environment: *common-variables
@@ -30,11 +36,17 @@ services:
     container_name: "bot"
     depends_on:
       - rabbitmq
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.2
   text_handler:
     image: halushko/cinema-text:0.6-PI
     environment: *common-variables
     restart: always
     container_name: "text"
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.3
     depends_on:
       - rabbitmq
   file_handler:
@@ -46,6 +58,9 @@ services:
       - rabbitmq
     volumes:
       - ./workdir/mediadata/torrent/torrent_files:/home/torrent_files/
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.4
   torrent:
     image: halushko/cinema-torrent:0.6-PI
     environment: *common-variables
@@ -57,6 +72,9 @@ services:
       - ./workdir/mediadata/:/home/media/
       - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
       - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.5
     ports:
       - 9091:9091
       - 51413:51413
@@ -70,3 +88,9 @@ services:
     volumes:
       - ./workdir/mediadata/torrent/complete:/home/media/
     network_mode: host
+networks:
+  cat_private_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/16
