@@ -62,6 +62,7 @@ fi
 if [[ $V_MOUNT == true ]]; then
     umount -f ./workdir/
     mount -t ntfs /dev/sda1 ./workdir/
+#    UUID=779DB7ED03DED64A /home/dima/workdir ntfs defaults 0 0
 fi
 
 docker-compose up

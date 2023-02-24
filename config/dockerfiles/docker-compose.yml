@@ -5,10 +5,11 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
   RABBIT_HOST_IP: 10.10.255.254
+  HOST_IP: 10.10.255.254
 
-  BOT_TOKEN: <input bot token here>
-  BOT_NAME: <input name of torrent here>
-  BOT_TRUSTED_USERS: <Telegram user IDs, splitted by ",">
+  BOT_TOKEN: 1859184957:AAE8qXSGotHB8NDl7QQMr33aihwJQOz6IcQ
+  BOT_NAME: koTorrentBot
+  BOT_TRUSTED_USERS: 386734674,43504868
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000k

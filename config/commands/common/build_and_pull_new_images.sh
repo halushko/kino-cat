@@ -3,10 +3,10 @@ function usage() {
   cat <<USAGE
 
     Build docker images
-    Usage: $0 [--full] [-b] [-d] [-p] [--not_pi] [-t] [--branch] [--release]
+    Usage: $0 [--full] [-b] [-d] [-p] [-t] [--branch] [--release]
 
     Options:
-        --full        :   download dockerfiles + build images + push images to dockerhub + execute for RaspberryPi
+        --full        :   download dockerfiles + build images + push images to dockerhub
         -b            :   build Dockerfiles
         -d            :   use this flag to download Dockerfiles from github repo. Without this flag the Dockerfiles
                           from current directory will be used. No need to use with also see flag [--branch]
@@ -14,9 +14,7 @@ function usage() {
                           default the "master" branch is used
         -p            :   pull images to DockerHub after completion
         -t            :   tag (name) of images that will be built
-        --not_pi      :   suffix PI is used for arm64 architecture. If you will use this flag then images will not
-                                  have suffix "PI"
-        --release     :   build images with tag [-t] and also build with tag "LATEST" or "LATEST-PI"
+        --release     :   build images with tag [-t] and also build with tag "latest"
 USAGE
   exit 1
 }
@@ -24,12 +22,10 @@ USAGE
 V_BUILD=false
 V_DOWNLOAD=false
 V_PUSH=false
-V_PI=true
-V_TAG=""
+V_TAG="latest"
 V_BRANCH="master"
-V_LATEST=false
-V_PUSH_LATEST=true
-V_LATEST_TAG=""
+V_LATEST=true
+V_RELEASE=false
 
 while [ "$1" != "" ]; do
   case $1 in
@@ -55,17 +51,14 @@ while [ "$1" != "" ]; do
     shift
     V_BRANCH=$1
     ;;
-  --not_pi)
-    V_PI=false
-    ;;
-  --full)
-    V_BUILD=true
-    V_DOWNLOAD=true
-    V_PUSH=true
-    ;;
   --release)
     V_LATEST=true
     ;;
+  --full)
+      V_BUILD=true
+      V_DOWNLOAD=true
+      V_PUSH=true
+      ;;
   *)
     usage
     echo "$1 not found"
@@ -75,9 +68,21 @@ while [ "$1" != "" ]; do
   shift
 done
 
+echo "Build started"
+
 rm -rf tmp
 mkdir tmp
 cd tmp || exit 0
+echo "tmp directory created"
+
+if [[ $V_LATEST == $V_TAG ]]; then
+  V_LATEST = false
+fi
+echo "The TAG is $V_TAG"
+
+if [[ $V_LATEST == true ]]; then
+  echo "The latest TAG will be built too"
+fi
 
 if [[ $V_DOWNLOAD == true ]]; then
   echo "Download Dockerfiles from repo"
@@ -94,63 +99,52 @@ else
   cp ../Dockerfile-* ./kino-cat/config/dockerfiles
 fi
 
-if [[ $V_LATEST == true && $V_TAG == "" ]]; then
-  V_TAG="LATEST"
-  V_PUSH_LATEST=false
-fi
-
-if [[ $V_PI == true ]]; then
-  V_LATEST_TAG=":LATEST-pi"
-fi
-
-if [[ $V_TAG == "" ]]; then
-  V_PI=false
-fi
-if [[ $V_PI == true ]]; then
-  V_TAG=":$V_TAG-pi"
-fi
-
-echo "The TAG is $V_TAG"
-
 if [[ $V_BUILD == true ]]; then
-  echo "Start build from branch $V_BRANCH"
+  echo "Start build tag = $V_TAG"
   cd ./kino-cat/config/dockerfiles || exit 0
 
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot$V_TAG -f Dockerfile-bot .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file$V_TAG -f Dockerfile-file .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media$V_TAG -f Dockerfile-minidlna .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text$V_TAG -f Dockerfile-text .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_TAG -f Dockerfile-torrent .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-middleware:$V_TAG -f Dockerfile-middleware .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot:$V_TAG -f Dockerfile-bot .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file:$V_TAG -f Dockerfile-file .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media:$V_TAG -f Dockerfile-minidlna .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text:$V_TAG -f Dockerfile-text .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent:$V_TAG -f Dockerfile-torrent .
 
-#  if [[ $V_LATEST == true ]]; then
-#    echo "Start build LATEST tag $V_LATEST_TAG"
-#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot$V_LATEST_TAG -f Dockerfile-bot .
-#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file$V_LATEST_TAG -f Dockerfile-file .
-#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media$V_LATEST_TAG -f Dockerfile-minidlna .
-#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text$V_LATEST_TAG -f Dockerfile-text .
-#    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent$V_LATEST_TAG -f Dockerfile-torrent .
-#  fi
+  if [[ $V_LATEST == true ]]; then
+    echo "Start build 'latest' tag"
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-middleware:latest -f Dockerfile-middleware .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot:latest -f Dockerfile-bot .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-fil:latest -f Dockerfile-file .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media:latest -f Dockerfile-minidlna .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text:latest -f Dockerfile-text .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent:latest -f Dockerfile-torrent .
+  fi
 
   cd ../../..
   echo "Finish build"
 fi
 
-if [[ $V_PUSH == true && $V_TAG != "LATEST" ]]; then
+if [[ $V_PUSH == true ]]; then
   echo "Start push to Docker Hub"
-  docker push halushko/cinema-bot$V_TAG
-  docker push halushko/cinema-file$V_TAG
-  docker push halushko/cinema-media$V_TAG
-  docker push halushko/cinema-text$V_TAG
-  docker push halushko/cinema-torrent$V_TAG
+  docker push halushko/cinema-middleware:$V_TAG
+  docker push halushko/cinema-bot:$V_TAG
+  docker push halushko/cinema-file:$V_TAG
+  docker push halushko/cinema-media:$V_TAG
+  docker push halushko/cinema-text:$V_TAG
+  docker push halushko/cinema-torrent:$V_TAG
 
-#  if [[ $V_PUSH_LATEST == true ]]; then
-#    docker push halushko/cinema-bot$V_LATEST_TAG
-#    docker push halushko/cinema-file$V_LATEST_TAG
-#    docker push halushko/cinema-media$V_LATEST_TAG
-#    docker push halushko/cinema-text$V_LATEST_TAG
-#    docker push halushko/cinema-torrent$V_LATEST_TAG
-#  fi
+  if [[ $V_LATEST == true ]]; then
+    docker push halushko/cinema-middleware:latest
+    docker push halushko/cinema-bot:latest
+    docker push halushko/cinema-file:latest
+    docker push halushko/cinema-media:latest
+    docker push halushko/cinema-text:latest
+    docker push halushko/cinema-torrent:latest
+  fi
 fi
 
 cd ..
 rm -rf tmp
+echo "tmp directory removed"
+
+echo "Build finished"
