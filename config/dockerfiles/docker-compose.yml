@@ -4,14 +4,14 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
-  RABBIT_IP: rabbit
+  RABBIT_HOST_IP: 10.10.255.254
 
-  BOT_TOKEN: 1859184957:AAE8qXSGotHB8NDl7QQMr33aihwJQOz6IcQ
-  BOT_NAME: koTorrentBot
-  BOT_TRUSTED_USERS: 386734674,43504868
+  BOT_TOKEN: <input>>
+  BOT_NAME: <input>
+  BOT_TRUSTED_USERS: <input,input,input>
 
   LONG_PAUSE_MILIS: 10000
-  MEDIUM_PAUSE_MILIS: 5000
+  MEDIUM_PAUSE_MILIS: 5000k
   SMALL_PAUSE_MILIS: 500
 
   PING: /ping
@@ -82,7 +82,7 @@ services:
     container_name: "media"
     image: halushko/cinema-media:latest
     restart: always
-    environment: *common-variables
+    environment:  *common-variables
     depends_on:
       - rabbitmq
     volumes:

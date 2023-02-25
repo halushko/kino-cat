@@ -42,22 +42,6 @@ public class RabbitUtils {
                     connection.addShutdownListener(new MyShutdownListener());
                     return connection;
                 } catch (Exception e) {
-                    synchronized (localConnectionFactory) {
-                        closeConnection();
-                        try {
-                            connection = localConnectionFactory.newConnection();
-                            connection.addShutdownListener(new MyShutdownListener());
-                            return connection;
-                        } catch (Exception e2) {
-                            try {
-                                Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
-                            } catch (InterruptedException ignored) {
-                            }
-                            Logger.getRootLogger().error("Error while open connection. ", e2);
-                            connection = null;
-                        }
-                    }
-
                     try {
                         Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
                     } catch (InterruptedException ignored) {
