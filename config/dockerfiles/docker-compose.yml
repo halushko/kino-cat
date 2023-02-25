@@ -11,7 +11,7 @@ x-common-variables: &common-variables
   BOT_TRUSTED_USERS: <input,input,input>
 
   LONG_PAUSE_MILIS: 10000
-  MEDIUM_PAUSE_MILIS: 5000k
+  MEDIUM_PAUSE_MILIS: 5000
   SMALL_PAUSE_MILIS: 500
 
   PING: /ping
