@@ -14,6 +14,7 @@ function usage() {
                           default the "master" branch is used
         -p            :   pull images to DockerHub after completion
         -t            :   tag (name) of images that will be built
+        -m            :   crate manifest for arm46 and amd64 architectures
         --release     :   build images with tag [-t] and also build with tag "latest"
 USAGE
   exit 1
@@ -26,6 +27,7 @@ V_TAG="latest"
 V_BRANCH="master"
 V_LATEST=true
 V_RELEASE=false
+V_MANIFEST=false
 
 while [ "$1" != "" ]; do
   case $1 in
@@ -46,6 +48,9 @@ while [ "$1" != "" ]; do
     shift
     V_TAG=$1
     ;;
+  -m)
+    V_MANIFEST=true
+    ;;
   --branch)
     V_DOWNLOAD=true
     shift
@@ -55,10 +60,10 @@ while [ "$1" != "" ]; do
     V_LATEST=true
     ;;
   --full)
-      V_BUILD=true
-      V_DOWNLOAD=true
-      V_PUSH=true
-      ;;
+    V_BUILD=true
+    V_DOWNLOAD=true
+    V_PUSH=true
+    ;;
   *)
     usage
     echo "$1 not found"
@@ -103,21 +108,40 @@ if [[ $V_BUILD == true ]]; then
   echo "Start build tag = $V_TAG"
   cd ./kino-cat/config/dockerfiles || exit 0
 
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-middleware:$V_TAG -f Dockerfile-middleware .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot:$V_TAG -f Dockerfile-bot .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file:$V_TAG -f Dockerfile-file .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media:$V_TAG -f Dockerfile-minidlna .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text:$V_TAG -f Dockerfile-text .
-  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent:$V_TAG -f Dockerfile-torrent .
+  docker build --build-arg BRANCH="$V_BRANCH" --build-arg ARCH=arm64v8/ --platform linux/arm64 -t halushko/cinema-middleware:tmp- $V_TAG-arm64 -f Dockerfile-middleware .
+  #docker build --build-arg BRANCH="$V_BRANCH" --build-arg ARCH=amd64/ --platform=linux/amd64 -t halushko/cinema-middleware:tmp- $V_TAG-amd64 -f Dockerfile-middleware .
+  docker build --build-arg BRANCH="$V_BRANCH" --build-arg ARCH=arm64v8/ --platform=linux/arm64 -t halushko/cinema-middleware:$V_TAG-arm64 -f Dockerfile-middleware .
+  #docker build --build-arg BRANCH="$V_BRANCH" --build-arg ARCH=amd64/ --platform=linux/amd64 -t halushko/cinema-middleware:$V_TAG-amd64 -f Dockerfile-middleware .
 
+  docker push halushko/cinema-middleware:tmp-$V_TAG-arm64
+  #docker push halushko/cinema-middleware:tmp-$V_TAG-amd64
+  docker manifest create halushko/cinema-middleware:tmp -a halushko/cinema-middleware:$V_TAG-amd64 -a halushko/cinema-middleware:$V_TAG-arm64
+  docker manifest push halushko/cinema-middleware:tmp
+
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot:$V_TAG-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-bot .
+  #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot:$V_TAG-amd64 --build-arg ARCH=amd64/ -f Dockerfile-bot .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file:$V_TAG-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-file .
+  #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file:$V_TAG-amd64 --build-arg ARCH=amd64/ -f Dockerfile-file .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media:$V_TAG-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-minidlna .
+  #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media:$V_TAG-amd64 --build-arg ARCH=amd64/ -f Dockerfile-minidlna .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text:$V_TAG-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-text .
+  #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text:$V_TAG-amd64 --build-arg ARCH=amd64/ -f Dockerfile-text .
+  docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent:$V_TAG-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-torrent .
+  #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent:$V_TAG-amd64 --build-arg ARCH=amd64/ -f Dockerfile-torrent .
   if [[ $V_LATEST == true ]]; then
     echo "Start build 'latest' tag"
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-middleware:latest -f Dockerfile-middleware .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot:latest -f Dockerfile-bot .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-fil:latest -f Dockerfile-file .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media:latest -f Dockerfile-minidlna .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text:latest -f Dockerfile-text .
-    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent:latest -f Dockerfile-torrent .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-middleware:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-middleware .
+    #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-middleware:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-middleware .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-bot .
+    #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-bot:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-bot .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-file .
+    #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-file:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-file .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-minidlna .
+    #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-media:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-minidlna .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-text .
+    #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-text:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-text .
+    docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-torrent .
+    #docker build --build-arg BRANCH="$V_BRANCH" -t halushko/cinema-torrent:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-torrent .
   fi
 
   cd ../../..
@@ -126,20 +150,57 @@ fi
 
 if [[ $V_PUSH == true ]]; then
   echo "Start push to Docker Hub"
-  docker push halushko/cinema-middleware:$V_TAG
-  docker push halushko/cinema-bot:$V_TAG
-  docker push halushko/cinema-file:$V_TAG
-  docker push halushko/cinema-media:$V_TAG
-  docker push halushko/cinema-text:$V_TAG
-  docker push halushko/cinema-torrent:$V_TAG
+  docker push halushko/cinema-middleware:$V_TAG-arm64
+  #docker push halushko/cinema-middleware:$V_TAG-amd64
+  docker manifest create halushko/cinema-middleware: $V_TAG -a halushko/cinema-middleware:$V_TAG-amd64 -a halushko/cinema-middleware:$V_TAG-arm64
+  docker manifest push halushko/cinema-middleware: $V_TAG
+  docker push halushko/cinema-bot:$V_TAG-arm64
+  #docker push halushko/cinema-bot:$V_TAG-amd64
+  docker manifest create halushko/cinema-bot: $V_TAG -a halushko/cinema-bot:$V_TAG-amd64 -a halushko/cinema-bot:$V_TAG-arm64
+  docker manifest push halushko/cinema-bot: $V_TAG
+  docker push halushko/cinema-file:$V_TAG-arm64
+  #docker push halushko/cinema-file:$V_TAG-amd64
+  docker manifest create halushko/cinema-file: $V_TAG -a halushko/cinema-file:$V_TAG-amd64 -a halushko/cinema-file:$V_TAG-arm64
+  docker manifest push halushko/cinema-file: $V_TAG
+  docker push halushko/cinema-media:$V_TAG-arm64
+  #docker push halushko/cinema-media:$V_TAG-amd64
+  docker manifest create halushko/cinema-media: $V_TAG -a halushko/cinema-media:$V_TAG-amd64 -a halushko/cinema-media:$V_TAG-arm64
+  docker manifest push halushko/cinema-media: $V_TAG
+  docker push halushko/cinema-text:$V_TAG-arm64
+  #docker push halushko/cinema-text:$V_TAG-amd64
+  docker manifest create halushko/cinema-text: $V_TAG -a halushko/cinema-text:$V_TAG-amd64 -a halushko/cinema-text:$V_TAG-arm64
+  docker manifest push halushko/cinema-text: $V_TAG
+  docker push halushko/cinema-torrent:$V_TAG-arm64
+  #docker push halushko/cinema-torrent:$V_TAG-amd64
+  docker manifest create halushko/cinema-torrent: $V_TAG -a halushko/cinema-torrent:$V_TAG-amd64 -a halushko/cinema-torrent:$V_TAG-arm64
+  docker manifest push halushko/cinema-torrent: $V_TAG
 
   if [[ $V_LATEST == true ]]; then
-    docker push halushko/cinema-middleware:latest
-    docker push halushko/cinema-bot:latest
-    docker push halushko/cinema-file:latest
-    docker push halushko/cinema-media:latest
-    docker push halushko/cinema-text:latest
-    docker push halushko/cinema-torrent:latest
+    echo "Start push latest to Docker Hub"
+    docker push halushko/cinema-middleware:latest-arm64
+    #docker push halushko/cinema-middleware:latest-amd64
+    docker manifest create halushko/cinema-middleware:latest -a halushko/cinema-middleware:latest-amd64 -a halushko/cinema-middleware:latest-arm64
+    docker manifest push halushko/cinema-middleware:latest
+    docker push halushko/cinema-bot:latest-arm64
+    #docker push halushko/cinema-bot:latest-amd64
+    docker manifest create halushko/cinema-bot:latest -a halushko/cinema-bot:latest-amd64 -a halushko/cinema-bot:latest-arm64
+    docker manifest push halushko/cinema-bot:latest
+    docker push halushko/cinema-file:latest-arm64
+    #docker push halushko/cinema-file:latest-amd64
+    docker manifest create halushko/cinema-file:latest -a halushko/cinema-file:latest-amd64 -a halushko/cinema-file:latest-arm64
+    docker manifest push halushko/cinema-file:latest
+    docker push halushko/cinema-media:latest-arm64
+    #docker push halushko/cinema-media:latest-amd64
+    docker manifest create halushko/cinema-media:latest -a halushko/cinema-media:latest-amd64 -a halushko/cinema-media:latest-arm64
+    docker manifest push halushko/cinema-media:latest
+    docker push halushko/cinema-text:latest-arm64
+    #docker push halushko/cinema-text:latest-amd64
+    docker manifest create halushko/cinema-text:latest -a halushko/cinema-text:latest-amd64 -a halushko/cinema-text:latest-arm64
+    docker manifest push halushko/cinema-text:latest
+    docker push halushko/cinema-torrent:latest-arm64
+    #docker push halushko/cinema-torrent:latest-amd64
+    docker manifest create halushko/cinema-torrent:latest -a halushko/cinema-torrent:latest-amd64 -a halushko/cinema-torrent:latest-arm64
+    docker manifest push halushko/cinema-torrent:latest
   fi
 fi
 

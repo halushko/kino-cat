@@ -4,22 +4,21 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
-  RABBIT_HOST_IP: 10.10.255.254
-  HOST_IP: 10.10.255.254
+  RABBIT_IP: rabbit
 
   BOT_TOKEN: 1859184957:AAE8qXSGotHB8NDl7QQMr33aihwJQOz6IcQ
   BOT_NAME: koTorrentBot
   BOT_TRUSTED_USERS: 386734674,43504868
 
   LONG_PAUSE_MILIS: 10000
-  MEDIUM_PAUSE_MILIS: 5000k
+  MEDIUM_PAUSE_MILIS: 5000
   SMALL_PAUSE_MILIS: 500
 
   PING: /ping
   PONG: pong
 services:
   rabbitmq:
-    image: rabbitmq:3.9.20-management-alpine
+    image: rabbitmq:management-alpine
     hostname: rabbitmq
     container_name: "rabbit"
     restart: always
@@ -31,7 +30,7 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:0.6-PI
+    image: halushko/cinema-bot:latest
     environment: *common-variables
     restart: always
     container_name: "bot"
@@ -41,7 +40,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.2
   text_handler:
-    image: halushko/cinema-text:0.6-PI
+    image: halushko/cinema-text:latest
     environment: *common-variables
     restart: always
     container_name: "text"
@@ -51,7 +50,7 @@ services:
     depends_on:
       - rabbitmq
   file_handler:
-    image: halushko/cinema-file:0.6-PI
+    image: halushko/cinema-file:latest
     environment: *common-variables
     restart: always
     container_name: "file"
@@ -63,7 +62,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.4
   torrent:
-    image: halushko/cinema-torrent:0.6-PI
+    image: halushko/cinema-torrent:latest
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -81,9 +80,9 @@ services:
       - 51413:51413
   minidlna:
     container_name: "media"
-    image: halushko/cinema-media:0.6-PI
+    image: halushko/cinema-media:latest
     restart: always
-    environment:  *common-variables
+    environment: *common-variables
     depends_on:
       - rabbitmq
     volumes:

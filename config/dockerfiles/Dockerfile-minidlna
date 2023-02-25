@@ -14,7 +14,7 @@ RUN cd /home/git/code && \
     git pull origin $BRANCH
 
 
-FROM halushko/cinema-middleware:tmp as build_minidlna
+FROM halushko/cinema-middleware:lasest as build_minidlna
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 COPY --chown=gradle:gradle --from=halushko/cinema-middleware:tmp /home/gradle/app /home/gradle/app

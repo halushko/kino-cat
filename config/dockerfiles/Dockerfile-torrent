@@ -13,7 +13,7 @@ RUN cd /home/git/code && \
     echo "config/config_files/transmission/" >> .git/info/sparse-checkout && \
     git pull origin $BRANCH
 
-FROM halushko/cinema-middleware:tmp as build_torrent
+FROM halushko/cinema-middleware:latest as build_torrent
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
 COPY --chown=gradle:gradle --from=halushko/cinema-middleware:tmp /home/gradle/app /home/gradle/app
