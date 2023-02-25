@@ -1,5 +1,5 @@
 FROM alpine/git as download_fileConsumer
-LABEL VERSION=0.6.4
+LABEL VERSION=0.6.5
 ARG BRANCH=master
 ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code
