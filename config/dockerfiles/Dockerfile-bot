@@ -12,8 +12,6 @@ RUN cd /home/git/code && \
     git pull origin $BRANCH
 
 FROM halushko/cinema-middleware:latest as build_bot
-RUN mkdir -p /home/gradle/code
-RUN mkdir -p /home/gradle/app
 COPY --chown=gradle:gradle --from=download_bot /home/git/code /home/gradle/code
 RUN cd /home/gradle/code/kino-cat/bot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/bot.jar
 

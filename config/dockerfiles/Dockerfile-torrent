@@ -14,9 +14,6 @@ RUN cd /home/git/code && \
     git pull origin $BRANCH
 
 FROM halushko/cinema-middleware:latest as build_torrent
-RUN mkdir -p /home/gradle/code
-RUN mkdir -p /home/gradle/app
-COPY --chown=gradle:gradle --from=halushko/cinema-middleware:latest /home/gradle/app /home/gradle/app
 COPY --chown=gradle:gradle --from=download_torrent /home/git/code /home/gradle/code
 RUN cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/torrent.jar
 
