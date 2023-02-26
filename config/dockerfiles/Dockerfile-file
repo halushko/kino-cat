@@ -14,7 +14,7 @@ RUN cd /home/git/code && \
 FROM halushko/cinema-middleware:latest as build_fileConsumer
 RUN mkdir -p /home/gradle/code
 RUN mkdir -p /home/gradle/app
-COPY --chown=gradle:gradle --from=halushko/cinema-middleware:tmp /home/gradle/app /home/gradle/app
+COPY --chown=gradle:gradle --from=halushko/cinema-middleware:latest /home/gradle/app /home/gradle/app
 COPY --chown=gradle:gradle --from=download_fileConsumer /home/git/code /home/gradle/code
 RUN cd /home/gradle/code/kino-cat/fileConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/file_consumer.jar
 
