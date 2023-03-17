@@ -6,9 +6,9 @@ x-common-variables: &common-variables
   RABBIT_PORT: 5672
   RABBIT_HOST_IP: 10.10.255.254
 
-  BOT_TOKEN: <input bot token here>
-  BOT_NAME: <input name of torrent here>
-  BOT_TRUSTED_USERS: <Telegram user IDs, splitted by ",">
+  BOT_TOKEN: <input>>
+  BOT_NAME: <input>
+  BOT_TRUSTED_USERS: <input,input,input>
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000
@@ -18,8 +18,9 @@ x-common-variables: &common-variables
   PONG: pong
 services:
   rabbitmq:
-    image: rabbitmq:3.9.20-management-alpine
+    image: rabbitmq:management-alpine
     hostname: rabbitmq
+    container_name: "rabbit"
     restart: always
     environment: *common-variables
     networks:
@@ -29,7 +30,7 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:LATEST-pi
+    image: halushko/cinema-bot:latest
     environment: *common-variables
     restart: always
     container_name: "bot"
@@ -38,26 +39,21 @@ services:
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.2
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 256Mb
   text_handler:
-    image: halushko/cinema-text:LATEST-pi
+    image: halushko/cinema-text:latest
     environment: *common-variables
     restart: always
-    container_name: "text_handler"
+    container_name: "text"
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.3
     depends_on:
       - rabbitmq
   file_handler:
-    image: halushko/cinema-file:LATEST-pi
+    image: halushko/cinema-file:latest
     environment: *common-variables
     restart: always
-    container_name: "file_handler"
+    container_name: "file"
     depends_on:
       - rabbitmq
     volumes:
@@ -66,7 +62,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.4
   torrent:
-    image: halushko/cinema-torrent:LATEST-pi
+    image: halushko/cinema-torrent:latest
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -82,14 +78,9 @@ services:
     ports:
       - 9091:9091
       - 51413:51413
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
   minidlna:
-    container_name: "minidlna"
-    image: halushko/cinema-media:LATEST-pi
+    container_name: "media"
+    image: halushko/cinema-media:latest
     restart: always
     environment:  *common-variables
     depends_on:
@@ -97,14 +88,6 @@ services:
     volumes:
       - ./workdir/mediadata/torrent/complete:/home/media/
     network_mode: host
-    ports:
-      - 8200:8200
-      - 1900:1900/udp
-    deploy:
-      resources:
-        limits:
-          cpus: '1'
-          memory: 1G
 networks:
   cat_private_network:
     driver: bridge

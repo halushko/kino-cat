@@ -41,7 +41,7 @@ public class UserMessageHandler extends InputMessageHandler {
     protected void handleTorrent(RabbitMessage rm) throws MalformedURLException {
         long fileSize = Long.parseLong(rm.getValue("SIZE"));
         if (fileSize > 524288L) {
-            Logger.getRootLogger().warn(String.format("Whe filesize is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
+            Logger.getRootLogger().warn(String.format("The file size is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
             return;
         }
         URL fileUrl = new URL(FILE_URL_PREFIX + rm.getValue(FILE_PATH));

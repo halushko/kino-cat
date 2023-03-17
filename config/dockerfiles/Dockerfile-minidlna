@@ -1,5 +1,5 @@
-FROM alpine/git as download_image
-LABEL VERSION=0.5
+FROM alpine/git as download_minidlna
+LABEL VERSION=0.6.5
 ARG BRANCH=master
 ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code
@@ -8,19 +8,14 @@ RUN cd /home/git/code && \
     cd kino-cat && \
     git remote add origin $REPO && \
     git config core.sparseCheckout true && \
-    echo "middleware/" >> .git/info/sparse-checkout && \
     echo "minidlna/" >> .git/info/sparse-checkout && \
     echo "config/commands/minidlna/" >> .git/info/sparse-checkout && \
     echo "config/config_files/minidlna/" >> .git/info/sparse-checkout && \
     git pull origin $BRANCH
 
-FROM gradle:jdk8-alpine as build_image
-RUN mkdir -p /home/gradle/code
-RUN mkdir -p /home/gradle/app
 
-COPY --chown=gradle:gradle --from=download_image /home/git/code /home/gradle/code
-
-RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
+FROM halushko/cinema-middleware:latest as build_minidlna
+COPY --chown=gradle:gradle --from=download_minidlna /home/git/code /home/gradle/code
 RUN cd /home/gradle/code/kino-cat/minidlna && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/minidlna.jar
 
 FROM openjdk:8-alpine
@@ -30,15 +25,12 @@ VOLUME ["/var/cache/minidlna"]
 VOLUME ["/var/db/minidlna"]
 VOLUME ["/var/log/"]
 VOLUME ["/home/media"]
-
 ENV PUID=minidlna
 ENV PGID=minidlna
-
-COPY --from=build_image /home/gradle/app /home/app
-
+COPY --from=build_minidlna /home/gradle/app /home/app
 RUN apk add minidlna sqlite
-COPY --from=download_image /home/git/code/kino-cat/config/config_files/minidlna /etc
-COPY --from=download_image /home/git/code/kino-cat/config/commands/minidlna /home/app
+COPY --from=download_minidlna /home/git/code/kino-cat/config/config_files/minidlna /etc
+COPY --from=download_minidlna /home/git/code/kino-cat/config/commands/minidlna /home/app
 
 RUN openrc
 RUN touch /run/openrc/softlevel

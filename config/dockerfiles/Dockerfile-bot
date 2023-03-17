@@ -1,5 +1,5 @@
-FROM alpine/git as download_image
-LABEL VERSION=0.5.6
+FROM alpine/git as download_bot
+LABEL VERSION=0.6.5
 ARG BRANCH=master
 ARG REPO=https://github.com/halushko/kino-cat.git
 RUN mkdir -p /home/git/code
@@ -8,19 +8,13 @@ RUN cd /home/git/code && \
     cd kino-cat && \
     git remote add origin $REPO && \
     git config core.sparseCheckout true && \
-    echo "middleware/" >> .git/info/sparse-checkout && \
     echo "bot/" >> .git/info/sparse-checkout && \
     git pull origin $BRANCH
 
-FROM gradle:jdk8-alpine as build_image
-RUN mkdir -p /home/gradle/code
-RUN mkdir -p /home/gradle/app
-
-COPY --chown=gradle:gradle --from=download_image /home/git/code /home/gradle/code
-
-RUN cd /home/gradle/code/kino-cat/middleware && gradle jar && cp ./build/libs/*.jar /home/gradle/app/kot_utils.jar
+FROM halushko/cinema-middleware:latest as build_bot
+COPY --chown=gradle:gradle --from=download_bot /home/git/code /home/gradle/code
 RUN cd /home/gradle/code/kino-cat/bot && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/bot.jar
 
 FROM openjdk:8-alpine as bot
-COPY --from=build_image /home/gradle/app /home/app
+COPY --from=build_bot /home/gradle/app /home/app
 ENTRYPOINT ["java", "-jar", "/home/app/bot.jar"]

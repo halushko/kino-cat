@@ -5,14 +5,24 @@ import com.rabbitmq.client.*;
 import org.apache.log4j.Logger;
 
 public class RabbitUtils {
-    private final static String RABBIT_HOST_IP = System.getenv("RABBIT_HOST_IP");
+    private final static String RABBIT_IP = System.getenv("RABBIT_IP");
     private final static String RABBIT_USERNAME = System.getenv("RABBITMQ_DEFAULT_USER");
     private final static String RABBIT_PASSWORD = System.getenv("RABBITMQ_DEFAULT_PASS");
     private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));
 
     private static final ConnectionFactory connectionFactory = new ConnectionFactory() {
         {
-            setHost(RABBIT_HOST_IP);
+            setHost(RABBIT_IP);
+            setUsername(RABBIT_USERNAME);
+            setPassword(RABBIT_PASSWORD);
+            setPort(RABBIT_PORT);
+            setAutomaticRecoveryEnabled(false);
+        }
+    };
+
+    private static final ConnectionFactory localConnectionFactory = new ConnectionFactory() {
+        {
+            setHost("localhost");
             setUsername(RABBIT_USERNAME);
             setPassword(RABBIT_PASSWORD);
             setPort(RABBIT_PORT);
