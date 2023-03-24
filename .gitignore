@@ -127,7 +127,7 @@ gradle-app.setting
 .classpath
 
 .idea/
-/workdir/
+./workdir/
 /*/gradle/wrapper/
 /*/gradlew
 /*/gradlew.bat

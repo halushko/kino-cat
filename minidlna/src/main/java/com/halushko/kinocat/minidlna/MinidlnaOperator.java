@@ -3,6 +3,7 @@ package com.halushko.kinocat.minidlna;
 import com.halushko.kinocat.middleware.cli.Constants;
 import com.halushko.kinocat.middleware.handlers.input.ExternalCliCommandExecutor;
 
+@Deprecated
 public class MinidlnaOperator extends ExternalCliCommandExecutor {
     @Override
     protected String getQueue() {
