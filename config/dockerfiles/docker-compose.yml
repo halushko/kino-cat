@@ -4,7 +4,7 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
-  RABBIT_HOST_IP: 10.10.255.254
+  RABBIT_IP: 10.10.255.254
 
   BOT_TOKEN: <input>>
   BOT_NAME: <input>
@@ -57,7 +57,7 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./workdir/mediadata/torrent/torrent_files:/home/torrent_files/
+      - ./workdir/transmission/files_from_telegram:/home/torrent_files/
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.4
@@ -69,24 +69,27 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./workdir/mediadata/:/home/media/
-      - ./workdir/torrentdata/torrents:/var/lib/transmission/config/torrents
-      - ./workdir/torrentdata/resume:/var/lib/transmission/config/resume
+      - ./workdir/plex/movies:/home/media/
+      - ./workdir/transmission/torrents:/var/lib/transmission/config/torrents
+      - ./workdir/transmission/resume:/var/lib/transmission/config/resume
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.5
     ports:
       - 9091:9091
       - 51413:51413
-  minidlna:
+  media:
+    image: lscr.io/linuxserver/plex:latest
     container_name: "media"
-    image: halushko/cinema-media:latest
-    restart: always
-    environment:  *common-variables
-    depends_on:
-      - rabbitmq
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - VERSION=docker
     volumes:
-      - ./workdir/mediadata/torrent/complete:/home/media/
+      - ./workdir/plex/config:/config
+      - ./workdir/plex/movies:/movies
+    restart: unless-stopped
     network_mode: host
 networks:
   cat_private_network:
