@@ -42,5 +42,5 @@ jobs:
         file: ./config/dockerfiles/Dockerfile-${{ matrix.project }}
         push: true
         builder: mybuilder
-        platforms: linux/amd64, linux/amd64/v2, linux/amd64/v3, linux/amd64/v4, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/mips64le, linux/mips64, linux/arm/v7, linux/arm/v6
+        platforms: linux/amd64, linux/arm/v7, linux/arm/v6
         tags: halushko/cinema-${{ matrix.project }}:test-wf,halushko/cinema-${{ matrix.project }}:test-wf-tst
