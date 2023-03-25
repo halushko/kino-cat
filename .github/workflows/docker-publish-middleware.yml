@@ -43,10 +43,8 @@ jobs:
       uses: gradle/gradle-build-action@v2.4.0
       with:
         build-root-directory: middleware
-#        working-directory: ./middleware
-#        gradle-file: ./middleware/build.gradle
         gradle-version: current
-        arguments: build --info
+        arguments: fatJar
 
     - name: Build and push Docker image
       id: docker_build
