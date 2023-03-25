@@ -58,6 +58,8 @@ jobs:
 
     - name: Build with Gradle bot1
       uses: gradle/gradle-build-action@v2.4.0
+      run: |
+        echo $my_dir; pwd
       with:
         build-root-directory: bot
         gradle-version: current
