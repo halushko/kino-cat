@@ -42,8 +42,9 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.4.0
       with:
-        working-directory: ./middleware
-#        gradle-file: middleware/build.gradle
+        build-root-directory: middleware
+#        working-directory: ./middleware
+#        gradle-file: ./middleware/build.gradle
         gradle-version: current
         arguments: build --info
 
