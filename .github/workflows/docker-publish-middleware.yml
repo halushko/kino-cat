@@ -44,7 +44,7 @@ jobs:
       with:
         build-root-directory: middleware
         gradle-version: current
-        arguments: fatJar
+        arguments: jar
 
     - name: Build and push Docker image
       id: docker_build
