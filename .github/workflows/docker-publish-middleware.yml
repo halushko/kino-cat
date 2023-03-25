@@ -42,7 +42,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.4.0
       with:
-        context: ./middleware
+        working-directory: middleware
         gradle-version: current
         arguments: build --info
 
