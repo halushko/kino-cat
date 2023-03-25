@@ -56,10 +56,12 @@ jobs:
       run: |
           ls middleware/build/libs; my_dir=`pwd`; echo $my_dir;
 
-    - name: Build with Gradle bot1
-      uses: gradle/gradle-build-action@v2.4.0
+    - name: show me again
       run: |
         echo $my_dir; pwd
+
+    - name: Build with Gradle bot1
+      uses: gradle/gradle-build-action@v2.4.0
       with:
         build-root-directory: bot
         gradle-version: current
