@@ -43,9 +43,8 @@ jobs:
 #          ls middleware/build/libs; my_dir=`pwd`; echo $my_dir>my_pass.txt
 
     - uses: actions/upload-artifact@v2
-      with:
-        name: my_pass.txt
     - run: ls middleware/build/libs; my_dir=`pwd`; echo $my_dir>my_pass.txt
+    - run: ls
 
     - uses: actions/download-artifact@v2
       with:
