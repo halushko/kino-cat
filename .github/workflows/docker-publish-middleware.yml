@@ -52,9 +52,14 @@ jobs:
         platforms: linux/amd64, linux/arm64/v8
         tags: halushko/cinema-middleware:1.0,halushko/cinema-middleware:latest
 
+    - name: show me
+      run: | 
+        ls
+
     - name: Build with Gradle bot1
       uses: gradle/gradle-build-action@v2.4.0
       with:
+        context: middleware/build/libs
         build-root-directory: bot
         gradle-version: current
         arguments: jar
