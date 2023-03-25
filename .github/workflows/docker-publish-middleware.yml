@@ -52,13 +52,27 @@ jobs:
         platforms: linux/amd64, linux/arm64/v8
         tags: halushko/cinema-middleware:1.0,halushko/cinema-middleware:latest
 
-    - name: show me
-      run: |
-          ls middleware/build/libs; my_dir=`pwd`; echo $my_dir;
+#    - name: show me
+#      run: |
+#          ls middleware/build/libs; my_dir=`pwd`; echo $my_dir>my_pass.txt
 
-    - name: show me again
-      run: |
-        echo $my_dir; pwd
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my_pass.txt
+      run: ls middleware/build/libs; my_dir=`pwd`; echo $my_dir>my_pass.txt
+
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: my_pass.txt
+      run: $my_dir=`cat my_pass.txt`
+#    - name: Build and run project
+#      uses: gradle/gradle-build-action@v1
+#      with:
+#        gradle-version: 7.2
+#        arguments: build
+#      run: java -jar build/libs/my-app.
 
     - name: Build with Gradle bot1
       uses: gradle/gradle-build-action@v2.4.0
