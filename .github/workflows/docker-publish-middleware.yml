@@ -59,7 +59,6 @@ jobs:
     - name: Build with Gradle bot1
       uses: gradle/gradle-build-action@v2.4.0
       with:
-        context: middleware/build/libs
         build-root-directory: bot
         gradle-version: current
         arguments: jar
