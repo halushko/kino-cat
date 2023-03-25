@@ -47,8 +47,8 @@ jobs:
 #        path:
     - run: echo "my_dir=`pwd`" >> $GITHUB_ENV
 #    - run: echo "DOCKER_TAG=docker://docker-registry.url/project:${{ github.ref_name }}" >> $GITHUB_ENV
-    - run: echo ${my_dir}; ls ${my_dir}
-    - run: cat ${my_dir}/bot/build.gradle
+#    - run: echo ${my_dir}; ls ${my_dir}
+#    - run: cat ${my_dir}/bot/build.gradle
 
 #    - run: ls middleware/build/libs; my_dir=`pwd`; echo $my_dir>my_pass.txt
 #    - run: $my_dir=`cat my_pass.txt`
