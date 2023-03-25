@@ -39,8 +39,8 @@ jobs:
       uses: docker/build-push-action@v2.6.0
       with:
         context: ./middleware
-        file: ../config/dockerfiles/Dockerfile-${{ matrix.project }}
+        file: ./config/dockerfiles/Dockerfile-${{ matrix.project }}
         push: true
         builder: mybuilder
         platforms: linux/amd64, linux/amd64/v2, linux/amd64/v3, linux/amd64/v4, linux/arm64, linux/riscv64, linux/ppc64le, linux/s390x, linux/386, linux/mips64le, linux/mips64, linux/arm/v7, linux/arm/v6
-        tags: ${{ secrets.DOCKER_USERNAME }}/cinema-${{ matrix.project }}:test-wf,${{ secrets.DOCKER_USERNAME }}/cinema-${{ matrix.project }}:test-wf-tst
+        tags: halushko/cinema-${{ matrix.project }}:test-wf,halushko/cinema-${{ matrix.project }}:test-wf-tst
