@@ -12,19 +12,8 @@ jar {
     }
 }
 
-task fatJar(type: Jar) {
-    manifest.from jar.manifest
-    classifier = 'all'
-    from {
-        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    } {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
-    with jar
-}
-
 artifacts {
-    archives fatJar
+    archives jar
 }
 
 dependencies {
