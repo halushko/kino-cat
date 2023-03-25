@@ -1,3 +1,4 @@
 FROM alpine
 LABEL VERSION=0.6.5.2
-COPY middleware/build/libs/*.jar /kot_utils.jar
+RUN mkdir -p /home/app
+COPY *.jar /home/app/kot_utils.jar

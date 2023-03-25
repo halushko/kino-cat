@@ -50,7 +50,7 @@ jobs:
       id: docker_build
       uses: docker/build-push-action@v2.6.0
       with:
-        context: ./middleware
+        context: middleware/build/libs
         file: ./config/dockerfiles/Dockerfile-${{ matrix.project }}
         push: true
         builder: mybuilder
