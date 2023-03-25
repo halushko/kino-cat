@@ -9,10 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        project: [middleware]
     steps:
     - uses: actions/checkout@v2
 
@@ -39,7 +35,7 @@ jobs:
         distribution: 'temurin'
         java-version: '8'
 
-    - name: Build with Gradle
+    - name: Build with Gradle middleware
       uses: gradle/gradle-build-action@v2.4.0
       with:
         build-root-directory: middleware
@@ -55,4 +51,22 @@ jobs:
         push: true
         builder: mybuilder
         platforms: linux/amd64, linux/arm64/v8
-        tags: halushko/cinema-${{ matrix.project }}:test-wf,halushko/cinema-${{ matrix.project }}:test-wf-tst
+        tags: halushko/cinema-middleware:1.0,halushko/cinema-middleware:latest
+
+    - name: Build with Gradle bot
+      uses: gradle/gradle-build-action@v2.4.0
+      with:
+        build-root-directory: bot
+        gradle-version: current
+        arguments: fatJar
+
+    - name: Build and push Docker image
+      id: docker_build
+      uses: docker/build-push-action@v2.6.0
+      with:
+        context: bot/build/libs
+        file: ./config/dockerfiles/Dockerfile-${{ matrix.project }}
+        push: true
+        builder: mybuilder
+        platforms: linux/amd64, linux/arm64/v8
+        tags: halushko/cinema-bot:1.0,halushko/cinema-bot:latest
