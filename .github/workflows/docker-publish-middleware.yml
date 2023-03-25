@@ -54,7 +54,7 @@ jobs:
 
     - name: show me
       run: | 
-        ls middleware/build/libs
+        ls middleware/build/libs; my_dir=`pwd`; echo $my_dir;
 
     - name: Build with Gradle bot1
       uses: gradle/gradle-build-action@v2.4.0
