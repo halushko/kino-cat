@@ -1,29 +1,16 @@
-FROM alpine/git as download_torrent
-LABEL VERSION=0.6.5
-ARG BRANCH=master
-ARG REPO=https://github.com/halushko/kino-cat.git
-RUN mkdir -p /home/git/code
-RUN cd /home/git/code && \
-    git init kino-cat && \
-    cd kino-cat && \
-    git remote add origin $REPO && \
-    git config core.sparseCheckout true && \
-    echo "torrent/" >> .git/info/sparse-checkout && \
-    echo "config/commands/transmission/" >> .git/info/sparse-checkout && \
-    echo "config/config_files/transmission/" >> .git/info/sparse-checkout && \
-    git pull origin $BRANCH
+FROM halushko/cinema-middleware:latest as textConsumer
+ENTRYPOINT ["java", "-jar", "/home/app/text_consumer.jar"]
 
-FROM halushko/cinema-middleware:latest as build_torrent
-COPY --chown=gradle:gradle --from=download_torrent /home/git/code /home/gradle/code
-RUN cd /home/gradle/code/kino-cat/torrent && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/torrent.jar
 
 FROM openjdk:8-alpine
 RUN apk add openrc
 VOLUME ["/sys/fs/cgroup"]
 COPY --from=build_torrent /home/gradle/app /home/app
 RUN apk add transmission-daemon transmission-cli
-COPY --from=download_torrent /home/git/code/kino-cat/config/config_files/transmission /var/lib/transmission/config
-COPY --from=download_torrent /home/git/code/kino-cat/config/commands/transmission /home/app
+COPY *.jar /home/app/torrent.jar
+#
+#COPY --from=download_torrent /home/git/code/kino-cat/config/config_files/transmission /var/lib/transmission/config
+COPY *.jar /home/app/torrent.jar
 RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
