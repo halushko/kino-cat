@@ -54,7 +54,7 @@ jobs:
 
     - name: show me
       run: | 
-        ls
+        ls middleware/build/libs
 
     - name: Build with Gradle bot1
       uses: gradle/gradle-build-action@v2.4.0
