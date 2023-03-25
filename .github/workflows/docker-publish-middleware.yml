@@ -56,7 +56,7 @@ jobs:
 
       - uses: gradle/gradle-build-action@v2.4.0
         with:
-          build-root-directory: bot
+          build-root-directory: fileConsumer
           gradle-version: current
           arguments: jar
 
@@ -71,7 +71,7 @@ jobs:
 
       - uses: gradle/gradle-build-action@v2.4.0
         with:
-          build-root-directory: text
+          build-root-directory: textConsumer
           gradle-version: current
           arguments: jar
 
