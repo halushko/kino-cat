@@ -52,7 +52,7 @@ jobs:
         platforms: linux/amd64, linux/arm64/v8
         tags: halushko/cinema-middleware:1.0,halushko/cinema-middleware:latest
 
-    - name: Build with Gradle bot
+    - name: Build with Gradle bot1
       uses: gradle/gradle-build-action@v2.4.0
       with:
         build-root-directory: bot
