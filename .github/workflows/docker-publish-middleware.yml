@@ -37,8 +37,9 @@ jobs:
     - name: test context location
       with:
         context: ./${{ matrix.project }}
-      run:
+      run: |
         ls
+
     - name: Build and push Docker image
       id: docker_build
       uses: docker/build-push-action@v2.6.0
