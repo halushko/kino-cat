@@ -42,7 +42,7 @@ jobs:
         gradle-version: current
         arguments: jar
 
-    - name: Build and push Docker image
+    - name: Build and push Docker image middleware
       uses: docker/build-push-action@v2.6.0
       with:
         context: middleware/build/libs
@@ -57,9 +57,9 @@ jobs:
       with:
         build-root-directory: bot
         gradle-version: current
-        arguments: fatJar
+        arguments: jar
 
-    - name: Build and push Docker image
+    - name: Build and push Docker image bot
       uses: docker/build-push-action@v2.6.0
       with:
         context: bot/build/libs
