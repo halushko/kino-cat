@@ -28,5 +28,5 @@ dependencies {
 
 repositories {
     mavenCentral()
-    dirs "${my_dir}/middleware/build/libs/"
+    dirs "\"${my_dir}\"/middleware/build/libs/"
 }
