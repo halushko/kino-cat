@@ -21,7 +21,7 @@ dependencies {
     implementation 'com.rabbitmq:amqp-client:+'
     implementation 'org.json:json:+'
     implementation 'org.slf4j:slf4j-log4j12:+'
-    implementation files('middleware/build/libs/*.jar')
+    implementation files('../middleware/build/libs/*.jar')
 //    implementation files('../middleware/build/libs/middleware-1.0-SNAPSHOT.jar')
 }
 
