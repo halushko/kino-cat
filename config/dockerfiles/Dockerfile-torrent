@@ -11,7 +11,7 @@ COPY *.jar /home/app/torrent.jar
 #
 #COPY --from=download_torrent /home/git/code/kino-cat/config/config_files/transmission /var/lib/transmission/config
 COPY *.jar /home/app/torrent.jar
-RUN chmod +x /var/lib/transmission/config/after_download.sh
+#RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 RUN chmod +X /home/app/*.sh
