@@ -14,7 +14,7 @@ COPY *.jar /home/app/torrent.jar
 #RUN chmod +x /var/lib/transmission/config/after_download.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
-RUN chmod +X /home/app/*.sh
+#RUN chmod +X /home/app/*.sh
 RUN mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files && \
