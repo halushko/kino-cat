@@ -12,19 +12,8 @@ jar {
     }
 }
 
-task fatJar(type: Jar) {
-    manifest.from jar.manifest
-    classifier = 'all'
-    from {
-        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    } {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
-    with jar
-}
-
 artifacts {
-    archives fatJar
+    archives jar
 }
 
 dependencies {
@@ -32,8 +21,7 @@ dependencies {
     implementation 'org.json:json:+'
     implementation 'commons-io:commons-io:+'
     implementation 'org.slf4j:slf4j-log4j12:+'
-    implementation files('/home/gradle/app/kot_utils.jar')
-//    implementation files('../middleware/build/libs/middleware-1.0-SNAPSHOT.jar')
+    implementation files(System.getenv('my_dir') + "/middleware/build/libs/middleware-1.0-SNAPSHOT.jar")
 }
 
 repositories {
