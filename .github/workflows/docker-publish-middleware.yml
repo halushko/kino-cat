@@ -77,14 +77,14 @@ jobs:
           tags: halushko/cinema-file:1.0,halushko/cinema-file:latest
 #
       - name: Build Text consumer
-      - uses: gradle/gradle-build-action@v2.4.0
+        uses: gradle/gradle-build-action@v2.4.0
         with:
           build-root-directory: textConsumer
           gradle-version: current
           arguments: jar
 
       - name: Create Text consumer Image
-      - uses: docker/build-push-action@v2.6.0
+        uses: docker/build-push-action@v2.6.0
         with:
           context: textConsumer/build/libs
           file: ./config/dockerfiles/Dockerfile-text
