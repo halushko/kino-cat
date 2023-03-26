@@ -58,7 +58,7 @@ jobs:
           gradle-version: current
           arguments: jar
       - name: Copy configs
-        uses: |
+        run: |
           mkdir -p transmission/config
           cp $CONFIG_DIR/config_files/transmission/ transmission/config
           cp $CONFIG_DIR/commands/transmission/ transmission/config
