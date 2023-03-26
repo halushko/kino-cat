@@ -57,6 +57,11 @@ jobs:
           build-root-directory: fileConsumer
           gradle-version: current
           arguments: jar
+      - name: Copy configs
+        uses: |
+          mkdir -p transmission/config
+          cp $CONFIG_DIR/config_files/transmission/ transmission/config
+          cp $CONFIG_DIR/commands/transmission/ transmission/config
       - name: Build Text consumer
         uses: gradle/gradle-build-action@v2.4.0
         with:
