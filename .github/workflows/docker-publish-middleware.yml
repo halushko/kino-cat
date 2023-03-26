@@ -34,7 +34,7 @@ jobs:
       - name: Prepare location environments
         run: |
           echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
-          echo "CONFIG_DIR=`pwd`/config" >> $GITHUB_ENV
+          echo "CONFIG_DIR=./`pwd`/config" >> $GITHUB_ENV
 
       # Build Core
       - name: Build Core
