@@ -1,5 +1,6 @@
 FROM openjdk:8-alpine
 ARG CONFIG_DIR
+
 VOLUME ["/sys/fs/cgroup"]
 RUN apk add transmission-daemon transmission-cli openrc
 RUN mkdir -p /home/media/torrent/downloads
