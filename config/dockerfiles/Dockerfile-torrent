@@ -5,6 +5,7 @@ RUN apk add transmission-daemon transmission-cli openrc
 RUN mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files && \
+    mkdir -p /home/app && \
     chmod 777 -R /home/app && \
     chmod 777 -R /home/media && \
     chmod +X /home/app/*.sh
