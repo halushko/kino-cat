@@ -9,11 +9,11 @@ RUN mkdir -p /home/app
 RUN chmod 777 -R /home/app
 RUN chmod 777 -R /home/media
 COPY *.jar /home/app/torrent.jar
-COPY $CONFIG_DIR/config_files/transmission/* /var/lib/transmission/config
+COPY $CONFIG_DIR/config_files/transmission/ /var/lib/transmission/config
+#COPY $CONFIG_DIR/commands/transmission/ /home/app
 RUN chmod +X /home/app/*.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
-#COPY $CONFIG_DIR/commands/transmission/* /home/app
 CMD echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
     rc-service transmission-daemon stop && \
     rc-service transmission-daemon start && \
