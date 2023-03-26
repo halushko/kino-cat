@@ -1,3 +1,0 @@
-FROM openjdk:8-alpine
-RUN mkdir -p /home/app
-COPY *.jar /home/app/kot_utils.jar

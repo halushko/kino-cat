@@ -1,12 +1,12 @@
 package com.halushko.kinocat.bot.handlers.input;
 
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.handlers.input.InputMessageHandler;
-import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
+import com.halushko.kinocat.core.rabbit.RabbitMessage;
 import org.apache.log4j.Logger;
 
 import static com.halushko.kinocat.bot.KoTorrentBot.sendText;
-import static com.halushko.kinocat.middleware.rabbit.RabbitJson.unNormalizeText;
+import static com.halushko.kinocat.core.rabbit.RabbitJson.unNormalizeText;
 
 public class SendTextMessageToUser extends InputMessageHandler {
     @Override

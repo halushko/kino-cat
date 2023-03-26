@@ -1,10 +1,10 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.handlers.telegram.UserMessageHandler;
-import com.halushko.kinocat.middleware.rabbit.RabbitJson;
-import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
-import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
+import com.halushko.kinocat.core.rabbit.RabbitJson;
+import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

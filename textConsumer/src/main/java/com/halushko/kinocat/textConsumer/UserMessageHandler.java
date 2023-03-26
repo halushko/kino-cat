@@ -1,11 +1,11 @@
 package com.halushko.kinocat.textConsumer;
 
-import com.halushko.kinocat.middleware.cli.Command;
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.cli.ScriptsCollection;
-import com.halushko.kinocat.middleware.handlers.input.InputMessageHandler;
-import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
-import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
+import com.halushko.kinocat.core.cli.Command;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.cli.ScriptsCollection;
+import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
+import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;

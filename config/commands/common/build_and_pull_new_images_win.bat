@@ -104,15 +104,15 @@ if %V_BUILD%=="true" (
     echo Start build tag = %V_TAG%
     cd ./kino-cat/config/dockerfiles || exit /b 0
 
-    ::docker build --build-arg BRANCH="%V_BRANCH%" --build-arg ARCH=arm64v8/ --platform linux/arm64 -t halushko/cinema-middleware:tmp-%V_TAG%-arm64 -f Dockerfile-middleware .
-    ::docker build --build-arg BRANCH="%V_BRANCH%" --build-arg ARCH=amd64/ --platform=linux/amd64 -t halushko/cinema-middleware:tmp-%V_TAG%-amd64 -f Dockerfile-middleware .
-    ::docker build --build-arg BRANCH="%V_BRANCH%" --build-arg ARCH=arm64v8/ --platform=linux/arm64 -t halushko/cinema-middleware:%V_TAG%-arm64 -f Dockerfile-middleware .
-    ::docker build --build-arg BRANCH="%V_BRANCH%" --build-arg ARCH=amd64/ --platform=linux/amd64 -t halushko/cinema-middleware:%V_TAG%-amd64 -f Dockerfile-middleware .
+    ::docker build --build-arg BRANCH="%V_BRANCH%" --build-arg ARCH=arm64v8/ --platform linux/arm64 -t halushko/cinema-core:tmp-%V_TAG%-arm64 -f Dockerfile-core .
+    ::docker build --build-arg BRANCH="%V_BRANCH%" --build-arg ARCH=amd64/ --platform=linux/amd64 -t halushko/cinema-core:tmp-%V_TAG%-amd64 -f Dockerfile-core .
+    ::docker build --build-arg BRANCH="%V_BRANCH%" --build-arg ARCH=arm64v8/ --platform=linux/arm64 -t halushko/cinema-core:%V_TAG%-arm64 -f Dockerfile-core .
+    ::docker build --build-arg BRANCH="%V_BRANCH%" --build-arg ARCH=amd64/ --platform=linux/amd64 -t halushko/cinema-core:%V_TAG%-amd64 -f Dockerfile-core .
 
-    ::docker push halushko/cinema-middleware:tmp-%V_TAG%-arm64
-    ::docker push halushko/cinema-middleware:tmp-%V_TAG%-amd64
-    ::docker manifest create halushko/cinema-middleware:tmp -a halushko/cinema-middleware:%V_TAG%-amd64 -a halushko/cinema-middleware:%V_TAG%-arm64
-    ::docker manifest push halushko/cinema-middleware:tmp
+    ::docker push halushko/cinema-core:tmp-%V_TAG%-arm64
+    ::docker push halushko/cinema-core:tmp-%V_TAG%-amd64
+    ::docker manifest create halushko/cinema-core:tmp -a halushko/cinema-core:%V_TAG%-amd64 -a halushko/cinema-core:%V_TAG%-arm64
+    ::docker manifest push halushko/cinema-core:tmp
 
 
     ::docker build --build-arg BRANCH="%V_BRANCH%" -t halushko/cinema-bot:%V_TAG%-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-bot .
@@ -128,8 +128,8 @@ if %V_BUILD%=="true" (
 
     if %V_LATEST% == "true" (
         echo Start build 'latest' tag
-        ::docker build --build-arg BRANCH="%V_BRANCH%" -t halushko/cinema-middleware:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-middleware .
-        docker build --build-arg BRANCH="%V_BRANCH%" -t halushko/cinema-middleware:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-middleware .
+        ::docker build --build-arg BRANCH="%V_BRANCH%" -t halushko/cinema-core:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-core .
+        docker build --build-arg BRANCH="%V_BRANCH%" -t halushko/cinema-core:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-core .
 
         ::docker build --build-arg BRANCH="%V_BRANCH%" -t halushko/cinema-bot:latest-arm64 --build-arg ARCH=arm64v8/ -f Dockerfile-bot .
         docker build --build-arg BRANCH="%V_BRANCH%" -t halushko/cinema-bot:latest-amd64 --build-arg ARCH=amd64/ -f Dockerfile-bot .
@@ -148,10 +148,10 @@ if %V_BUILD%=="true" (
 )
 if %V_PUSH% == "true" (
     echo Start push to Docker Hub tag %V_TAG%
-    ::docker push halushko/cinema-middleware:%V_TAG%-arm64
-    ::docker push halushko/cinema-middleware:%V_TAG%-amd64
-    ::docker manifest create halushko/cinema-middleware:%V_TAG% -a halushko/cinema-middleware:%V_TAG%-amd64 -a halushko/cinema-middleware:%V_TAG%-arm64
-    ::docker manifest push halushko/cinema-middleware:%V_TAG%
+    ::docker push halushko/cinema-core:%V_TAG%-arm64
+    ::docker push halushko/cinema-core:%V_TAG%-amd64
+    ::docker manifest create halushko/cinema-core:%V_TAG% -a halushko/cinema-core:%V_TAG%-amd64 -a halushko/cinema-core:%V_TAG%-arm64
+    ::docker manifest push halushko/cinema-core:%V_TAG%
     ::docker push halushko/cinema-bot:%V_TAG%-arm64
     docker push halushko/cinema-bot:%V_TAG%-amd64
     docker manifest create halushko/cinema-bot:%V_TAG% -a halushko/cinema-bot:%V_TAG%-amd64 -a halushko/cinema-bot:%V_TAG%-arm64
@@ -175,10 +175,10 @@ if %V_PUSH% == "true" (
 
     if %V_LATEST% == "true" (
         echo Start push to Docker Hub tag latest
-        ::docker push halushko/cinema-middleware:latest-arm64
-        docker push halushko/cinema-middleware:latest-amd64
-        docker manifest create halushko/cinema-middleware:latest -a halushko/cinema-middleware:latest-amd64 -a halushko/cinema-middleware:latest-arm64
-        docker manifest push halushko/cinema-middleware:latest
+        ::docker push halushko/cinema-core:latest-arm64
+        docker push halushko/cinema-core:latest-amd64
+        docker manifest create halushko/cinema-core:latest -a halushko/cinema-core:latest-amd64 -a halushko/cinema-core:latest-arm64
+        docker manifest push halushko/cinema-core:latest
         ::docker push halushko/cinema-bot:latest-arm64
         docker push halushko/cinema-bot:latest-amd64
         docker manifest create halushko/cinema-bot:latest -a halushko/cinema-bot:latest-amd64 -a halushko/cinema-bot:latest-arm64

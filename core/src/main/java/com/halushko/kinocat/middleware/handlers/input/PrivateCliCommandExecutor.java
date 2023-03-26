@@ -1,7 +1,7 @@
-package com.halushko.kinocat.middleware.handlers.input;
+package com.halushko.kinocat.core.handlers.input;
 
-import com.halushko.kinocat.middleware.cli.ExecuteBash;
-import com.halushko.kinocat.middleware.cli.ScriptsCollection;
+import com.halushko.kinocat.core.cli.ExecuteBash;
+import com.halushko.kinocat.core.cli.ScriptsCollection;
 import org.apache.log4j.Logger;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.halushko.kinocat.middleware.rabbit;
+package com.halushko.kinocat.core.rabbit;
 
 import org.json.JSONArray;
 import org.json.JSONException;

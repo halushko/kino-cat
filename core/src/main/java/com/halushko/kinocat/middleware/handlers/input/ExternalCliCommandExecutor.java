@@ -1,16 +1,16 @@
-package com.halushko.kinocat.middleware.handlers.input;
+package com.halushko.kinocat.core.handlers.input;
 
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.cli.ExecuteBash;
-import com.halushko.kinocat.middleware.rabbit.RabbitJson;
-import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
-import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.cli.ExecuteBash;
+import com.halushko.kinocat.core.rabbit.RabbitJson;
+import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.halushko.kinocat.middleware.rabbit.RabbitJson.normalizedValue;
+import static com.halushko.kinocat.core.rabbit.RabbitJson.normalizedValue;
 
 @SuppressWarnings("unused")
 public abstract class ExternalCliCommandExecutor extends InputMessageHandler {

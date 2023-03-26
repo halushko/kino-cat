@@ -1,11 +1,11 @@
 package com.halushko.kinocat.fileConsumer;
 
-import com.halushko.kinocat.middleware.cli.Command;
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.cli.ScriptsCollection;
-import com.halushko.kinocat.middleware.handlers.input.InputMessageHandler;
-import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
-import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
+import com.halushko.kinocat.core.cli.Command;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.cli.ScriptsCollection;
+import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
+import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
@@ -16,8 +16,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-import static com.halushko.kinocat.middleware.rabbit.RabbitMessage.KEYS.FILE_NAME;
-import static com.halushko.kinocat.middleware.rabbit.RabbitMessage.KEYS.FILE_PATH;
+import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.FILE_NAME;
+import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.FILE_PATH;
 
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));

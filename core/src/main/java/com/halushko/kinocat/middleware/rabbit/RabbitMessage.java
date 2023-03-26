@@ -1,9 +1,9 @@
-package com.halushko.kinocat.middleware.rabbit;
+package com.halushko.kinocat.core.rabbit;
 
 import org.apache.log4j.Logger;
 
-import static com.halushko.kinocat.middleware.rabbit.RabbitJson.normalizedValue;
-import static com.halushko.kinocat.middleware.rabbit.RabbitMessage.KEYS.*;
+import static com.halushko.kinocat.core.rabbit.RabbitJson.normalizedValue;
+import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.*;
 
 public class RabbitMessage {
     private final RabbitJson json;

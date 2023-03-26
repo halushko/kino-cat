@@ -1,4 +1,4 @@
-package com.halushko.kinocat.middleware.handlers.telegram;
+package com.halushko.kinocat.core.handlers.telegram;
 
 import org.telegram.telegrambots.meta.api.objects.Update;
 

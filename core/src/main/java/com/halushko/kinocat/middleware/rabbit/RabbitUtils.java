@@ -1,6 +1,6 @@
-package com.halushko.kinocat.middleware.rabbit;
+package com.halushko.kinocat.core.rabbit;
 
-import com.halushko.kinocat.middleware.handlers.input.InputMessageHandler;
+import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.rabbitmq.client.*;
 import org.apache.log4j.Logger;
 

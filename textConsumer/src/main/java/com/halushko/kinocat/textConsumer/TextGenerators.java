@@ -1,7 +1,7 @@
 package com.halushko.kinocat.textConsumer;
 
-import static com.halushko.kinocat.middleware.cli.Constants.Commands.Torrent.REMOVE_JUST_TORRENT;
-import static com.halushko.kinocat.middleware.cli.Constants.Commands.Torrent.REMOVE_WITH_FILES;
+import static com.halushko.kinocat.core.cli.Constants.Commands.Torrent.REMOVE_JUST_TORRENT;
+import static com.halushko.kinocat.core.cli.Constants.Commands.Torrent.REMOVE_WITH_FILES;
 
 interface TextGenerators {
     static String askRemoveTorrent(String args) {

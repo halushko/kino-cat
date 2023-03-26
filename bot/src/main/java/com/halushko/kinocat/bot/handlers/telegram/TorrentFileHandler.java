@@ -1,17 +1,17 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
 import com.halushko.kinocat.bot.KoTorrentBot;
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.handlers.telegram.UserMessageHandler;
-import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
-import com.halushko.kinocat.middleware.rabbit.RabbitUtils;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
+import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import static com.halushko.kinocat.middleware.rabbit.RabbitJson.normalizedValue;
-import static com.halushko.kinocat.middleware.rabbit.RabbitMessage.KEYS.*;
+import static com.halushko.kinocat.core.rabbit.RabbitJson.normalizedValue;
+import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.*;
 
 public class TorrentFileHandler extends UserMessageHandler {
     @Override

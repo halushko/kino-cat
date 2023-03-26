@@ -1,12 +1,12 @@
-package com.halushko.kinocat.middleware.handlers.input;
+package com.halushko.kinocat.core.handlers.input;
 
-import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.RabbitMessage;
 import com.rabbitmq.client.DeliverCallback;
 import org.apache.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 
-import static com.halushko.kinocat.middleware.rabbit.RabbitUtils.readMessage;
+import static com.halushko.kinocat.core.rabbit.RabbitUtils.readMessage;
 
 public abstract class InputMessageHandler implements Runnable {
     public static final long LONG_PAUSE_MILIS = Long.parseLong(System.getenv("LONG_PAUSE_MILIS"));

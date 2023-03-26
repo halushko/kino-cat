@@ -1,4 +1,4 @@
-package com.halushko.kinocat.middleware.cli;
+package com.halushko.kinocat.core.cli;
 
 @SuppressWarnings("unused")
 public interface Constants {

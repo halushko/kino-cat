@@ -21,7 +21,7 @@ dependencies {
     implementation 'org.json:json:+'
     implementation 'commons-io:commons-io:+'
     implementation 'org.slf4j:slf4j-log4j12:+'
-    implementation files(System.getenv('my_dir') + "/middleware/build/libs/middleware-1.0-SNAPSHOT.jar")
+    implementation files(System.getenv('my_dir') + "/core/build/libs/core-1.0-SNAPSHOT.jar")
 }
 
 repositories {

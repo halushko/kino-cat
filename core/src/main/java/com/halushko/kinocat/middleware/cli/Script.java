@@ -1,4 +1,4 @@
-package com.halushko.kinocat.middleware.cli;
+package com.halushko.kinocat.core.cli;
 
 import java.util.ArrayList;
 import java.util.Arrays;
