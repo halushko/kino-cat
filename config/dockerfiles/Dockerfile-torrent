@@ -2,13 +2,13 @@ FROM openjdk:8-alpine
 ARG CONFIG_DIR
 VOLUME ["/sys/fs/cgroup"]
 RUN apk add transmission-daemon transmission-cli openrc
-RUN mkdir -p /home/media/torrent/downloads && \
-    mkdir -p /home/media/torrent/complete && \
-    mkdir -p /home/media/torrent/torrent_files && \
-    mkdir -p /home/app && \
-    chmod 777 -R /home/app && \
-    chmod 777 -R /home/media && \
-    chmod +X /home/app/*.sh
+RUN mkdir -p /home/media/torrent/downloads
+RUN mkdir -p /home/media/torrent/complete
+RUN mkdir -p /home/media/torrent/torrent_files
+RUN mkdir -p /home/app
+RUN chmod 777 -R /home/app
+RUN chmod 777 -R /home/media
+RUN chmod +X /home/app/*.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 COPY *.jar /home/app/torrent.jar
