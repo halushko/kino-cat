@@ -10,8 +10,8 @@ RUN mkdir -p /home/media/torrent/downloads && \
 RUN openrc
 RUN touch /run/openrc/softlevel
 COPY *.jar /home/app/torrent.jar
-COPY $CONFIG_DIR/config_files/transmission /var/lib/transmission/config
-COPY $CONFIG_DIR/commands/transmission /home/app
+COPY $CONFIG_DIR/config_files/transmission/* /var/lib/transmission/config
+#COPY $CONFIG_DIR/commands/transmission/* /home/app
 CMD echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
     rc-service transmission-daemon stop && \
     rc-service transmission-daemon start && \
