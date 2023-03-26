@@ -6,7 +6,8 @@ RUN mkdir -p /home/media/torrent/downloads && \
     mkdir -p /home/media/torrent/complete && \
     mkdir -p /home/media/torrent/torrent_files && \
     chmod 777 -R /home/app && \
-    chmod 777 -R /home/media \
+    chmod 777 -R /home/media && \
+    chmod +X /home/app/*.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 COPY *.jar /home/app/torrent.jar
