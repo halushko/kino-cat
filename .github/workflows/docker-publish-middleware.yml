@@ -15,12 +15,12 @@ jobs:
         run: |
           echo "CONFIG_DIR=`pwd`/config" >> $GITHUB_ENV
       - name: asd
-        with:
-          context: torrent/build/libs
         run: |
           mkdir -p transmission/config
           cp $CONFIG_DIR/config_files/transmission/ transmission/config
           cp $CONFIG_DIR/commands/transmission/ transmission/config
+        with:
+          context: torrent/build/libs
         
         
 
