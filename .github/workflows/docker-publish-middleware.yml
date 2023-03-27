@@ -12,7 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: |
+      - name: asd
+        with:
+          context: torrent/build/libs
+        run: |
           mkdir -p transmission/config
           cp $CONFIG_DIR/config_files/transmission/ transmission/config
           cp $CONFIG_DIR/commands/transmission/ transmission/config
