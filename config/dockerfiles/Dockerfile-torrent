@@ -10,8 +10,8 @@ RUN mkdir -p /home/app
 RUN chmod 777 -R /home/app
 RUN chmod 777 -R /home/media
 COPY *.jar /home/app/torrent.jar
-COPY ./src/main/resources/config /var/lib/transmission/config
-COPY ./src/main/resources/commands /home/app
+COPY ../../src/main/resources/config /var/lib/transmission/config
+COPY ../../src/main/resources/commands /home/app
 RUN chmod +X /home/app/*.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
