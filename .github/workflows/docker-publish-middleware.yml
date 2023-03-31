@@ -34,7 +34,7 @@ jobs:
       - name: Prepare location environments
         run: |
           echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
-          echo "CONFIG_DIR=`pwd`/config" >> $GITHUB_ENV
+#          echo "CONFIG_DIR=`pwd`/config" >> $GITHUB_ENV
 
       # Build Core
       - name: Build Core
@@ -57,11 +57,6 @@ jobs:
           build-root-directory: fileConsumer
           gradle-version: current
           arguments: jar
-      - name: Copy configs
-        run: |
-          mkdir -p transmission/config
-          cp $CONFIG_DIR/config_files/transmission/ transmission/config
-          cp $CONFIG_DIR/commands/transmission/ transmission/config
       - name: Build Text consumer
         uses: gradle/gradle-build-action@v2.4.0
         with:
