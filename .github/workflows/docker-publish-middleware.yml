@@ -101,7 +101,7 @@ jobs:
       - name: Create Torrent client Image
         uses: docker/build-push-action@v2.6.0
         with:
-          context: torrent/build/libs
+          context: torrent
           file: ./config/dockerfiles/Dockerfile-torrent
           push: true
           builder: mybuilder
