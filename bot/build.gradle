@@ -6,13 +6,13 @@ apply plugin: 'application'
 
 compileJava.options.encoding = 'UTF-8'
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'com.halushko.kinocat.bot.Main'
-    }
-}
+//jar {
+//    manifest {
+//        attributes 'Main-Class': 'com.halushko.kinocat.bot.Main'
+//    }
+//}
 
-tasks.register('fatJar', Jar) {
+tasks.register('jar', Jar) {
     manifest.from jar.manifest
     classifier = 'all'
     from {
@@ -20,7 +20,7 @@ tasks.register('fatJar', Jar) {
     } {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
-    with jar
+    with jarspo
 }
 
 artifacts {
