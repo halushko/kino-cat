@@ -50,7 +50,7 @@ jobs:
         with:
           build-root-directory: bot
           gradle-version: current
-          arguments: jar2
+          arguments: fatJar
       - name: Build File consumer
         uses: gradle/gradle-build-action@v2.4.0
         with:
