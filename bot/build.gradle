@@ -12,7 +12,7 @@ jar {
     }
 }
 
-tasks.register('jar2', Jar) {
+tasks.register('fatJar', Jar) {
     manifest.from jar.manifest
     classifier = 'all'
     from {
@@ -20,11 +20,11 @@ tasks.register('jar2', Jar) {
     } {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
-    with jarspo
+    with jar
 }
 
 artifacts {
-    archives jar
+    archives fatJar
 }
 
 dependencies {
