@@ -10,7 +10,7 @@ compileJava.options.encoding = 'UTF-8'
 //
 //}
 
-tasks.register('jar', Jar) {
+tasks.register('jar2', Jar) {
     manifest {
         attributes 'Main-Class': 'com.halushko.kinocat.bot.Main'
     }
