@@ -12,7 +12,7 @@ compileJava.options.encoding = 'UTF-8'
 //    }
 //}
 
-tasks.register('jar', Jar) {
+tasks.register('jar2', Jar) {
     manifest.from jar.manifest
     classifier = 'all'
     from {
