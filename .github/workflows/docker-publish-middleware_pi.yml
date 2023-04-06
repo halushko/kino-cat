@@ -2,13 +2,13 @@ name: Build Docker Images for all projects
 
 on:
   push:
-    branches: [ test_wf1 ]
+    branches: [ test_wf ]
   pull_request:
-    branches: [ test_wf1 ]
+    branches: [ test_wf ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: raspberrypi/ubuntu-raspberrypi-20.04
     steps:
       - uses: actions/checkout@v2
 
