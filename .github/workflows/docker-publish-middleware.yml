@@ -16,21 +16,20 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-#      - name: Prepare location environments
+      - name: Prepare location environments
 #        run: echo "::set-output name=file_path::$(pwd)/core/build/libs/core-1.0.jar"
-#        echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
+        run: echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
       - name: Build Core
         uses: gradle/gradle-build-action@v2.4.0
         with:
           build-root-directory: core
           gradle-version: current
           arguments: jar
-      - run: ls `pwd`/core/build/libs/
       - name: Upload core artifact
         uses: actions/upload-artifact@v2
         with:
           name: core_jar
-          path: `pwd`/core/build/libs/core-1.0.jar
+          path: ${{ env.CORE_LOCATION }}/core-1.0.jar
   build_jars:
     strategy:
       matrix:
