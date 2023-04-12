@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_core
     steps:
+      - uses: actions/checkout@v2
       - name: Prepare location environments
         run: |
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
