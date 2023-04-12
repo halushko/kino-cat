@@ -63,7 +63,7 @@ jobs:
           echo $BUILD_LOCATION
           echo $CORE_LOCATION
           
-          mkdir -p $CORE_LOCATION
+#          mkdir -p $CORE_LOCATION
           ls $BUILD_LOCATION
           ls $CORE_LOCATION
       - name: Download core artifact
