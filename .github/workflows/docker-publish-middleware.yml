@@ -42,12 +42,12 @@ jobs:
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
           echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
           echo "CORE_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
+      - run: ls $CORE_LOCATION
       - name: Download core artifact
         uses: actions/download-artifact@v2
         with:
           name: core_jar
           path: ${{ env.BUILD_LOCATION }}
-      - run: ls $CORE_LOCATION
       - name: Set up Java 8
         uses: actions/setup-java@v3.10.0
         with:
