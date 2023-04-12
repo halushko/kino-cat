@@ -25,7 +25,7 @@ jobs:
           build-root-directory: core
           gradle-version: current
           arguments: jar
-#      - run: ls $CORE_LOCATION
+      - run: ls `pwd`/core/build/libs/
       - name: Upload core artifact
         uses: actions/upload-artifact@v2
         with:
