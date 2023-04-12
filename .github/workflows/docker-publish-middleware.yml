@@ -7,7 +7,7 @@ on:
     branches: [ test_wf ]
 
 jobs:
-  build_jars:
+  build_core:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,10 +31,9 @@ jobs:
           distribution: 'temurin'
           java-version: '8'
       - name: Prepare location environments
-        run: |
-          echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
-          echo "DOCKER_FILES_LOCATION=`pwd`/config/dockerfiles" >> $GITHUB_ENV
-          echo "BOT_LOCATION=`pwd`/bot" >> $GITHUB_ENV
+        run: echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
+#          echo "DOCKER_FILES_LOCATION=`pwd`/config/dockerfiles" >> $GITHUB_ENV
+#          echo "BOT_LOCATION=`pwd`/bot" >> $GITHUB_ENV
 
       # Build Core
       - name: Build Core
@@ -43,79 +42,117 @@ jobs:
           build-root-directory: core
           gradle-version: current
           arguments: jar
-
+      - name: Upload core artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: core
+          path: $CORE_LOCATION
+  build_jars:
+    strategy:
+      matrix:
+        service: [ bot ]
+    runs-on: ubuntu-latest
+    needs: build_core
+    steps:
+      - name: Prepare location environments
+        run: |
+          echo "LOCATION=`pwd`/${matrix.service}" >> $GITHUB_ENV
+          echo "BUILD_LOCATION=`pwd`/${matrix.service}/build/libs" >> $GITHUB_ENV
+          echo "CORE_LOCATION=$BUILD_LOCATION" >> $GITHUB_ENV
+          mkdir -p $BUILD_LOCATION
+          ls $BUILD_LOCATION
+          ls $CORE_LOCATION
+      - name: Download core artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: core
+          path: $CORE_LOCATION
+      - name: Prepare location environments
+        run: |
+          ls $BUILD_LOCATION
+          ls $CORE_LOCATION
       # Build JARs
       - name: Build Bot
         uses: gradle/gradle-build-action@v2.4.0
         with:
-          build-root-directory: bot
+          build-root-directory: ${matrix.service}
           gradle-version: current
           arguments: fatJar
-  build_images:
-    runs-on: ubuntu-latest
-    needs: build_jars
-    steps:
-#      - uses: actions/checkout@v2
-#      - name: Build File consumer
-#        uses: gradle/gradle-build-action@v2.4.0
-#        with:
-#          build-root-directory: fileConsumer
-#          gradle-version: current
-#          arguments: jar
-#      - name: Build Text consumer
-#        uses: gradle/gradle-build-action@v2.4.0
-#        with:
-#          build-root-directory: textConsumer
-#          gradle-version: current
-#          arguments: jar
-#      - name: Build Torrent client
-#        uses: gradle/gradle-build-action@v2.4.0
-#        with:
-#          build-root-directory: torrent
-#          gradle-version: current
-#          arguments: jar
-#
-      - name: ls
+      - name: Prepare location environments
         run: |
+          ls $BUILD_LOCATION
           ls $CORE_LOCATION
-          ls $DOCKER_FILES_LOCATION
-          cp $CORE_LOCATION/*.jar $BOT_LOCATION/build/libs
-          ls $BOT_LOCATION/build/libs
+#      - name: Upload artifacts
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: my-artifact-name
+#          path: path/to/artifact
 
-      # Push images
-#      - name: Create Bot image
-#        uses: docker/build-push-action@v2.6.0
-#        with:
-#          context: bot/build/libs
-#          file: ./config/dockerfiles/Dockerfile-bot
-#          push: true
-#          tags: halushko/cinema-bot:1.1,halushko/cinema-bot:latest
-#      - name: Create File consumer Image
-#        uses: docker/build-push-action@v2.6.0
-#        with:
-#          context: fileConsumer/build/libs
-#          file: ./config/dockerfiles/Dockerfile-file
-#          push: true
-##          builder: mybuilder
-##          platforms: linux/amd64, linux/arm64/v8
-#          tags: halushko/cinema-file:1.1,halushko/cinema-file:latest
-#      - name: Create Text consumer Image
-#        uses: docker/build-push-action@v2.6.0
-#        with:
-#          context: textConsumer/build/libs
-#          file: ./config/dockerfiles/Dockerfile-text
-#          push: true
-##          builder: mybuilder
-##          platforms: linux/amd64, linux/arm64/v8
-#          tags: halushko/cinema-text:1.1,halushko/cinema-text:latest
-#      - name: Create Torrent client Image
-#        uses: docker/build-push-action@v2.6.0
-#        with:
-#          context: torrent
-#          file: ./config/dockerfiles/Dockerfile-torrent
-#          push: true
-##          builder: mybuilder
-##          platforms: linux/amd64, linux/arm64/v8
-#          tags: halushko/cinema-torrent:1.1,halushko/cinema-torrent:latest
-#          build-args: |
-#            CONFIG_DIR=$CONFIG_DIR
+#  build_images:
+#    runs-on: ubuntu-latest
+#    needs: build_jars
+#    steps:
+#      - uses: actions/checkout@v2
+##      - name: Build File consumer
+##        uses: gradle/gradle-build-action@v2.4.0
+##        with:
+##          build-root-directory: fileConsumer
+##          gradle-version: current
+##          arguments: jar
+##      - name: Build Text consumer
+##        uses: gradle/gradle-build-action@v2.4.0
+##        with:
+##          build-root-directory: textConsumer
+##          gradle-version: current
+##          arguments: jar
+##      - name: Build Torrent client
+##        uses: gradle/gradle-build-action@v2.4.0
+##        with:
+##          build-root-directory: torrent
+##          gradle-version: current
+##          arguments: jar
+##
+#      - name: ls
+#        run: |
+#          ls $CORE_LOCATION
+#          ls $DOCKER_FILES_LOCATION
+#          cp $CORE_LOCATION/*.jar $BOT_LOCATION/build/libs
+#          ls $BOT_LOCATION/build/libs
+#
+#      # Push images
+##      - name: Create Bot image
+##        uses: docker/build-push-action@v2.6.0
+##        with:
+##          context: bot/build/libs
+##          file: ./config/dockerfiles/Dockerfile-bot
+##          push: true
+##          tags: halushko/cinema-bot:1.1,halushko/cinema-bot:latest
+##      - name: Create File consumer Image
+##        uses: docker/build-push-action@v2.6.0
+##        with:
+##          context: fileConsumer/build/libs
+##          file: ./config/dockerfiles/Dockerfile-file
+##          push: true
+###          builder: mybuilder
+###          platforms: linux/amd64, linux/arm64/v8
+##          tags: halushko/cinema-file:1.1,halushko/cinema-file:latest
+##      - name: Create Text consumer Image
+##        uses: docker/build-push-action@v2.6.0
+##        with:
+##          context: textConsumer/build/libs
+##          file: ./config/dockerfiles/Dockerfile-text
+##          push: true
+###          builder: mybuilder
+###          platforms: linux/amd64, linux/arm64/v8
+##          tags: halushko/cinema-text:1.1,halushko/cinema-text:latest
+##      - name: Create Torrent client Image
+##        uses: docker/build-push-action@v2.6.0
+##        with:
+##          context: torrent
+##          file: ./config/dockerfiles/Dockerfile-torrent
+##          push: true
+###          builder: mybuilder
+###          platforms: linux/amd64, linux/arm64/v8
+##          tags: halushko/cinema-torrent:1.1,halushko/cinema-torrent:latest
+##          build-args: |
+##            CONFIG_DIR=$CONFIG_DIR
