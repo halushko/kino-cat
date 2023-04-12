@@ -6,8 +6,18 @@ group 'com.halushko.kinocat.core'
 version '1.0'
 compileJava.options.encoding = 'UTF-8'
 
-artifacts {
-    archives jar
+def arch = project.hasProperty('arch') ? project.arch : 'amd64'
+
+if (arch == 'amd64') {
+    arch = 'x86_64'
+} else if (arch == 'amd32') {
+    arch = 'x86'
+} else if (arch == 'arm64') {
+    arch = 'armv8'
+} else if (arch == 'arm32') {
+    arch = 'armv7'
+} else {
+    throw new GradleException("Invalid architecture parameter: ${arch}")
 }
 
 repositories {
@@ -20,3 +30,17 @@ dependencies {
     implementation 'org.json:json:+'
     implementation 'org.slf4j:slf4j-log4j12:+'
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << ("-march=${arch}" as String)
+}
+
+tasks.register('buildJar', Jar) {
+    from sourceSets.main.output
+    classifier(arch)
+}
+
+artifacts {
+    archives buildJar
+}
+

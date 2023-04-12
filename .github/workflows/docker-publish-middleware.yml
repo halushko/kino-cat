@@ -2,9 +2,9 @@ name: Build Docker Images for all projects
 
 on:
   push:
-    branches: [ test_wf1 ]
+    branches: [ test_wf ]
   pull_request:
-    branches: [ test_wf1 ]
+    branches: [ test_wf ]
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
       - name: Prepare location environments
         run: |
           echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
-#          echo "CONFIG_DIR=`pwd`/config" >> $GITHUB_ENV
+          echo "DOCKER_FILES_LOCATION=`pwd`/config/dockerfiles" >> $GITHUB_ENV
 
       # Build Core
       - name: Build Core
@@ -42,70 +42,70 @@ jobs:
         with:
           build-root-directory: core
           gradle-version: current
-          arguments: jar
+          arguments: buildJar -Parch=armv8
 
-      # Build JARs
-      - name: Build Bot
-        uses: gradle/gradle-build-action@v2.4.0
-        with:
-          build-root-directory: bot
-          gradle-version: current
-          arguments: fatJar
-      - name: Build File consumer
-        uses: gradle/gradle-build-action@v2.4.0
-        with:
-          build-root-directory: fileConsumer
-          gradle-version: current
-          arguments: jar
-      - name: Build Text consumer
-        uses: gradle/gradle-build-action@v2.4.0
-        with:
-          build-root-directory: textConsumer
-          gradle-version: current
-          arguments: jar
-      - name: Build Torrent client
-        uses: gradle/gradle-build-action@v2.4.0
-        with:
-          build-root-directory: torrent
-          gradle-version: current
-          arguments: jar
-
-      # Push images
-      - name: Create Bot image
-        uses: docker/build-push-action@v2.6.0
-        with:
-          context: bot/build/libs
-          file: ./config/dockerfiles/Dockerfile-bot
-          push: true
-#          builder: mybuilder
-#          platforms: linux/amd64, linux/arm64/v8
-          tags: halushko/cinema-bot:1.1,halushko/cinema-bot:latest
-      - name: Create File consumer Image
-        uses: docker/build-push-action@v2.6.0
-        with:
-          context: fileConsumer/build/libs
-          file: ./config/dockerfiles/Dockerfile-file
-          push: true
-#          builder: mybuilder
-#          platforms: linux/amd64, linux/arm64/v8
-          tags: halushko/cinema-file:1.1,halushko/cinema-file:latest
-      - name: Create Text consumer Image
-        uses: docker/build-push-action@v2.6.0
-        with:
-          context: textConsumer/build/libs
-          file: ./config/dockerfiles/Dockerfile-text
-          push: true
-#          builder: mybuilder
-#          platforms: linux/amd64, linux/arm64/v8
-          tags: halushko/cinema-text:1.1,halushko/cinema-text:latest
-      - name: Create Torrent client Image
-        uses: docker/build-push-action@v2.6.0
-        with:
-          context: torrent
-          file: ./config/dockerfiles/Dockerfile-torrent
-          push: true
-#          builder: mybuilder
-#          platforms: linux/amd64, linux/arm64/v8
-          tags: halushko/cinema-torrent:1.1,halushko/cinema-torrent:latest
-          build-args: |
-            CONFIG_DIR=$CONFIG_DIR
+#      # Build JARs
+#      - name: Build Bot
+#        uses: gradle/gradle-build-action@v2.4.0
+#        with:
+#          build-root-directory: bot
+#          gradle-version: current
+#          arguments: fatJar
+#      - name: Build File consumer
+#        uses: gradle/gradle-build-action@v2.4.0
+#        with:
+#          build-root-directory: fileConsumer
+#          gradle-version: current
+#          arguments: jar
+#      - name: Build Text consumer
+#        uses: gradle/gradle-build-action@v2.4.0
+#        with:
+#          build-root-directory: textConsumer
+#          gradle-version: current
+#          arguments: jar
+#      - name: Build Torrent client
+#        uses: gradle/gradle-build-action@v2.4.0
+#        with:
+#          build-root-directory: torrent
+#          gradle-version: current
+#          arguments: jar
+#
+#      # Push images
+#      - name: Create Bot image
+#        uses: docker/build-push-action@v2.6.0
+#        with:
+#          context: bot/build/libs
+#          file: ./config/dockerfiles/Dockerfile-bot
+#          push: true
+##          builder: mybuilder
+##          platforms: linux/amd64, linux/arm64/v8
+#          tags: halushko/cinema-bot:1.1,halushko/cinema-bot:latest
+#      - name: Create File consumer Image
+#        uses: docker/build-push-action@v2.6.0
+#        with:
+#          context: fileConsumer/build/libs
+#          file: ./config/dockerfiles/Dockerfile-file
+#          push: true
+##          builder: mybuilder
+##          platforms: linux/amd64, linux/arm64/v8
+#          tags: halushko/cinema-file:1.1,halushko/cinema-file:latest
+#      - name: Create Text consumer Image
+#        uses: docker/build-push-action@v2.6.0
+#        with:
+#          context: textConsumer/build/libs
+#          file: ./config/dockerfiles/Dockerfile-text
+#          push: true
+##          builder: mybuilder
+##          platforms: linux/amd64, linux/arm64/v8
+#          tags: halushko/cinema-text:1.1,halushko/cinema-text:latest
+#      - name: Create Torrent client Image
+#        uses: docker/build-push-action@v2.6.0
+#        with:
+#          context: torrent
+#          file: ./config/dockerfiles/Dockerfile-torrent
+#          push: true
+##          builder: mybuilder
+##          platforms: linux/amd64, linux/arm64/v8
+#          tags: halushko/cinema-torrent:1.1,halushko/cinema-torrent:latest
+#          build-args: |
+#            CONFIG_DIR=$CONFIG_DIR
