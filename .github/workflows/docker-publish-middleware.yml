@@ -42,7 +42,7 @@ jobs:
         with:
           build-root-directory: core
           gradle-version: current
-          arguments: buildJar
+          arguments: jar
 
 #      # Build JARs
 #      - name: Build Bot
