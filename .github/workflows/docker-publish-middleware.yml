@@ -42,7 +42,7 @@ jobs:
         with:
           build-root-directory: core
           gradle-version: current
-          arguments: buildJar -Parch=armv8
+          arguments: buildJar -Parch=amd64
 
 #      # Build JARs
 #      - name: Build Bot
