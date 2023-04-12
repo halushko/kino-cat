@@ -56,8 +56,8 @@ jobs:
     steps:
       - name: Prepare location environments
         run: |
-          echo "LOCATION=`pwd`/${matrix.service}" >> $GITHUB_ENV
-          echo "BUILD_LOCATION=`pwd`/${matrix.service}/build/libs" >> $GITHUB_ENV
+          echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+          echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
           echo "CORE_LOCATION=$BUILD_LOCATION" >> $GITHUB_ENV
           mkdir -p $BUILD_LOCATION
           ls $BUILD_LOCATION
@@ -72,10 +72,15 @@ jobs:
           ls $BUILD_LOCATION
           ls $CORE_LOCATION
       # Build JARs
-      - name: Build Bot
+      - name: Set up Java 8
+        uses: actions/setup-java@v3.10.0
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - name: Build
         uses: gradle/gradle-build-action@v2.4.0
         with:
-          build-root-directory: ${matrix.service}
+          build-root-directory: ${{ matrix.service }}
           gradle-version: current
           arguments: fatJar
       - name: Prepare location environments
