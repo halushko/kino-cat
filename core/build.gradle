@@ -35,9 +35,9 @@ tasks.withType(JavaCompile).configureEach {
     options.compilerArgs << ("-march=${arch}" as String)
 }
 
-tasks.register('buildJar', Jar) {
+task buildJar(type: Jar) {
     from sourceSets.main.output
-    classifier(arch)
+    setArchiveClassifier(arch)
 }
 
 artifacts {
