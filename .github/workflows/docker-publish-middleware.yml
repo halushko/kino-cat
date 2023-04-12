@@ -11,20 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # Preparation
-#      - name: Set up QEMU
-#        uses: docker/setup-qemu-action@v2.1.0
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v2.5.0
-#      - name: Create buildx builder
-#        run: |
-#          docker buildx create --name mybuilder --use
-#          docker buildx inspect --bootstrap
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Set up Java 8
         uses: actions/setup-java@v3.10.0
         with:
@@ -32,21 +18,18 @@ jobs:
           java-version: '8'
       - name: Prepare location environments
         run: echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
-#          echo "DOCKER_FILES_LOCATION=`pwd`/config/dockerfiles" >> $GITHUB_ENV
-#          echo "BOT_LOCATION=`pwd`/bot" >> $GITHUB_ENV
-
-      # Build Core
       - name: Build Core
         uses: gradle/gradle-build-action@v2.4.0
         with:
           build-root-directory: core
           gradle-version: current
           arguments: jar
+
       - name: Upload core artifact
         uses: actions/upload-artifact@v2
         with:
           name: core
-          path: $CORE_LOCATION
+          path: $CORE_LOCATION/*.jar
   build_jars:
     strategy:
       matrix:
@@ -159,3 +142,10 @@ jobs:
 ##          tags: halushko/cinema-torrent:1.1,halushko/cinema-torrent:latest
 ##          build-args: |
 ##            CONFIG_DIR=$CONFIG_DIR
+
+
+#      - name: Login to DockerHub
+#        uses: docker/login-action@v1
+#        with:
+#          username: ${{ secrets.DOCKER_USERNAME }}
+#          password: ${{ secrets.DOCKER_PASSWORD }}
