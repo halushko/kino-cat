@@ -59,7 +59,11 @@ jobs:
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
           echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
           echo "CORE_LOCATION=$BUILD_LOCATION" >> $GITHUB_ENV
-          mkdir -p $BUILD_LOCATION
+          echo $LOCATION
+          echo $BUILD_LOCATION
+          echo $CORE_LOCATION
+          
+          mkdir -p $CORE_LOCATION
           ls $BUILD_LOCATION
           ls $CORE_LOCATION
       - name: Download core artifact
