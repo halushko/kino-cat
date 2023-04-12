@@ -41,18 +41,11 @@ jobs:
         run: |
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
           echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
-          ls $BUILD_LOCATION
-          ls $CORE_LOCATION
       - name: Download core artifact
         uses: actions/download-artifact@v2
         with:
           name: core_jar
-          path: $CORE_LOCATION
-      - name: Prepare location environments
-        run: |
-          ls $BUILD_LOCATION
-          ls $CORE_LOCATION
-      # Build JARs
+          path: ${{ env.BUILD_LOCATION }}
       - name: Set up Java 8
         uses: actions/setup-java@v3.10.0
         with:
@@ -64,10 +57,6 @@ jobs:
           build-root-directory: ${{ matrix.service }}
           gradle-version: current
           arguments: fatJar
-      - name: Prepare location environments
-        run: |
-          ls $BUILD_LOCATION
-          ls $CORE_LOCATION
 #      - name: Upload artifacts
 #        uses: actions/upload-artifact@v2
 #        with:
