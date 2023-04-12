@@ -35,6 +35,7 @@ jobs:
         run: |
           echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
           echo "DOCKER_FILES_LOCATION=`pwd`/config/dockerfiles" >> $GITHUB_ENV
+          echo "BOT_LOCATION=`pwd`/bot" >> $GITHUB_ENV
 
       # Build Core
       - name: Build Core
@@ -44,18 +45,13 @@ jobs:
           gradle-version: current
           arguments: jar
 
-      - name: Prepare location environments
-        run: |
-          ls $CORE_LOCATION
-          ls $DOCKER_FILES_LOCATION
-
-#      # Build JARs
-#      - name: Build Bot
-#        uses: gradle/gradle-build-action@v2.4.0
-#        with:
-#          build-root-directory: bot
-#          gradle-version: current
-#          arguments: fatJar
+      # Build JARs
+      - name: Build Bot
+        uses: gradle/gradle-build-action@v2.4.0
+        with:
+          build-root-directory: bot
+          gradle-version: current
+          arguments: fatJar
 #      - name: Build File consumer
 #        uses: gradle/gradle-build-action@v2.4.0
 #        with:
@@ -75,16 +71,23 @@ jobs:
 #          gradle-version: current
 #          arguments: jar
 #
-#      # Push images
-#      - name: Create Bot image
-#        uses: docker/build-push-action@v2.6.0
-#        with:
-#          context: bot/build/libs
-#          file: ./config/dockerfiles/Dockerfile-bot
-#          push: true
-##          builder: mybuilder
-##          platforms: linux/amd64, linux/arm64/v8
-#          tags: halushko/cinema-bot:1.1,halushko/cinema-bot:latest
+      - name: ls
+        run: |
+          ls $CORE_LOCATION
+          ls $DOCKER_FILES_LOCATION
+          cp $CORE_LOCATION/*.jar $BOT_LOCATION/build/libs
+          ls $BOT_LOCATION/build/libs
+
+      # Push images
+      - name: Create Bot image
+        uses: docker/build-push-action@v2.6.0
+        with:
+          context: bot/build/libs
+          file: ./config/dockerfiles/Dockerfile-bot
+          push: true
+#          builder: mybuilder
+#          platforms: linux/amd64, linux/arm64/v8
+          tags: halushko/cinema-bot:1.1,halushko/cinema-bot:latest
 #      - name: Create File consumer Image
 #        uses: docker/build-push-action@v2.6.0
 #        with:
