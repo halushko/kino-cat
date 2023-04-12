@@ -25,12 +25,12 @@ jobs:
           build-root-directory: core
           gradle-version: current
           arguments: jar
-      - run: ls $CORE_LOCATION
+#      - run: ls $CORE_LOCATION
       - name: Upload core artifact
         uses: actions/upload-artifact@v2
         with:
           name: core_jar
-          path: $(pwd)/core/build/libs/core-1.0.jar
+          path: `pwd`/core/build/libs/core-1.0.jar
   build_jars:
     strategy:
       matrix:
