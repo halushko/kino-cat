@@ -44,6 +44,11 @@ jobs:
           gradle-version: current
           arguments: jar
 
+      - name: Prepare location environments
+        run: |
+          ls $CORE_LOCATION
+          ls $DOCKER_FILES_LOCATION
+
 #      # Build JARs
 #      - name: Build Bot
 #        uses: gradle/gradle-build-action@v2.4.0
