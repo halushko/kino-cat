@@ -43,7 +43,7 @@ jobs:
           echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
           echo "CORE_LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Download core artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v3.0.2
         with:
           name: core_jar
           path: ${{ env.CORE_LOCATION }}
@@ -75,7 +75,7 @@ jobs:
         run: |
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Download core artifact
-        uses: actions/download-artifact@latest
+        uses: actions/download-artifact@v3.0.2
         with:
           name: ${{ matrix.service }}_jar
           path: ${{ env.LOCATION }}
