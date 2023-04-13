@@ -11,11 +11,11 @@ RUN chmod 777 -R /home/app
 RUN chmod 777 -R /home/media
 COPY ./src/main/resources/config /var/lib/transmission/config
 COPY ./src/main/resources/commands /home/app
-COPY ./build/libs/*.jar /home/app/torrent.jar
+COPY ./build/libs/torrent-*.jar /home/app/app.jar
 RUN chmod +X /home/app/*.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
 CMD echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
     rc-service transmission-daemon stop && \
     rc-service transmission-daemon start && \
-    java -jar /home/app/torrent.jar
+    java -jar /home/app/app.jar

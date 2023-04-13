@@ -1,4 +1,4 @@
-package com.halushko.kinocat.fileConsumer;
+package com.halushko.kinocat.file;
 
 import com.halushko.kinocat.core.cli.Command;
 import com.halushko.kinocat.core.cli.Constants;

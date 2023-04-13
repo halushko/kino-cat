@@ -1,4 +1,4 @@
-package com.halushko.kinocat.fileConsumer;
+package com.halushko.kinocat.file;
 
 public class Main {
     public static void main(String[] args) {

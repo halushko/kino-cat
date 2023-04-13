@@ -1,5 +1,5 @@
-group 'com.halushko.kinocat.fileConsumer'
-version '1.0-SNAPSHOT'
+group 'com.halushko.kinocat.file'
+version '1.0'
 
 apply plugin: 'java'
 apply plugin: 'application'
@@ -8,7 +8,7 @@ compileJava.options.encoding = 'UTF-8'
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.halushko.kinocat.fileConsumer.Main'
+        attributes 'Main-Class': 'com.halushko.kinocat.file.Main'
     }
 }
 
