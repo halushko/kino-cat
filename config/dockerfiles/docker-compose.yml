@@ -30,7 +30,7 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:latest
+    image: halushko/cinema-bot:1.2
     environment: *common-variables
     restart: always
     container_name: "bot"
