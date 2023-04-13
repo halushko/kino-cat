@@ -6,9 +6,9 @@ x-common-variables: &common-variables
   RABBIT_PORT: 5672
   RABBIT_IP: 10.10.255.254
 
-  BOT_TOKEN: 1859184957:AAHcSJ3Ynyc7sMeqmgxLocRa60TQWg-j79M
-  BOT_NAME: koTorrentBot
-  BOT_TRUSTED_USERS: 43504868
+  BOT_TOKEN: <token>
+  BOT_NAME: <name>
+  BOT_TRUSTED_USERS: <user_id, user_id, ...>
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000
