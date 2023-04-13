@@ -41,12 +41,12 @@ jobs:
         run: |
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
           echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
-          echo "CORE_LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+          echo "CORE_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
       - name: Download core artifact
         uses: actions/download-artifact@v2
         with:
           name: core_jar
-          path: ${{ env.BUILD_LOCATION }}
+          path: ${{ env.CORE_LOCATION }}
 #      - run: ls $BUILD_LOCATION
 #      - run: ls $CORE_LOCATION
       - name: Set up Java 8
@@ -55,7 +55,7 @@ jobs:
           distribution: 'temurin'
           java-version: '8'
       - name: Change directory permissions
-        run: chmod -R 777 ${{ env.BUILD_LOCATION }}
+        run: chmod -R 777 ${{ env.CORE_LOCATION }}
       - name: Build
         uses: gradle/gradle-build-action@v2.4.0
         with:
