@@ -100,5 +100,5 @@ jobs:
           file: ./config/dockerfiles/Dockerfile-${{ matrix.service }}
           push: true
           builder: mybuilder
-          platforms: linux/amd64, linux/arm64, linux/riscv64, linux/ppc64le, linux/386, linux/arm/v7, linux/arm/v6
+          platforms: linux/amd64, linux/arm64, linux/386, linux/arm/v7, linux/arm/v6
           tags: halushko/cinema-${{ matrix.service }}:${{ env.VERSION }},halushko/cinema-${{ matrix.service }}:latest
