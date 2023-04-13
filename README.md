@@ -5,14 +5,6 @@ The images are located in https://hub.docker.com/repositories/halushko repositor
 
 !! Do not forget to set BOT_TOKEN, BOT_NAME.
 
-"-pi" postfix is used for arm64 architecture, for example for RasberryPi. Images without "-pi" are used for architecture amd64.
-
-Use LATEST or LATEST-pi tags to pull the latest stable images
-
-To build the your oun image please use dockerfiles from https://github.com/halushko/kino-cat/tree/master/config/dockerfiles.
-You can use docker ARRG like BRANCH to use not master branch
-You can use docker ARRG like REPO to use not https://github.com/halushko/kino-cat repository. For example if you want to fork this repo
-
 Open issues:
 1. There is aa bug with "network_mode: host" in Docker Desktop (Windows and MacOS), so that your media server will never be visible. The resolution is - run this project on Linux VM with Bridge adapter (do not use NAT)
 
