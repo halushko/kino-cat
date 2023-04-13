@@ -1,8 +1,6 @@
-name: Build Docker Images for all projects
+name: Pull request to master
 
 on:
-#  push:
-#    branches: [ start_torrent_file ]
   pull_request:
     branches: [ master ]
 
@@ -82,7 +80,6 @@ jobs:
       - name: Prepare location environments
         run: |
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
-          echo "VERSION=1.3" >> $GITHUB_ENV
       - name: Download core artifact
         uses: actions/download-artifact@v3.0.2
         with:
@@ -101,4 +98,4 @@ jobs:
           push: true
           builder: mybuilder
           platforms: linux/amd64, linux/arm64, linux/386, linux/arm/v7, linux/arm/v6
-          tags: halushko/cinema-${{ matrix.service }}:${{ env.VERSION }},halushko/cinema-${{ matrix.service }}:latest
+          tags: halushko/cinema-${{ matrix.service }}:latest
