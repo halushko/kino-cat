@@ -6,6 +6,9 @@ group 'com.halushko.kinocat.core'
 version '1.0'
 compileJava.options.encoding = 'UTF-8'
 
+jar {
+}
+
 artifacts {
     archives jar
 }
