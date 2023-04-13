@@ -1,21 +1,3 @@
-FROM alpine/git as download_fileConsumer
-LABEL VERSION=0.6.5
-ARG BRANCH=master
-ARG REPO=https://github.com/halushko/kino-cat.git
-RUN mkdir -p /home/git/code
-RUN cd /home/git/code && \
-    git init kino-cat && \
-    cd kino-cat && \
-    git remote add origin $REPO && \
-    git config core.sparseCheckout true && \
-    echo "fileConsumer/" >> .git/info/sparse-checkout && \
-    git pull origin $BRANCH
-
-FROM halushko/cinema-middleware:latest as build_fileConsumer
-COPY --chown=gradle:gradle --from=download_fileConsumer /home/git/code /home/gradle/code
-RUN cd /home/gradle/code/kino-cat/fileConsumer && gradle fatJar && cp ./build/libs/*.jar /home/gradle/app/file_consumer.jar
-
-FROM openjdk:8-alpine as fileConsumer
-RUN mkdir -p /home/torrent_files/
-COPY --from=build_fileConsumer /home/gradle/app /home/app
-ENTRYPOINT ["java", "-jar", "/home/app/file_consumer.jar"]
+FROM openjdk:8-alpine
+COPY file-*.jar /home/app/app.jar
+ENTRYPOINT ["java", "-jar", "/home/app/app.jar"]

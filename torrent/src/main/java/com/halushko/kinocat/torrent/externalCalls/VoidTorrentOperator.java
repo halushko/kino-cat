@@ -1,7 +1,7 @@
 package com.halushko.kinocat.torrent.externalCalls;
 
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.handlers.input.ExternalCliCommandExecutor;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.handlers.input.ExternalCliCommandExecutor;
 
 public class VoidTorrentOperator extends ExternalCliCommandExecutor {
     @Override

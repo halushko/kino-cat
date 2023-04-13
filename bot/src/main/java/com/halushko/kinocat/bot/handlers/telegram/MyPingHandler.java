@@ -1,7 +1,7 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
 import com.halushko.kinocat.bot.KoTorrentBot;
-import com.halushko.kinocat.middleware.handlers.telegram.PingHandler;
+import com.halushko.kinocat.core.handlers.telegram.PingHandler;
 
 public class MyPingHandler extends PingHandler {
     @Override

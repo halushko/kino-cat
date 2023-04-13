@@ -1,7 +1,7 @@
 package com.halushko.kinocat.torrent.internalScripts;
 
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.cli.ScriptsCollection;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.cli.ScriptsCollection;
 
 class TorrentScripts {
     static final ScriptsCollection scripts = new ScriptsCollection() {{

@@ -1,5 +1,5 @@
 group 'com.halushko.kotorrent'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 apply plugin: 'java'
 apply plugin: 'application'
@@ -14,7 +14,6 @@ jar {
 
 task fatJar(type: Jar) {
     manifest.from jar.manifest
-    classifier = 'all'
     from {
         configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     } {
@@ -32,8 +31,7 @@ dependencies {
     implementation 'com.rabbitmq:amqp-client:+'
     implementation 'org.json:json:+'
     implementation 'org.slf4j:slf4j-log4j12:+'
-    implementation files('/home/gradle/app/kot_utils.jar')
-//    implementation files('../middleware/build/libs/middleware-1.0-SNAPSHOT.jar')
+    implementation fileTree(dir: System.getenv('CORE_LOCATION'), include: ['*.jar'])
 }
 
 repositories {

@@ -1,8 +1,8 @@
 package com.halushko.kinocat.torrent.internalScripts;
 
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.cli.ScriptsCollection;
-import com.halushko.kinocat.middleware.handlers.input.PrivateCliCommandExecutor;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.cli.ScriptsCollection;
+import com.halushko.kinocat.core.handlers.input.PrivateCliCommandExecutor;
 import org.apache.log4j.Logger;
 
 import java.util.List;

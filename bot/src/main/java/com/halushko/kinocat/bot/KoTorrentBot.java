@@ -4,7 +4,7 @@ import com.halushko.kinocat.bot.handlers.input.SendTextMessageToUser;
 import com.halushko.kinocat.bot.handlers.telegram.MyPingHandler;
 import com.halushko.kinocat.bot.handlers.telegram.TextHandler;
 import com.halushko.kinocat.bot.handlers.telegram.TorrentFileHandler;
-import com.halushko.kinocat.middleware.handlers.telegram.UserMessageHandler;
+import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
 import org.apache.log4j.Logger;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -15,7 +15,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.*;
 
-import static com.halushko.kinocat.middleware.rabbit.RabbitJson.unNormalizeText;
+import static com.halushko.kinocat.core.rabbit.RabbitJson.unNormalizeText;
 
 public class KoTorrentBot extends TelegramLongPollingBot {
     public static KoTorrentBot BOT;

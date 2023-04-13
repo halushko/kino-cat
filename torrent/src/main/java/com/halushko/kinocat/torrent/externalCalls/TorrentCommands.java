@@ -1,9 +1,9 @@
 package com.halushko.kinocat.torrent.externalCalls;
 
-import com.halushko.kinocat.middleware.cli.Constants;
-import com.halushko.kinocat.middleware.handlers.input.ExternalCliCommandExecutor;
-import com.halushko.kinocat.middleware.rabbit.RabbitJson;
-import com.halushko.kinocat.middleware.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.handlers.input.ExternalCliCommandExecutor;
+import com.halushko.kinocat.core.rabbit.RabbitJson;
+import com.halushko.kinocat.core.rabbit.RabbitMessage;
 import com.halushko.kinocat.torrent.internalScripts.ViewTorrentInfo;
 
 import java.util.List;
