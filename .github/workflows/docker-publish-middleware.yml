@@ -46,7 +46,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: core_jar
-          path: ${{ env.CORE_LOCATION }}
+          path: ${{ env.BUILD_LOCATION }}
 #      - run: ls $BUILD_LOCATION
 #      - run: ls $CORE_LOCATION
       - name: Set up Java 8
@@ -54,6 +54,8 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
+      - name: Change directory permissions
+        run: chmod -R 777 ${{ env.BUILD_LOCATION }}
       - name: Build
         uses: gradle/gradle-build-action@v2.4.0
         with:
