@@ -1,10 +1,8 @@
 name: Build Docker Images for all projects
 
 on:
-  push:
-    branches: [ test_wf ]
   pull_request:
-    branches: [ test_wf ]
+    branches: [ master ]
 
 jobs:
   build_core:

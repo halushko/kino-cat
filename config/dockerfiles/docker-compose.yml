@@ -57,7 +57,7 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./workdir/transmission/files_from_telegram:/home/torrent_files/
+      - ./workdir/config/files_from_telegram:/home/torrent_files/
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.4
@@ -69,9 +69,9 @@ services:
     depends_on:
       - rabbitmq
     volumes:
-      - ./workdir/plex/movies:/home/media/
-      - ./workdir/transmission/torrents:/var/lib/transmission/config/torrents
-      - ./workdir/transmission/resume:/var/lib/transmission/config/resume
+      - ./workdir/mediadata:/home/media/
+      - ./workdir/config/transmission/torrents:/var/lib/transmission/config/torrents
+      - ./workdir/config/transmission/resume:/var/lib/transmission/config/resume
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.5
@@ -87,8 +87,8 @@ services:
       - TZ=Etc/UTC
       - VERSION=docker
     volumes:
-      - ./workdir/plex/config:/config
-      - ./workdir/plex/movies:/movies
+      - ./workdir/config/plex/config:/config
+      - ./workdir/mediadata:/movies
     restart: unless-stopped
     network_mode: host
 networks:
