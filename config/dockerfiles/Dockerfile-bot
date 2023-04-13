@@ -1,3 +1,3 @@
 FROM openjdk:8-alpine
-COPY *.jar /home/app/bot.jar
+COPY bot*.jar /home/app/bot.jar
 ENTRYPOINT ["java", "-jar", "/home/app/bot.jar"]
