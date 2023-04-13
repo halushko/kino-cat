@@ -1,4 +1,4 @@
-package com.halushko.kinocat.textConsumer;
+package com.halushko.kinocat.text;
 
 public class Main {
     public static void main(String[] args) {

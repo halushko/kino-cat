@@ -1,4 +1,4 @@
-package com.halushko.kinocat.textConsumer;
+package com.halushko.kinocat.text;
 
 import com.halushko.kinocat.core.cli.Command;
 import com.halushko.kinocat.core.cli.Constants;
@@ -9,9 +9,7 @@ import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserMessageHandler extends InputMessageHandler {
     private static final ScriptsCollection scripts = new ScriptsCollection() {{

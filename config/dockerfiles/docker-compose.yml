@@ -30,7 +30,7 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:1.2
+    image: halushko/cinema-bot:latest
     environment: *common-variables
     restart: always
     container_name: "bot"
@@ -39,16 +39,16 @@ services:
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.2
-#  text_handler:
-#    image: halushko/cinema-text:latest
-#    environment: *common-variables
-#    restart: always
-#    container_name: "text"
-#    networks:
-#      cat_private_network:
-#        ipv4_address: 10.10.0.3
-#    depends_on:
-#      - rabbitmq
+  text_handler:
+    image: halushko/cinema-text:latest
+    environment: *common-variables
+    restart: always
+    container_name: "text"
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.3
+    depends_on:
+      - rabbitmq
 #  file_handler:
 #    image: halushko/cinema-file:latest
 #    environment: *common-variables

@@ -1,4 +1,4 @@
-package com.halushko.kinocat.textConsumer;
+package com.halushko.kinocat.text;
 
 import static com.halushko.kinocat.core.cli.Constants.Commands.Torrent.REMOVE_JUST_TORRENT;
 import static com.halushko.kinocat.core.cli.Constants.Commands.Torrent.REMOVE_WITH_FILES;
