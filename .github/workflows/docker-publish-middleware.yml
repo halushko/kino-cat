@@ -74,6 +74,7 @@ jobs:
       - name: Prepare location environments
         run: |
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+          echo "VERSION=1.2" >> $GITHUB_ENV
       - name: Download core artifact
         uses: actions/download-artifact@v3.0.2
         with:
@@ -90,7 +91,7 @@ jobs:
           context: ${{ matrix.service }}
           file: ./config/dockerfiles/Dockerfile-${{ matrix.service }}
           push: true
-          tags: halushko/cinema-${{ matrix.service }}:1.2
+          tags: halushko/cinema-${{ matrix.service }}:${{ env.VERSION }}
 
 
 

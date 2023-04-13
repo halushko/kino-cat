@@ -6,9 +6,9 @@ x-common-variables: &common-variables
   RABBIT_PORT: 5672
   RABBIT_IP: 10.10.255.254
 
-  BOT_TOKEN: <input>>
-  BOT_NAME: <input>
-  BOT_TRUSTED_USERS: <input,input,input>
+  BOT_TOKEN: 1859184957:AAHcSJ3Ynyc7sMeqmgxLocRa60TQWg-j79M
+  BOT_NAME: koTorrentBot
+  BOT_TRUSTED_USERS: 43504868
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000
@@ -39,58 +39,58 @@ services:
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.2
-  text_handler:
-    image: halushko/cinema-text:latest
-    environment: *common-variables
-    restart: always
-    container_name: "text"
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.3
-    depends_on:
-      - rabbitmq
-  file_handler:
-    image: halushko/cinema-file:latest
-    environment: *common-variables
-    restart: always
-    container_name: "file"
-    depends_on:
-      - rabbitmq
-    volumes:
-      - ./workdir/transmission/files_from_telegram:/home/torrent_files/
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.4
-  torrent:
-    image: halushko/cinema-torrent:latest
-    environment: *common-variables
-    restart: always
-    container_name: "torrent"
-    depends_on:
-      - rabbitmq
-    volumes:
-      - ./workdir/plex/movies:/home/media/
-      - ./workdir/transmission/torrents:/var/lib/transmission/config/torrents
-      - ./workdir/transmission/resume:/var/lib/transmission/config/resume
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.5
-    ports:
-      - 9091:9091
-      - 51413:51413
-  media:
-    image: lscr.io/linuxserver/plex:latest
-    container_name: "media"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - VERSION=docker
-    volumes:
-      - ./workdir/plex/config:/config
-      - ./workdir/plex/movies:/movies
-    restart: unless-stopped
-    network_mode: host
+#  text_handler:
+#    image: halushko/cinema-text:latest
+#    environment: *common-variables
+#    restart: always
+#    container_name: "text"
+#    networks:
+#      cat_private_network:
+#        ipv4_address: 10.10.0.3
+#    depends_on:
+#      - rabbitmq
+#  file_handler:
+#    image: halushko/cinema-file:latest
+#    environment: *common-variables
+#    restart: always
+#    container_name: "file"
+#    depends_on:
+#      - rabbitmq
+#    volumes:
+#      - ./workdir/transmission/files_from_telegram:/home/torrent_files/
+#    networks:
+#      cat_private_network:
+#        ipv4_address: 10.10.0.4
+#  torrent:
+#    image: halushko/cinema-torrent:latest
+#    environment: *common-variables
+#    restart: always
+#    container_name: "torrent"
+#    depends_on:
+#      - rabbitmq
+#    volumes:
+#      - ./workdir/plex/movies:/home/media/
+#      - ./workdir/transmission/torrents:/var/lib/transmission/config/torrents
+#      - ./workdir/transmission/resume:/var/lib/transmission/config/resume
+#    networks:
+#      cat_private_network:
+#        ipv4_address: 10.10.0.5
+#    ports:
+#      - 9091:9091
+#      - 51413:51413
+#  media:
+#    image: lscr.io/linuxserver/plex:latest
+#    container_name: "media"
+#    environment:
+#      - PUID=1000
+#      - PGID=1000
+#      - TZ=Etc/UTC
+#      - VERSION=docker
+#    volumes:
+#      - ./workdir/plex/config:/config
+#      - ./workdir/plex/movies:/movies
+#    restart: unless-stopped
+#    network_mode: host
 networks:
   cat_private_network:
     driver: bridge
