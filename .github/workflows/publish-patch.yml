@@ -89,7 +89,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Increment version
-        run: docker pull halushko/cinema-${{ matrix.service }}:alpha && docker inspect --format='{{index .RepoDigests 0}}' halushko/cinema-${{ matrix.service }}:alpha | awk -F@ '{print $2}'
+        run: docker pull halushko/cinema-${{ matrix.service }}:latest && docker inspect --format='{{index .RepoDigests 0}}' halushko/cinema-${{ matrix.service }}:latest | awk -F@ '{print $2}'
       - name: Prepare location environments
         run: echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Download core artifact
