@@ -1,0 +1,109 @@
+name: Push in patch version
+
+on:
+  push:
+    branches:
+      - '*'
+    if: >
+      github.ref_type == 'branch' && 
+      startsWith(github.ref, 'refs/heads/') &&
+      startsWith(github.base_ref, 'refs/heads/master/')
+
+
+jobs:
+  build_core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Set up Java 8
+        uses: actions/setup-java@v3.10.0
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - name: Prepare location environments
+        run: echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
+      - name: Build Core
+        uses: gradle/gradle-build-action@v2.4.1
+        with:
+          build-root-directory: core
+          gradle-version: current
+          arguments: jar
+      - name: Upload core artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: core_jar
+          path: ${{ env.CORE_LOCATION }}/core-1.0.jar
+  build_jars:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    runs-on: ubuntu-latest
+    needs: build_core
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Prepare location environments
+        run: |
+          echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+          echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
+          echo "CORE_LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+      - name: Download core artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: core_jar
+          path: ${{ env.CORE_LOCATION }}
+      - name: Set up Java 8
+        uses: actions/setup-java@v3.10.0
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - name: Build
+        uses: gradle/gradle-build-action@v2.4.1
+        with:
+          build-root-directory: ${{ env.LOCATION }}
+          gradle-version: current
+          arguments: fatJar
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: ${{ matrix.service }}_jar
+          path: ${{ env.BUILD_LOCATION }}/${{ matrix.service }}-1.0.jar
+  build_images:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    runs-on: ubuntu-latest
+    needs: build_jars
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.5.0
+      - name: Create buildx builder
+        run: |
+          docker buildx create --name mybuilder --use
+          docker buildx inspect --bootstrap
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Prepare location environments
+        run: |
+          echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+          echo "VERSION=1.4.1" >> $GITHUB_ENV
+      - name: Download core artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: ${{ matrix.service }}_jar
+          path: ${{ env.LOCATION }}
+
+      - name: Create image
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: ${{ matrix.service }}
+          file: ./config/dockerfiles/Dockerfile-${{ matrix.service }}
+          push: true
+          builder: mybuilder
+          platforms: linux/amd64, linux/arm64, linux/386, linux/arm/v7, linux/arm/v6
+          tags: halushko/cinema-${{ matrix.service }}:alpha,halushko/cinema-${{ matrix.service }}:${{ env.VERSION }}
