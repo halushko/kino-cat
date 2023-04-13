@@ -15,9 +15,6 @@ You can use docker ARRG like REPO to use not https://github.com/halushko/kino-ca
 
 Open issues:
 1. There is aa bug with "network_mode: host" in Docker Desktop (Windows and MacOS), so that your media server will never be visible. The resolution is - run this project on Linux VM with Bridge adapter (do not use NAT)
-2. There is a hardcoded values in https://github.com/halushko/kino-cat/blob/master/config/config_files/minidlna/minidlna.conf. 
-"presentation_url" and "network_interface". You should use your values
-
 
 HOWTO install (Linux)
 1. Update system: 
