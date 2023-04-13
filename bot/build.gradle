@@ -6,15 +6,14 @@ apply plugin: 'application'
 
 compileJava.options.encoding = 'UTF-8'
 
-//jar {
-//
-//}
-
-tasks.register('fatJar', Jar) {
+jar {
     manifest {
         attributes 'Main-Class': 'com.halushko.kinocat.bot.Main'
     }
-//    manifest.from jar.manifest
+}
+
+task fatJar(type: Jar) {
+    manifest.from jar.manifest
     from {
         configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     } {
