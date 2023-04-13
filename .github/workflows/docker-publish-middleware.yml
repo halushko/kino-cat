@@ -25,7 +25,7 @@ jobs:
           gradle-version: current
           arguments: jar
       - name: Upload core artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.0.2
         with:
           name: core_jar
           path: ${{ env.CORE_LOCATION }}/core-1.0.jar
@@ -59,7 +59,7 @@ jobs:
           gradle-version: current
           arguments: fatJar
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.0.2
         with:
           name: ${{ matrix.service }}_jar
           path: ${{ env.BUILD_LOCATION }}/${{ matrix.service }}-1.0.jar
