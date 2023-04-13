@@ -3,7 +3,12 @@ name: Push in patch version
 on:
   push:
     branches:
-      - 'master/*'
+      - '*'
+    if: >
+      github.ref_type == 'branch' && 
+      startsWith(github.ref, 'refs/heads/') &&
+      startsWith(github.base_ref, 'refs/heads/master/')
+
 
 jobs:
   build_core:
