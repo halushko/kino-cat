@@ -1,6 +1,8 @@
 name: Build Docker Images for all projects
 
 on:
+#  push:
+#    branches: [ start_torrent_file ]
   pull_request:
     branches: [ master ]
 
@@ -80,7 +82,7 @@ jobs:
       - name: Prepare location environments
         run: |
           echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
-          echo "VERSION=1.2" >> $GITHUB_ENV
+          echo "VERSION=1.3" >> $GITHUB_ENV
       - name: Download core artifact
         uses: actions/download-artifact@v3.0.2
         with:
