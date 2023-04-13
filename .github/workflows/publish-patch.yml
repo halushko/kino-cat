@@ -3,7 +3,7 @@ name: Push in patch version
 on:
   push:
     branches:
-      - 'refs/heads/master/*'
+      - 'master/*'
 
 jobs:
   build_core:
