@@ -1,4 +1,4 @@
-name: Push in patch version
+name: Pull in alpha
 
 on:
   pull_request:

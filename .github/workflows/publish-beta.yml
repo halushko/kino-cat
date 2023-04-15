@@ -1,4 +1,4 @@
-name: Push in patch version
+name: Push in beta
 
 on:
   push:
