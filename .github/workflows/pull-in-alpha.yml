@@ -99,14 +99,14 @@ jobs:
             fi
           else
             echo "No valid version found"
-            exit 1
           fi
           echo "The new version will be: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           
           TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags?page_size=1024 | jq -r '.results[].name' | grep -E "^.*_[0-9]+$")
           for TAG in $TAGS; do
-               echo "Delete image $TAG"
+            echo "Delete image $TAG"
+            curl -X DELETE -s "https://registry.hub.docker.com/v1/repositories/halushko/cinema-bot/tags/$TAG"
           done
         shell: bash
       - name: Download core artifact
