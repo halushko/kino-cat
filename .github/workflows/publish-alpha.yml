@@ -42,22 +42,31 @@ jobs:
           echo "CORE_LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Generate new VERSION env
         run: |
-          VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+\"$' | sort -rV | head -n 1)
-          echo "Latest version: $VERSION"
-          if [[ $VERSION =~ ^\"([0-9]+)\.([0-9]+)(\.)?([0-9]+)?\"$ ]]; then
+          # Create new
+          CURRENT_VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+\"$' | sort -rV | head -n 1)
+          echo "Latest version: $CURRENT_VERSION"
+          NEW_VERSION="ERROR"
+          if [[ $CURRENT_VERSION =~ ^\"([0-9]+)\.([0-9]+)(\.)?([0-9]+)?\"$ ]]; then
             if [ -z "${BASH_REMATCH[3]}" ]; then
-              VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.1"
+              NEW_VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.1"
             else
               VERSION_Z="${BASH_REMATCH[4]}"
               ((VERSION_Z++))
-              VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${VERSION_Z}"
+              NEW_VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${VERSION_Z}"
             fi
-            echo "The new version will be: $VERSION"
-            echo "VERSION=$VERSION" >> $GITHUB_ENV
+            echo "The new version will be: $NEW_VERSION"
+            echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
           else
             echo "No valid version found"
             exit 1
           fi
+          
+          # Delete old
+          TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq -r '.results[].name' | grep -E "^${VERSION}_\d+$")
+          for TAG in $TAGS; do
+            echo "Delete image $TAG"
+#            curl -X DELETE -s "https://registry.hub.docker.com/v1/repositories/halushko/cinema-bot/tags/$TAG"
+          done
         shell: bash
       - name: Download core artifact
         uses: actions/download-artifact@v3.0.2
