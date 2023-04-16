@@ -94,19 +94,15 @@ jobs:
           echo "VERSION=1.4.1" >> $GITHUB_ENV
       - name: Generate new VERSION env
         run: |
-          VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+\"$' | sort -rV | head -n 1)
+          VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
           echo "Latest version: $VERSION"
-          if [[ $VERSION =~ ^\"[0-9]+\.[0-9]+.*\"$ ]]; then
-            if [[ $VERSION =~ ^\"([0-9]+)\.([0-9]+)(\.?)([0-9]*)(.*)\"$ ]]; then
-              if [ -z "${BASH_REMATCH[3]}" ]; then
-                VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.1_$(date +%Y%m%d%H%M%S)"
-              else
-                VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[4]}_$(date +%Y%m%d%H%M%S)"
-              fi
+          if [[ $VERSION =~ ^\"([0-9]+)\.([0-9]+)(\.[0-9]+)?\"$ ]]; then
+            if [ -z "${BASH_REMATCH[3]}" ]; then
+              VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.1_$(date +%Y%m%d%H%M%S)"
             else
-              echo "No valid version found"
-              exit 1
+              VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}_$(date +%Y%m%d%H%M%S)"
             fi
+          fi
           else
             echo "No valid version found"
             exit 1
@@ -128,4 +124,4 @@ jobs:
           push: true
           builder: mybuilder
           platforms: linux/amd64, linux/arm64, linux/386, linux/arm/v7, linux/arm/v6
-          tags: halushko/cinema-${{ matrix.service }}:alpha,halushko/cinema-${{ matrix.service }}:${{ env.VERSION }}
+          tags: halushko/cinema-${{ matrix.service }}:beta,halushko/cinema-${{ matrix.service }}:${{ env.VERSION }}

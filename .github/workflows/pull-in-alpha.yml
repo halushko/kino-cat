@@ -3,8 +3,8 @@ name: Pull in alpha
 on:
   pull_request:
     branches: [ alpha ]
-  push:
-    branches: [ alpha ]
+#  push:
+#    branches: [ alpha ]
 jobs:
   build_core:
     runs-on: ubuntu-latest
