@@ -95,7 +95,7 @@ jobs:
             else
               VERSION_Z="${BASH_REMATCH[3]:1}"
               ((VERSION_Z++))
-              VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}${VERSION_Z}"
+              VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${VERSION_Z}"
             fi
           else
             echo "No valid version found"
@@ -104,7 +104,7 @@ jobs:
           echo "The new version will be: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           
-          TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq -r '.results[].name' | grep -E "^${LATEST_VERSION}_\d+$")
+          TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq -r '.results[].name' | grep -E "^.*_\d+$")
           for TAG in $TAGS; do
                echo "Delete image $TAG"
           done
