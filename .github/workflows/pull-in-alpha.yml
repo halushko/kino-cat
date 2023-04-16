@@ -3,8 +3,8 @@ name: Pull in alpha
 on:
   pull_request:
     branches: [ alpha ]
-#  push:
-#    branches: [ alpha ]
+  push:
+    branches: [ alpha ]
 jobs:
   build_core:
     runs-on: ubuntu-latest
@@ -84,8 +84,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Prepare location environments
-        run: |
-          echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+        run: echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Generate new VERSION env
         run: |
                # Create new

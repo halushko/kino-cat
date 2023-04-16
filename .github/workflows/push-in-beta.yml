@@ -1,14 +1,18 @@
 name: Push in beta
 
+#on:
+#  push:
+#    branches:
+#      - '*'
+#    if: >
+#      github.ref_type == 'branch' &&
+#      startsWith(github.ref, 'refs/heads/') &&
+#      startsWith(github.base_ref, 'refs/heads/master/alpha/')
 on:
+  pull_request:
+    branches: [ alpha1 ]
   push:
-    branches:
-      - '*'
-    if: >
-      github.ref_type == 'branch' && 
-      startsWith(github.ref, 'refs/heads/') &&
-      startsWith(github.base_ref, 'refs/heads/master/alpha/')
-
+    branches: [ alpha1 ]
 
 jobs:
   build_core:
@@ -89,9 +93,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Prepare location environments
-        run: |
-          echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
-          echo "VERSION=1.4.1" >> $GITHUB_ENV
+        run: echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Generate new VERSION env
         run: |
           VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
