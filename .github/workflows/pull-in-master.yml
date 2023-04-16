@@ -37,7 +37,6 @@ jobs:
       - uses: actions/checkout@v3.0.2
       - name: Prepare location environments
         run: |
-          echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
           echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
           echo "CORE_LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Download core artifact
