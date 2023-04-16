@@ -96,7 +96,7 @@ jobs:
         run: echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Generate new VERSION env
         run: |
-          VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
+          VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags?page_size=1024 | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
           echo "Latest version: $VERSION"
           if [[ $VERSION =~ ^\"([0-9]+)\.([0-9]+)(\.[0-9]+)?\"$ ]]; then
             if [ -z "${BASH_REMATCH[3]}" ]; then

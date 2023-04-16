@@ -87,7 +87,7 @@ jobs:
         run: echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
       - name: Generate new VERSION env
         run: |
-          LATEST_VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
+          LATEST_VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags?page_size=1024 | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
           echo "Latest version: $LATEST_VERSION"
           if [[ $LATEST_VERSION =~ ^\"([0-9]+)\.([0-9]+)(\.[0-9]+)?\"$ ]]; then
             if [ -z "${BASH_REMATCH[3]}" ]; then
@@ -104,7 +104,7 @@ jobs:
           echo "The new version will be: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           
-          TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq -r '.results[].name' | grep -E "^.*_[0-9]+$")
+          TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags?page_size=1024 | jq -r '.results[].name' | grep -E "^.*_[0-9]+$")
           for TAG in $TAGS; do
                echo "Delete image $TAG"
           done
