@@ -106,7 +106,7 @@ jobs:
           TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$")
           for TAG in $TAGS; do
             echo "Delete image $TAG"
-            curl -X DELETE -s "https://registry.hub.docker.com/v1/repositories/halushko/cinema-bot/tags/$TAG"
+            curl -X DELETE -s "https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/$TAG"
           done
         shell: bash
       - name: Download core artifact
