@@ -104,7 +104,7 @@ jobs:
           echo "The new version will be: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           
-          TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq -r '.results[].name' | grep -E "^.*_\d+$")
+          TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/ | jq -r '.results[].name' | grep -E "^.*_[0-9]+$")
           for TAG in $TAGS; do
                echo "Delete image $TAG"
           done
