@@ -129,8 +129,8 @@ jobs:
         echo "Responce $DH_RESPONSE"
         DH_TOKEN=$(echo $DH_RESPONSE | grep -o '"token":"[^"]*' | cut -d'"' -f4)
         echo "Token $DH_TOKEN"
-        echo $DH_TOKEN > ${{ env.LOCATION }}/token.tmp
-        cat ${{ env.LOCATION }}/token.tmp
+        echo $DH_TOKEN > token.tmp
+        cat token.tmp
       shell: bash
     - name: Upload token artifact
       uses: actions/upload-artifact@v3.1.2
