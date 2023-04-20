@@ -18,7 +18,7 @@ jobs:
   build_jars:
     strategy:
       matrix:
-        service: $SERVICE_MATRIX
+        service: ${{ env.SERVICE_MATRIX }}
     uses: ./.github/workflows/build_jars.yml
     with:
       java-version: $JAVA_V
