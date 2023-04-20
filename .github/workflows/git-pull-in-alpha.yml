@@ -10,7 +10,7 @@ jobs:
   build_core:
     uses: ./.github/workflows/java-build-core.yml
     with:
-      java-version: $JAVA_VERSION
+      java-version: '8'
   build_jars:
     strategy:
       matrix:
@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/java-build-jars.yml
     with:
       repository-name: ${{ matrix.service }}
-      java-version: $JAVA_VERSION
+      java-version: '8'
     needs: build_core
   get_alpha_tags:
     strategy:
