@@ -35,7 +35,9 @@ jobs:
     uses: ./.github/workflows/push_images.yml
     with:
       repository-name: ${{ matrix.service }}
-    secrets: inherit
+    secrets:
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-password: ${{ secrets.DOCKER_PASSWORD }}
     needs: get_alpha_tags
   get_docker_token:
     uses: ./.github/workflows/get_docker_token.yml
