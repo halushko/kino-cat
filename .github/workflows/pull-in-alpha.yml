@@ -150,6 +150,7 @@ jobs:
         with:
           name: dh_token_file
           path: .
+      - name: Delete beta tags
         run: |
           cat token.tmp
           BETA_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$")
