@@ -41,7 +41,8 @@ jobs:
           path: ${{ env.LOCATION }}
       - name: Prepare TAGs environment
         run: |
-          TMP=$(cat ${{ inputs.repository-name }}_tags.tmp | tr '\n' ',')
+          ls ${{ env.LOCATION }}
+          TMP=$(cat ${{ env.LOCATION }}/${{ inputs.repository-name }}_tags.tmp | tr '\n' ',')
           echo $TMP
           echo "IMAGES=$TMP" >> $GITHUB_ENV
       - name: Create image
