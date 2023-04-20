@@ -13,29 +13,29 @@ jobs:
   build_core:
     extends:
       file: jobs/build_core.yaml
-      job: execute_job
+      job: build_core
   build_jars:
     extends:
       file: jobs/build_jars.yaml
       job: execute_job
     needs: build_core
-  get_tags:
+  get_alpha_tags:
     extends:
       file: jobs/getters/alpha_tags.yml
-      job: execute_job
+      job: get_alpha_tags
     needs: build_jars
   push_images:
     extends:
       file: jobs/push_images.yml
-      job: execute_job
-    needs: get_tags
-  login_to_docker:
+      job: push_images
+    needs: get_alpha_tags
+  get_docker_token:
     extends:
       file: jobs/getters/docker_token.yaml
-      job: execute_job
+      job: get_docker_token
     needs: push_images
   clean_beta_images:
     extends:
       file: jobs/clean_beta_images.yaml
-      job: execute_job
-    needs: login_to_docker
+      job: clean_beta_images
+    needs: get_docker_token

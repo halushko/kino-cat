@@ -1,4 +1,4 @@
-execute_job:
+clean_beta_images:
   strategy:
     matrix:
       service: ${{ env.SERVICE_MATRIX }}

@@ -1,4 +1,4 @@
-execute_job:
+get_alpha_tags:
   strategy:
     matrix:
       service: ${{ env.SERVICE_MATRIX }}
