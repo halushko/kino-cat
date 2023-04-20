@@ -28,9 +28,7 @@ jobs:
           username: ${{ secrets.docker-username }}
           password: ${{ secrets.docker-password }}
       - name: Prepare location environments
-        run: |
-          echo "LOCATION=`pwd`/${{ inputs.repository-name }}" >> $GITHUB_ENV
-          echo "IMAGES=$(cat ${{ inputs.repository-name }}_tags.tmp | tr '\n' ',')" >> $GITHUB_ENV
+        run: echo "LOCATION=`pwd`/${{ inputs.repository-name }}" >> $GITHUB_ENV
       - name: Download app JAR artifact
         uses: actions/download-artifact@v3.0.2
         with:
@@ -41,7 +39,8 @@ jobs:
         with:
           name: ${{ inputs.repository-name }}_tags_file
           path: ${{ env.LOCATION }}
-  
+      - name: Prepare TAGs environment
+        run: echo "IMAGES=$(cat ${{ inputs.repository-name }}_tags.tmp | tr '\n' ',')" >> $GITHUB_ENV
       - name: Create image
         uses: docker/build-push-action@v4.0.0
         with:
