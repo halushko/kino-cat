@@ -44,13 +44,4 @@ jobs:
           echo "All tags=[$ALL_TAGS]"
           BETA_TAGS=$(echo $ALL_TAGS | grep -E "^\".+_[0-9]+\"$")
           echo "All tags=[$BETA_TAGS]"
-          if [ -n "$BETA_TAGS" ]; then
-            echo "Tags are not empty"
-            for TAG in $BETA_TAGS; do
-              TAG=$(echo $TAG | sed 's/"//g')
-              echo "Delete image $TAG"
-            done
-          else
-            echo "No beta tags found."
-          fi
         shell: bash
