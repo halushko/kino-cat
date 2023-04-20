@@ -11,8 +11,8 @@ env:
 
 jobs:
   build_core:
-    extends:
-      file: jobs/build_core.yaml
+    Use:
+      file: ./jobs/build_core.yaml
       job: build_core
   build_jars:
     extends:
