@@ -11,35 +11,35 @@ env:
 
 jobs:
   build_core:
-    build:
+    execute_job:
       extends:
         file: jobs/build_core.yaml
         job: execute_job
   build_jars:
-    build:
+    execute_job:
       extends:
         file: jobs/build_jars.yaml
         job: execute_job
       needs: build_core
   get_tags:
-    build:
+    execute_job:
       extends:
         file: jobs/getters/alpha_tags.yml
         job: execute_job
       needs: build_jars
   push_images:
-    build:
+    execute_job:
       extends:
         file: jobs/push_images.yml
         job: execute_job
     needs: get_tags
   login_to_docker:
-    build:
+    execute_job:
       extends:
         file: jobs/getters/docker_token.yaml
         job: execute_job
   clean_beta_images:
-    build:
+    execute_job:
       extends:
         file: jobs/clean_beta_images.yaml
         job: execute_job
