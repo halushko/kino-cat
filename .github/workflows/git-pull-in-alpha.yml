@@ -9,15 +9,12 @@ on:
 jobs:
   build_core:
     uses: ./.github/workflows/java-build-core.yml
-    with:
-      java-version: '8'
   build_jars:
     strategy:
       matrix:
         service: [ bot, text, file, torrent ]
     uses: ./.github/workflows/java-build-jars.yml
     with:
-      java-version: '8'
       repository-name: ${{ matrix.service }}
     needs: build_core
   get_alpha_tags:

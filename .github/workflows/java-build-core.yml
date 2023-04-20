@@ -1,10 +1,6 @@
 name: Build Core
 on:
   workflow_call:
-    inputs:
-      java-version:
-        required: true
-        type: string
 jobs:
   build_core:
     runs-on: ubuntu-latest
@@ -14,7 +10,7 @@ jobs:
         uses: actions/setup-java@v3.10.0
         with:
           distribution: 'temurin'
-          java-version: ${{ inputs.java-version }}
+          java-version: ${{ env.JAVA_VERSION }}
       - name: Prepare location environments
         run: echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
       - name: Build Core
