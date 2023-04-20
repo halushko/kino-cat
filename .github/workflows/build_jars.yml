@@ -16,7 +16,7 @@ jobs:
       - name: Prepare location environments
         run: |
           echo "CURRENT_LOCATION=`pwd`/${{ inputs.repository-name }}" >> $GITHUB_ENV
-          echo "CORE_LOCATION=${{ env.CURRENT_LOCATION }}" >> $GITHUB_ENV
+          echo "CORE_LOCATION=`pwd`/${{ inputs.repository-name }}" >> $GITHUB_ENV
       - name: Download core artifact
         uses: actions/download-artifact@v3.0.2
         with:
