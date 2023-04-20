@@ -10,7 +10,7 @@ jobs:
         uses: actions/setup-java@v3.10.0
         with:
           distribution: 'temurin'
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version: $JAVA_VERSION
       - name: Prepare location environments
         run: echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
       - name: Build Core
