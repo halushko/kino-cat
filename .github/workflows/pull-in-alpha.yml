@@ -42,6 +42,6 @@ jobs:
           cat token.tmp
           ALL_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name')
           echo "All tags=[$ALL_TAGS]"
-          BETA_TAGS=$(echo $ALL_TAGS | grep -E "^\".+_[0-9]+\"$")
+          BETA_TAGS=$(echo $ALL_TAGS | grep -E "^\".+_[0-9]+\"$" || true)
           echo "All tags=[$BETA_TAGS]"
         shell: bash
