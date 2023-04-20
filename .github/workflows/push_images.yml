@@ -40,7 +40,10 @@ jobs:
           name: ${{ inputs.repository-name }}_tags_file
           path: ${{ env.LOCATION }}
       - name: Prepare TAGs environment
-        run: echo "IMAGES=$(cat ${{ inputs.repository-name }}_tags.tmp | tr '\n' ',')" >> $GITHUB_ENV
+        run: |
+          TMP=$(cat ${{ inputs.repository-name }}_tags.tmp | tr '\n' ',')
+          echo $TMP
+          echo "IMAGES=$TMP" >> $GITHUB_ENV
       - name: Create image
         uses: docker/build-push-action@v4.0.0
         with:
