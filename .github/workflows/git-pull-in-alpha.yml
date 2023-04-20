@@ -18,6 +18,7 @@ jobs:
     uses: ./.github/workflows/java-build-jars.yml
     with:
       repository-name: ${{ matrix.service }}
+      java-version: $JAVA_VERSION
     needs: build_core
   get_alpha_tags:
     strategy:
