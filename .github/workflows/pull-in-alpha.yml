@@ -7,7 +7,7 @@ on:
     branches: [ alpha ]
 
 env:
-  SERVICE_MATRIX: 'bot,text,file,torrent'
+  SERVICE_MATRIX: '[bot,text,file,torrent]'
 
 jobs:
   build_core:
@@ -15,9 +15,13 @@ jobs:
     with:
       java-version: '8'
   build_jars:
-    extends:
-      file: jobs/build_jars.yaml
-      job: execute_job
+    strategy:
+      matrix:
+        service: ${{ env.SERVICE_MATRIX }}
+    uses: ./.github/workflows/build_jars.yml
+    with:
+      java-version: '8'
+      repository-name: ${{ matrix.service }}
     needs: build_core
   get_alpha_tags:
     extends:
