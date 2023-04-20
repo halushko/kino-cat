@@ -11,7 +11,7 @@ env:
 
 jobs:
   build_core:
-    uses: .github/workflows/build_core.yml
+    uses: .github/workflows/build_core.yml@v1.0
     with:
       java-version: '8'
   build_jars:
