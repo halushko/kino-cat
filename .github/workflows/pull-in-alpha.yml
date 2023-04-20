@@ -39,18 +39,14 @@ jobs:
           path: .
       - name: Delete beta tags
         run: |
-          cat token.tmp
-          TOKEN=$(cat token.tmp)
-          echo "Token $TOKEN"
-          ALL_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name')
-          echo "All tags=[$ALL_TAGS]"
-          BETA_TAGS=$(echo $ALL_TAGS | grep -E "^\".+_[0-9]+\"$" || true)
-          echo "All tags=[$BETA_TAGS]"
+          DH_TOKEN=$(cat token.tmp)
+          BETA_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$" || true)
           if [ -n "$BETA_TAGS" ]; then
             echo "Tags are not empty"
             for TAG in $BETA_TAGS; do
               TAG=$(echo $TAG | sed 's/"//g')
               echo "Delete image $TAG"
+              curl -X DELETE -H "Authorization: JWT $DH_TOKEN" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags/$TAG
             done
           else
             echo "No beta tags found."
