@@ -6,21 +6,18 @@ on:
   push:
     branches: [ alpha ]
 
-env:
-  JAVA_V: '8'
-
 jobs:
   build_core:
     uses: ./.github/workflows/build_core.yml
     with:
-      java-version: $JAVA_V
+      java-version: '8'
   build_jars:
     strategy:
       matrix:
         service: [ bot, text, file, torrent ]
     uses: ./.github/workflows/build_jars.yml
     with:
-      java-version: $JAVA_V
+      java-version: '8'
       repository-name: ${{ matrix.service }}
     needs: build_core
   get_alpha_tags:
