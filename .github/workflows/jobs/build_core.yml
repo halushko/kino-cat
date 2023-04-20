@@ -1,13 +1,21 @@
+name: Reusable workflow example
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: true
+        type: string
 jobs:
   build_core:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.2
-      - name: Set up Java 8
+      - name: Set up Java
         uses: actions/setup-java@v3.10.0
         with:
           distribution: 'temurin'
-          java-version: '8'
+          java-version: ${{ inputs.java-version }}
       - name: Prepare location environments
         run: echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
       - name: Build Core

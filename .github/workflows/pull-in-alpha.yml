@@ -11,9 +11,9 @@ env:
 
 jobs:
   build_core:
-    extends:
-      file: ./jobs/build_core.yaml
-      job: build_core
+    uses: .github/workflows/build_core.yml
+    with:
+      java-version: '8'
   build_jars:
     extends:
       file: jobs/build_jars.yaml
