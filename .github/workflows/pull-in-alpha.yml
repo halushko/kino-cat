@@ -125,6 +125,6 @@ jobs:
           BETA_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$")
           for TAG in $BETA_TAGS; do
             echo "Delete image $TAG"
-            curl -X DELETE -H "Authorization: JWT $DH_TOKEN;" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags/$TAG
+            curl -X DELETE -H "Authorization: JWT $DH_TOKEN" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags/$TAG
           done
         shell: bash
