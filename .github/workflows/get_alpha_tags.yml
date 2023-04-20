@@ -1,9 +1,11 @@
+name: Generate alpha tags
 on:
   workflow_call:
     inputs:
       repository-name:
         required: true
         type: string
+
 jobs:
   get_alpha_tags:
     runs-on: ubuntu-latest
