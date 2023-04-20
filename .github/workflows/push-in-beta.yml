@@ -1,19 +1,14 @@
 name: Push in beta
 
-#on:
-#  push:
-#    branches:
-#      - '*'
-#    if: >
-#      github.ref_type == 'branch' &&
-#      startsWith(github.ref, 'refs/heads/') &&
-#      startsWith(github.base_ref, 'refs/heads/master/alpha/')
 on:
-  pull_request:
-    branches: [ alpha1 ]
   push:
-    branches: [ alpha1 ]
-
+    branches:
+      - '*'
+    if: >
+      github.ref_type == 'branch' &&
+      startsWith(github.ref, 'refs/heads/') &&
+      startsWith(github.base_ref, 'refs/heads/alpha/') &&
+      github.ref != 'refs/heads/alpha'
 jobs:
   build_core:
     runs-on: ubuntu-latest

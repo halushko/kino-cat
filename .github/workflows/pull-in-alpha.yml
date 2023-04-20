@@ -5,50 +5,42 @@ on:
     branches: [ alpha ]
   push:
     branches: [ alpha ]
+
+env:
+  SERVICE_MATRIX: 'bot,text,file,torrent'
+
 jobs:
+  build_core:
+    build:
+      extends:
+        file: jobs/build_core.yaml
+        job: execute_job
+  build_jars:
+    build:
+      extends:
+        file: jobs/build_jars.yaml
+        job: execute_job
+      needs: build_core
+  get_tags:
+    build:
+      extends:
+        file: jobs/getters/alpha_tags.yml
+        job: execute_job
+      needs: build_jars
+  push_images:
+    build:
+      extends:
+        file: jobs/push_images.yml
+        job: execute_job
+    needs: get_tags
   login_to_docker:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3.0.2
-    - name: Login to DockerHub
-      run: |
-        DH_RESPONSE=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"${{ secrets.DOCKER_USERNAME }}", "password":"${{ secrets.DOCKER_PASSWORD }}"}' https://hub.docker.com/v2/users/login/)
-        echo "Responce $DH_RESPONSE"
-        DH_TOKEN=$(echo $DH_RESPONSE | grep -o '"token":"[^"]*' | cut -d'"' -f4)
-        echo "Token $DH_TOKEN"
-        echo $DH_TOKEN > token.tmp
-        cat token.tmp
-      shell: bash
-    - name: Upload token artifact
-      uses: actions/upload-artifact@v3.1.2
-      with:
-        name: dh_token_file
-        path: token.tmp
-  delete_beta_images:
-    strategy:
-      matrix:
-        service: [ bot, text, file, torrent ]
-    runs-on: ubuntu-latest
+    build:
+      extends:
+        file: jobs/getters/docker_token.yaml
+        job: execute_job
+  clean_beta_images:
+    build:
+      extends:
+        file: jobs/clean_beta_images.yaml
+        job: execute_job
     needs: login_to_docker
-    steps:
-      - uses: actions/checkout@v3.0.2
-      - name: Download token artifact
-        uses: actions/download-artifact@v3.0.2
-        with:
-          name: dh_token_file
-          path: .
-      - name: Delete beta tags
-        run: |
-          DH_TOKEN=$(cat token.tmp)
-          BETA_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$" || true)
-          if [ -n "$BETA_TAGS" ]; then
-            echo "Tags are not empty"
-            for TAG in $BETA_TAGS; do
-              TAG=$(echo $TAG | sed 's/"//g')
-              echo "Delete image $TAG"
-              curl -X DELETE -H "Authorization: JWT $DH_TOKEN" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags/$TAG
-            done
-          else
-            echo "No beta tags found."
-          fi
-        shell: bash

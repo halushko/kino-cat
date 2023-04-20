@@ -1,0 +1,33 @@
+execute_job:
+  strategy:
+    matrix:
+      service: ${{ env.SERVICE_MATRIX }}
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3.0.2
+    - name: Prepare location environments
+      run: |
+        echo "LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+        echo "BUILD_LOCATION=`pwd`/${{ matrix.service }}/build/libs" >> $GITHUB_ENV
+        echo "CORE_LOCATION=`pwd`/${{ matrix.service }}" >> $GITHUB_ENV
+    - name: Download core artifact
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: core_jar
+        path: ${{ env.CORE_LOCATION }}
+    - name: Set up Java 8
+      uses: actions/setup-java@v3.10.0
+      with:
+        distribution: 'temurin'
+        java-version: '8'
+    - name: Build
+      uses: gradle/gradle-build-action@v2.4.1
+      with:
+        build-root-directory: ${{ env.LOCATION }}
+        gradle-version: current
+        arguments: fatJar
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: ${{ matrix.service }}_jar
+        path: ${{ env.BUILD_LOCATION }}/${{ matrix.service }}-1.0.jar
