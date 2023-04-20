@@ -1,32 +1,36 @@
-get_alpha_tags:
-  strategy:
-    matrix:
-      service: ${{ env.SERVICE_MATRIX }}
-  runs-on: ubuntu-latest
-  steps:
-    - name: Generate new VERSION env
-      run: |
-        LATEST_VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
-        echo "Latest version: $LATEST_VERSION"
-        if [[ $LATEST_VERSION =~ ^\"([0-9]+)\.([0-9]+)(\.[0-9]+)?\"$ ]]; then
-          if [ -z "${BASH_REMATCH[3]}" ]; then
-            VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.1"
+on:
+  workflow_call:
+    inputs:
+      repository-name:
+        required: true
+        type: string
+jobs:
+  get_alpha_tags:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate new VERSION env
+        run: |
+          LATEST_VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags?page_size=1024 | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
+          echo "Latest version: $LATEST_VERSION"
+          if [[ $LATEST_VERSION =~ ^\"([0-9]+)\.([0-9]+)(\.[0-9]+)?\"$ ]]; then
+            if [ -z "${BASH_REMATCH[3]}" ]; then
+              VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.1"
+            else
+              VERSION_Z="${BASH_REMATCH[3]:1}"
+              ((VERSION_Z++))
+              VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${VERSION_Z}"
+            fi
           else
-            VERSION_Z="${BASH_REMATCH[3]:1}"
-            ((VERSION_Z++))
-            VERSION="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${VERSION_Z}"
+            echo "No valid version found"
           fi
-        else
-          echo "No valid version found"
-        fi
-        echo "The new version will be: $VERSION"
-        echo "halushko/cinema-${{ matrix.service }}:$VERSION" >> ${{ matrix.service }}_tags.tmp
-        echo "halushko/cinema-${{ matrix.service }}:beta" >> ${{ matrix.service }}_tags.tmp
-        echo "halushko/cinema-${{ matrix.service }}:alpha" >> ${{ matrix.service }}_tags.tmp
-        cat ${{ matrix.service }}_tags.tmp
-      shell: bash
-    - name: Upload TAGs artifact
-      uses: actions/upload-artifact@v3.1.2
-      with:
-        name: ${{ matrix.service }}_tags_file
-        path: ./${{ matrix.service }}_tags.tmp
+          echo "The new version will be: $VERSION"
+          echo "halushko/cinema-${{ inputs.repository-name }}:$VERSION" >> ${{ inputs.repository-name }}_tags.tmp
+          echo "halushko/cinema-${{ inputs.repository-name }}:beta" >> ${{ inputs.repository-name }}_tags.tmp
+          echo "halushko/cinema-${{ inputs.repository-name }}:alpha" >> ${{ inputs.repository-name }}_tags.tmp
+          cat ${{ inputs.repository-name }}_tags.tmp
+        shell: bash
+      - name: Upload TAGs artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: ${{ inputs.repository-name }}_tags_file
+          path: ./${{ inputs.repository-name }}_tags.tmp
