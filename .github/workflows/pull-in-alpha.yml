@@ -41,13 +41,13 @@ jobs:
       repository-name: ${{ matrix.service }}
     needs: get_alpha_tags
   get_docker_token:
-    uses: ./.github/workflows/get_docker_token.yaml
+    uses: ./.github/workflows/get_docker_token.yml
     needs: push_images
   clean_beta_images:
     strategy:
       matrix:
         service: ${{ env.SERVICE_MATRIX }}
-    uses: ./.github/workflows/clean_beta_images.yaml
+    uses: ./.github/workflows/clean_beta_images.yml
     with:
       repository-name: ${{ matrix.service }}
     needs: get_docker_token
