@@ -102,12 +102,6 @@ jobs:
           fi
           echo "The new version will be: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
-          TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$")
-          for TAG in $TAGS; do
-            echo "Delete image $TAG"
-            curl -X DELETE -s "https://registry.hub.docker.com/v2/repositories/halushko/cinema-bot/tags/$TAG"
-          done
         shell: bash
       - name: Download core artifact
         uses: actions/download-artifact@v3.0.2
@@ -124,3 +118,13 @@ jobs:
           builder: mybuilder
           platforms: linux/amd64, linux/arm64, linux/386, linux/arm/v7, linux/arm/v6
           tags: halushko/cinema-${{ matrix.service }}:alpha,halushko/cinema-${{ matrix.service }}:beta,halushko/cinema-${{ matrix.service }}:${{ env.VERSION }}
+      - name: Delete beta images
+        run: |
+          DH_RESPONSE=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"${{ secrets.DOCKER_USERNAME }}", "password":"${{ secrets.DOCKER_PASSWORD }}"}' https://hub.docker.com/v2/users/login/)
+          DH_TOKEN=$(echo DH_RESPONSE | grep -o '"token":"[^"]*' | cut -d'"' -f4)
+          BETA_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/alushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$")
+          for TAG in $BETA_TAGS; do
+            echo "Delete image $TAG"
+            curl -X DELETE -H "Authorization: JWT $DH_TOKEN;" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags/$TAG
+          done
+        shell: bash
