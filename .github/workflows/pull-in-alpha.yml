@@ -7,7 +7,6 @@ on:
     branches: [ alpha ]
 
 env:
-  SERVICE_MATRIX: '[bot,text,file,torrent]'
   JAVA_V: '8'
 
 jobs:
@@ -18,7 +17,7 @@ jobs:
   build_jars:
     strategy:
       matrix:
-        service: ${{ env.SERVICE_MATRIX }}
+        service: [ bot, text, file, torrent ]
     uses: ./.github/workflows/build_jars.yml
     with:
       java-version: $JAVA_V
@@ -27,7 +26,7 @@ jobs:
   get_alpha_tags:
     strategy:
       matrix:
-        service: $SERVICE_MATRIX
+        service: [ bot, text, file, torrent ]
     uses: ./.github/workflows/get_alpha_tags.yml
     with:
       repository-name: ${{ matrix.service }}
@@ -35,7 +34,7 @@ jobs:
   push_images:
     strategy:
       matrix:
-        service: $SERVICE_MATRIX
+        service: [ bot, text, file, torrent ]
     uses: ./.github/workflows/push_images.yml
     with:
       repository-name: ${{ matrix.service }}
@@ -46,7 +45,7 @@ jobs:
   clean_beta_images:
     strategy:
       matrix:
-        service: $SERVICE_MATRIX
+        service: [ bot, text, file, torrent ]
     uses: ./.github/workflows/clean_beta_images.yml
     with:
       repository-name: ${{ matrix.service }}
