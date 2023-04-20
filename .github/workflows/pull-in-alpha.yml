@@ -8,26 +8,27 @@ on:
 
 env:
   SERVICE_MATRIX: '[bot,text,file,torrent]'
+  JAVA_V: '8'
 
 jobs:
   build_core:
     uses: ./.github/workflows/build_core.yml
     with:
-      java-version: '8'
+      java-version: ${{ env.JAVA_V }}
   build_jars:
     strategy:
       matrix:
         service: ${{ env.SERVICE_MATRIX }}
     uses: ./.github/workflows/build_jars.yml
     with:
-      java-version: '8'
+      java-version: ${{ env.JAVA_V }}
       repository-name: ${{ matrix.service }}
     needs: build_core
   get_alpha_tags:
     strategy:
       matrix:
         service: ${{ env.SERVICE_MATRIX }}
-    uses: ./.github/workflows/jobs/getters/alpha_tags.yml
+    uses: ./.github/workflows/get_alpha_tags.yml
     with:
       repository-name: ${{ matrix.service }}
     needs: build_jars
@@ -35,18 +36,18 @@ jobs:
     strategy:
       matrix:
         service: ${{ env.SERVICE_MATRIX }}
-    uses: ./.github/workflows/jobs/push_images.yml
+    uses: ./.github/workflows/push_images.yml
     with:
       repository-name: ${{ matrix.service }}
     needs: get_alpha_tags
   get_docker_token:
-    uses: ./.github/workflows/jobs/getters/docker_token.yaml
+    uses: ./.github/workflows/get_docker_token.yaml
     needs: push_images
   clean_beta_images:
     strategy:
       matrix:
         service: ${{ env.SERVICE_MATRIX }}
-    uses: ./.github/workflows/jobs/clean_beta_images.yaml
+    uses: ./.github/workflows/clean_beta_images.yaml
     with:
       repository-name: ${{ matrix.service }}
     needs: get_docker_token
