@@ -40,7 +40,7 @@ jobs:
       - name: Delete beta tags
         run: |
           cat token.tmp
-          TOKEN=cat token.tmp
+          TOKEN=$(cat token.tmp)
           echo "Token $TOKEN"
           ALL_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name')
           echo "All tags=[$ALL_TAGS]"
