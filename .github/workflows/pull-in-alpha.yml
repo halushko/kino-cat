@@ -12,39 +12,30 @@ env:
 
 jobs:
   build_core:
-    env:
-      JAVA_V: ${{ env.JAVA_V }}
     uses: ./.github/workflows/build_core.yml
     with:
-      java-version: ${{ env.JAVA_V }}
+      java-version: $JAVA_V
   build_jars:
-    env:
-      JAVA_V: ${{ env.JAVA_V }}
-      SERVICE_MATRIX: ${{ env.SERVICE_MATRIX }}
     strategy:
       matrix:
-        service: ${{ env.SERVICE_MATRIX }}
+        service: $SERVICE_MATRIX
     uses: ./.github/workflows/build_jars.yml
     with:
-      java-version: ${{ env.JAVA_V }}
+      java-version: $JAVA_V
       repository-name: ${{ matrix.service }}
     needs: build_core
   get_alpha_tags:
-    env:
-      SERVICE_MATRIX: ${{ env.SERVICE_MATRIX }}
     strategy:
       matrix:
-        service: ${{ env.SERVICE_MATRIX }}
+        service: $SERVICE_MATRIX
     uses: ./.github/workflows/get_alpha_tags.yml
     with:
       repository-name: ${{ matrix.service }}
     needs: build_jars
   push_images:
-    env:
-      SERVICE_MATRIX: ${{ env.SERVICE_MATRIX }}
     strategy:
       matrix:
-        service: ${{ env.SERVICE_MATRIX }}
+        service: $SERVICE_MATRIX
     uses: ./.github/workflows/push_images.yml
     with:
       repository-name: ${{ matrix.service }}
@@ -53,11 +44,9 @@ jobs:
     uses: ./.github/workflows/get_docker_token.yml
     needs: push_images
   clean_beta_images:
-    env:
-      SERVICE_MATRIX: ${{ env.SERVICE_MATRIX }}
     strategy:
       matrix:
-        service: ${{ env.SERVICE_MATRIX }}
+        service: $SERVICE_MATRIX
     uses: ./.github/workflows/clean_beta_images.yml
     with:
       repository-name: ${{ matrix.service }}
