@@ -120,15 +120,14 @@ jobs:
           tags: halushko/cinema-${{ matrix.service }}:alpha,halushko/cinema-${{ matrix.service }}:beta,halushko/cinema-${{ matrix.service }}:${{ env.VERSION }}
       - name: Delete beta images
         run: |
-          DH_RESPONSE=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"${{ secrets.DOCKER_USERNAME }}", "password":"${{ secrets.DOCKER_PASSWORD }}"}' https://hub.docker.com/v2/users/login/)
-          echo "Responce $DH_RESPONSE"
-          DH_TOKEN=$(echo $DH_RESPONSE | grep -o '"token":"[^"]*' | cut -d'"' -f4)
-          echo "Token $DH_TOKEN"
           BETA_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$")
           echo "All tags=[$BETA_TAGS]"
           if [ -n "$BETA_TAGS" ]; then
             echo "Tags are not empty"
-            for TAG in $BETA_TAGS; do
+            DH_RESPONSE=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"${{ secrets.DOCKER_USERNAME }}", "password":"${{ secrets.DOCKER_PASSWORD }}"}' https://hub.docker.com/v2/users/login/)
+            echo "Responce $DH_RESPONSE"
+            DH_TOKEN=$(echo $DH_RESPONSE | grep -o '"token":"[^"]*' | cut -d'"' -f4)
+            echo "Token $DH_TOKEN"            for TAG in $BETA_TAGS; do
               TAG=$(echo $TAG | sed 's/"//g')
               echo "Delete image $TAG"
               curl -X DELETE -H "Authorization: JWT $DH_TOKEN" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ matrix.service }}/tags/$TAG
