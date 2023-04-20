@@ -4,6 +4,12 @@ on:
       repository-name:
         required: true
         type: string
+      docker-username:
+        required: true
+        type: string
+      docker-password:
+        required: true
+        type: string
 jobs:
   push_images:
     runs-on: ubuntu-latest
@@ -20,8 +26,8 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ inputs.docker-username }}
+          password: ${{ inputs.docker-password }}
       - name: Prepare location environments
         run: echo "LOCATION=`pwd`/${{ inputs.repository-name }}" >> $GITHUB_ENV
       - name: Download app JAR artifact
