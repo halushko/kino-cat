@@ -9,6 +9,8 @@ on:
 jobs:
   build_core:
     uses: ./.github/workflows/java-build-core.yml
+    with:
+      java-version: $JAVA_VERSION
   build_jars:
     strategy:
       matrix:

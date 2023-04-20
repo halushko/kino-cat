@@ -2,6 +2,9 @@ name: Build Core
 on:
   workflow_call:
     inputs:
+      java-version:
+        required: true
+        type: string
       repository-name:
         required: true
         type: string
@@ -23,7 +26,7 @@ jobs:
         uses: actions/setup-java@v3.10.0
         with:
           distribution: 'temurin'
-          java-version: ${{ env.JAVA_VERSION }}
+          java-version: ${{ inputs.java-version }}
       - name: Build
         uses: gradle/gradle-build-action@v2.4.1
         with:
