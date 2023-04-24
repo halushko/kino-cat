@@ -12,6 +12,7 @@ jobs:
   get_docker_token:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3.0.2
       - name: Download current TAG artifact
         uses: actions/download-artifact@v3.0.2
         with:

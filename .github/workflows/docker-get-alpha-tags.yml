@@ -9,6 +9,7 @@ jobs:
   get_alpha_tag:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3.0.2
       - name: Generate VERSION tag
         run: |
           LATEST_VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags?page_size=1024 | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
