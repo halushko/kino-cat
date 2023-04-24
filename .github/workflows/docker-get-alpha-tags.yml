@@ -26,7 +26,7 @@ jobs:
             echo "No valid version found"
           fi
           echo "The new version will be: $VERSION"
-          echo $VERSION >> ./${{ inputs.repository-name }}_current_tag.tmp
+          echo $VERSION >> ./${{ inputs.repository-name }}_tags.tmp
         shell: bash
       - name: Upload TAGs artifact
         uses: actions/upload-artifact@v3.1.2
