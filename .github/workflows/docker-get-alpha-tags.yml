@@ -32,4 +32,3 @@ jobs:
         with:
           repository-name: ${{ inputs.repository-name }}
           common-tags: [beta, alpha]
-        needs: get_alpha_tag
