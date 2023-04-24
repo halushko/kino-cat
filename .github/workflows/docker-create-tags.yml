@@ -16,7 +16,7 @@ jobs:
       - name: Download current TAG artifact
         uses: actions/download-artifact@v3.0.2
         with:
-          name: ${{ inputs.repository-name }}_current_tag
+          name: ${{ inputs.repository-name }}_tags_file
           path: .
       - name: Add common tags
         run: |
