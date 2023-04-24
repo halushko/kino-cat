@@ -12,6 +12,7 @@ jobs:
   build_jars:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3.0.2
       - name: Prepare location environments
         run: |
           echo "CURRENT_LOCATION=`pwd`/${{ inputs.repository-name }}" >> $GITHUB_ENV

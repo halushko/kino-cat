@@ -9,6 +9,7 @@ jobs:
   build_core:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3.0.2
       - name: Set up Java
         uses: actions/setup-java@v3.10.0
         with:
@@ -18,7 +19,6 @@ jobs:
         run: |
           echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
           ls `pwd`
-#          ls `pwd`/core
       - name: Build Core
         uses: gradle/gradle-build-action@v2.4.1
         with:
