@@ -5,12 +5,11 @@ on:
       repository-name:
         required: true
         type: string
-
 jobs:
-  get_alpha_tags:
+  get_alpha_tag:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate new VERSION env
+      - name: Generate VERSION tag
         run: |
           LATEST_VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags?page_size=1024 | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+(\.[0-9]+)?\"$' | sort -rV | head -n 1)
           echo "Latest version: $LATEST_VERSION"
@@ -26,13 +25,11 @@ jobs:
             echo "No valid version found"
           fi
           echo "The new version will be: $VERSION"
-          echo "halushko/cinema-${{ inputs.repository-name }}:$VERSION" >> ${{ inputs.repository-name }}_tags.tmp
-          echo "halushko/cinema-${{ inputs.repository-name }}:beta" >> ${{ inputs.repository-name }}_tags.tmp
-          echo "halushko/cinema-${{ inputs.repository-name }}:alpha" >> ${{ inputs.repository-name }}_tags.tmp
-          cat ${{ inputs.repository-name }}_tags.tmp
+          echo $VERSION >> ./${{ inputs.repository-name }}_current_tag.tmp
         shell: bash
-      - name: Upload TAGs artifact
-        uses: actions/upload-artifact@v3.1.2
+      - name: Create tags in Docker Hub
+        uses: ./.github/workflows/docker-create-tags.yml
         with:
-          name: ${{ inputs.repository-name }}_tags_file
-          path: ./${{ inputs.repository-name }}_tags.tmp
+          repository-name: ${{ inputs.repository-name }}
+          common-tags: [beta, alpha]
+        needs: get_alpha_tag

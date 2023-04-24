@@ -1,0 +1,53 @@
+name: Pull in alpha
+
+on:
+  push:
+    branches: [ alpha ]
+
+jobs:
+  build_core:
+    uses: ./.github/workflows/java-build-core.yml
+    with:
+      java-version: '8'
+  build_jars:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/java-build-jars.yml
+    with:
+      repository-name: ${{ matrix.service }}
+      java-version: '8'
+    needs: build_core
+  get_alpha_tags:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/docker-get-alpha-tags.yml
+    with:
+      repository-name: ${{ matrix.service }}
+    needs: build_jars
+  push_images:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/docker-push-images.yml
+    with:
+      repository-name: ${{ matrix.service }}
+    secrets:
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-password: ${{ secrets.DOCKER_PASSWORD }}
+    needs: get_alpha_tags
+  get_docker_token:
+    uses: ./.github/workflows/docker-get-token.yml
+    needs: push_images
+    secrets:
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-password: ${{ secrets.DOCKER_PASSWORD }}
+  clean_beta_images:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/docker-clean-beta-images.yml
+    with:
+      repository-name: ${{ matrix.service }}
+    needs: get_docker_token
