@@ -31,4 +31,4 @@ jobs:
         uses: ./.github/workflows/docker-create-tags.yml
         with:
           repository-name: ${{ inputs.repository-name }}
-          common-tags: [beta, alpha]
+          common-tags: 'beta, alpha'
