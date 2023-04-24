@@ -28,8 +28,14 @@ jobs:
           echo "The new version will be: $VERSION"
           echo $VERSION >> ./${{ inputs.repository-name }}_current_tag.tmp
         shell: bash
-      - name: Create tags in Docker Hub
-        uses: ./.github/workflows/docker-create-tags.yml
+      - name: Upload TAGs artifact
+        uses: actions/upload-artifact@v3.1.2
         with:
-          repository-name: ${{ inputs.repository-name }}
-          common-tags: 'beta, alpha'
+          name: ${{ inputs.repository-name }}_tags_file
+          path: ./${{ inputs.repository-name }}_tags.tmp
+  create_images:
+    uses: ./.github/workflows/docker-create-tags.yml
+    with:
+      repository-name: ${{ inputs.repository-name }}
+      common-tags: 'beta, alpha'
+    needs: get_alpha_tag
