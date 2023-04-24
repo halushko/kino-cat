@@ -15,7 +15,10 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ inputs.java-version }}
       - name: Prepare location environments
-        run: echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
+        run: |
+          echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
+          ls `pwd`
+          ls `pwd`/core
       - name: Build Core
         uses: gradle/gradle-build-action@v2.4.1
         with:
