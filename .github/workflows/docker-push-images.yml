@@ -40,6 +40,7 @@ jobs:
           TMP=$(cat ${{ env.LOCATION }}/${{ inputs.repository-name }}_tags.tmp | tr '\n' ',')
           echo $TMP
           echo "IMAGES=$TMP" >> $GITHUB_ENV
+          echo "${{ env.IMAGES }}"
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
