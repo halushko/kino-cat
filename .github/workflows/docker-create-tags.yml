@@ -22,11 +22,13 @@ jobs:
         run: |
           tags=$(echo "${{ inputs.common-tags }}" | tr -d '[]')
           tags=$(echo "$tags" | sed 's/,/ /g')
-
+          echo $tags
           for TAG in "$tags"
           do
             echo "halushko/cinema-${{ inputs.repository-name }}:$TAG" >> ./${{ inputs.repository-name }}_tags.tmp
+            echo "halushko/cinema-${{ inputs.repository-name }}:$TAG"
           done
+          exit 0
         shell: bash
       - name: Upload TAGs artifact
         uses: actions/upload-artifact@v3.1.2
