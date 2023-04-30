@@ -22,6 +22,7 @@ jobs:
         run: |
           tags=$(echo "${{ inputs.common-tags }}" | tr -d '[]')
           tags=$(echo "$tags" | sed 's/,/ /g')
+          tags=$(echo "$tags" | sed 's/[[:space:]]\+/ /g')
           echo $tags
           for TAG in "$tags"
           do
