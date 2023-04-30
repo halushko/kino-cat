@@ -20,10 +20,13 @@ jobs:
           path: .
       - name: Add common tags
         run: |
-          for TAG in ${{ inputs.common-tags }}; do
+          tags = $(echo "${{ inputs.common-tags }}" | tr -d '[]')
+          tags = $(echo "$tags" | sed 's/,/ /g')
+
+          for TAG in "$tags"
+          do
             echo "halushko/cinema-${{ inputs.repository-name }}:$TAG" >> ./${{ inputs.repository-name }}_tags.tmp
           done
-          cat ./${{ inputs.repository-name }}_tags.tmp
         shell: bash
       - name: Upload TAGs artifact
         uses: actions/upload-artifact@v3.1.2
