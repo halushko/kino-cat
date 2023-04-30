@@ -1,4 +1,4 @@
-name: Clean all beta images from DockerHub
+name: Generate Docker token artifact
 on:
   workflow_call:
     secrets:

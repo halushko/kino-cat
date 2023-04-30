@@ -1,4 +1,4 @@
-name: Pull in alpha
+name: Push in alpha
 
 on:
   push:
