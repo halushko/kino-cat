@@ -1,0 +1,38 @@
+name: Create tags file
+on:
+  workflow_call:
+    inputs:
+      repository-name:
+        required: true
+        type: string
+      common-tags:
+        required: false
+        type: string
+jobs:
+  get_docker_token:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Download current TAG artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: ${{ inputs.repository-name }}_tags_file
+          path: .
+      - name: Add common tags
+        run: |
+          tags=$(echo "${{ inputs.common-tags }}" | tr -d '[]')
+          tags=$(echo "$tags" | sed 's/,/ /g')
+          tags=$(echo "$tags" | sed 's/[[:space:]]\+/ /g')
+          read -r -a array_elements <<< "$tags"
+          echo $tags
+          for TAG in "${array_elements[@]}"
+          do
+            echo "halushko/cinema-${{ inputs.repository-name }}:$TAG" >> ./${{ inputs.repository-name }}_tags.tmp
+            echo "halushko/cinema-${{ inputs.repository-name }}:$TAG"
+          done
+        shell: bash
+      - name: Upload TAGs artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: ${{ inputs.repository-name }}_tags_file
+          path: ./${{ inputs.repository-name }}_tags.tmp

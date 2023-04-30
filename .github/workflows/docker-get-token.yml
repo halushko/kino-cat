@@ -1,0 +1,27 @@
+name: Generate Docker token artifact
+on:
+  workflow_call:
+    secrets:
+      docker-username:
+        required: true
+      docker-password:
+        required: true
+jobs:
+  get_docker_token:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Login to DockerHub
+        run: |
+          DH_RESPONSE=$(curl -X POST -H "Content-Type: application/json" -d '{"username":"${{ secrets.docker-username }}", "password":"${{ secrets.docker-password }}"}' https://hub.docker.com/v2/users/login/)
+          echo "Responce $DH_RESPONSE"
+          DH_TOKEN=$(echo $DH_RESPONSE | grep -o '"token":"[^"]*' | cut -d'"' -f4)
+          echo "Token $DH_TOKEN"
+          echo "$DH_TOKEN" > token.tmp
+          cat token.tmp
+        shell: bash
+      - name: Upload token artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: dh_token_file
+          path: token.tmp

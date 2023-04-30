@@ -1,0 +1,57 @@
+name: Push docker images
+on:
+  workflow_call:
+    inputs:
+      repository-name:
+        required: true
+        type: string
+    secrets:
+      docker-username:
+        required: true
+      docker-password:
+        required: true
+jobs:
+  push_images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.5.0
+      - name: Create buildx builder
+        run: |
+          docker buildx create --name mybuilder --use
+          docker buildx inspect --bootstrap
+      - name: Prepare location environments
+        run: echo "LOCATION=`pwd`/${{ inputs.repository-name }}" >> $GITHUB_ENV
+      - name: Download app JAR artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: ${{ inputs.repository-name }}_jar
+          path: ${{ env.LOCATION }}
+      - name: Download TAGs artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: ${{ inputs.repository-name }}_tags_file
+          path: ${{ env.LOCATION }}
+      - name: Prepare TAGs environment
+        run: |
+          TMP=$(cat ${{ env.LOCATION }}/${{ inputs.repository-name }}_tags.tmp | tr '\n' ',')
+          echo $TMP
+          echo "IMAGES=$TMP" >> $GITHUB_ENV
+          echo "${{ env.IMAGES }}"
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.docker-username }}
+          password: ${{ secrets.docker-password }}
+      - name: Create image
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: ${{ inputs.repository-name }}
+          file: ./config/dockerfiles/Dockerfile-${{ inputs.repository-name }}
+          push: true
+          builder: mybuilder
+          platforms: linux/amd64, linux/arm64, linux/386, linux/arm/v7, linux/arm/v6
+          tags: ${{ env.IMAGES }}

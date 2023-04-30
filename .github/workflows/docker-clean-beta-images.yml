@@ -1,0 +1,26 @@
+name: Clean all beta images from DockerHub
+on:
+  workflow_call:
+    inputs:
+      repository-name:
+        required: true
+        type: string
+jobs:
+  clean_beta_images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Delete beta tags
+        run: |
+          BETA_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$" || true)
+          if [ -n "$BETA_TAGS" ]; then
+            echo "Tags are not empty"
+            for TAG in $BETA_TAGS; do
+              TAG=$(echo $TAG | sed 's/"//g')
+              echo "Delete image $TAG"
+              curl -X DELETE -H "Authorization: JWT ${{ secrets.DOCKER_TOKEN }}" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags/$TAG
+            done
+          else
+            echo "No beta tags found."
+          fi
+        shell: bash

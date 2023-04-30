@@ -1,0 +1,52 @@
+name: Push in beta
+
+on:
+  push:
+    branches:
+      - 'BETA_*'
+    if: >
+      github.ref_type == 'branch' &&
+      github.base_ref, 'refs/heads/alpha/') &&
+      startsWith(github.ref, 'refs/heads/')
+
+jobs:
+  build_core:
+    uses: ./.github/workflows/java-build-core.yml
+    with:
+      java-version: '8'
+  build_jars:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/java-build-jars.yml
+    with:
+      repository-name: ${{ matrix.service }}
+      java-version: '8'
+    needs: build_core
+  get_beta_tags:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/docker-get-beta-tags.yml
+    with:
+      repository-name: ${{ matrix.service }}
+    needs: build_jars
+  push_images:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/docker-push-images.yml
+    with:
+      repository-name: ${{ matrix.service }}
+    secrets:
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-password: ${{ secrets.DOCKER_PASSWORD }}
+    needs: get_alpha_tags
+  clean_beta_images:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/docker-clean-beta-images.yml
+    with:
+      repository-name: ${{ matrix.service }}
+    needs: push_images

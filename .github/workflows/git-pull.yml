@@ -1,0 +1,20 @@
+name: Check merge request
+
+on:
+  pull_request:
+    branches: [ master, alpha ]
+
+jobs:
+  build_core:
+    uses: ./.github/workflows/java-build-core.yml
+    with:
+      java-version: '8'
+  build_jars:
+    strategy:
+      matrix:
+        service: [ bot, text, file, torrent ]
+    uses: ./.github/workflows/java-build-jars.yml
+    with:
+      repository-name: ${{ matrix.service }}
+      java-version: '8'
+    needs: build_core

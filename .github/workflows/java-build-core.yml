@@ -1,0 +1,32 @@
+name: Build Core
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: true
+        type: string
+jobs:
+  build_core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Set up Java
+        uses: actions/setup-java@v3.10.0
+        with:
+          distribution: 'temurin'
+          java-version: ${{ inputs.java-version }}
+      - name: Prepare location environments
+        run: |
+          echo "CORE_LOCATION=`pwd`/core/build/libs" >> $GITHUB_ENV
+          ls `pwd`
+      - name: Build Core
+        uses: gradle/gradle-build-action@v2.4.1
+        with:
+          build-root-directory: core
+          gradle-version: current
+          arguments: jar
+      - name: Upload core artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: core_jar
+          path: ${{ env.CORE_LOCATION }}/core-1.0.jar
