@@ -20,8 +20,8 @@ jobs:
           path: .
       - name: Add common tags
         run: |
-          tags = $(echo "${{ inputs.common-tags }}" | tr -d '[]')
-          tags = $(echo "$tags" | sed 's/,/ /g')
+          tags=$(echo "${{ inputs.common-tags }}" | tr -d '[]')
+          tags=$(echo "$tags" | sed 's/,/ /g')
 
           for TAG in "$tags"
           do
