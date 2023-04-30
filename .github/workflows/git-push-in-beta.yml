@@ -6,9 +6,9 @@ on:
       - 'BETA_*'
     if: >
       github.ref_type == 'branch' &&
-      github.ref != 'refs/heads/alpha/' &&
-      startsWith(github.ref, 'refs/heads/') &&
-      startsWith(github.base_ref, 'refs/heads/alpha/')
+      github.base_ref, 'refs/heads/alpha/') &&
+      startsWith(github.ref, 'refs/heads/')
+
 jobs:
   build_core:
     runs-on: ubuntu-latest
