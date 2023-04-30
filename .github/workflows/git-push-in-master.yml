@@ -1,13 +1,8 @@
-name: Push in beta
+name: Push to master
 
 on:
-  push:
-    branches:
-      - 'BETA_*'
-    if: >
-      github.ref_type == 'branch' &&
-      github.base_ref, 'refs/heads/alpha/') &&
-      startsWith(github.ref, 'refs/heads/')
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build_core:
@@ -23,11 +18,11 @@ jobs:
       repository-name: ${{ matrix.service }}
       java-version: '8'
     needs: build_core
-  get_beta_tags:
+  get_master_tags:
     strategy:
       matrix:
         service: [ bot, text, file, torrent ]
-    uses: ./.github/workflows/docker-get-beta-tags.yml
+    uses: ./.github/workflows/docker-get-master-tags.yml
     with:
       repository-name: ${{ matrix.service }}
     needs: build_jars
@@ -41,7 +36,7 @@ jobs:
     secrets:
       docker-username: ${{ secrets.DOCKER_USERNAME }}
       docker-password: ${{ secrets.DOCKER_PASSWORD }}
-    needs: get_alpha_tags
+    needs: get_master_tags
   clean_beta_images:
     strategy:
       matrix:

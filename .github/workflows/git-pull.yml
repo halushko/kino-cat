@@ -1,8 +1,8 @@
-name: Pull in alpha
+name: Check merge request
 
 on:
   pull_request:
-    branches: [ alpha ]
+    branches: [ master, alpha ]
 
 jobs:
   build_core:

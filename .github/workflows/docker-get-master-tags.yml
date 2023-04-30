@@ -1,0 +1,42 @@
+name: Generate master tags
+on:
+  workflow_call:
+    inputs:
+      repository-name:
+        required: true
+        type: string
+jobs:
+  get_master_tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.0.2
+      - name: Generate VERSION tag
+        run: |
+          LATEST_VERSION=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags?page_size=1024 | jq '.results[].name' | grep -E '^\"[0-9]+\.[0-9]+\"$' | sort -rV | head -n 1)          
+          echo "Latest version: $LATEST_VERSION"
+          if [[ $LATEST_VERSION =~ ^\"([0-9]+)\.([0-9]+)\"$ ]]; then
+            if [ -z "${BASH_REMATCH[2]}" ]; then
+              VERSION="${BASH_REMATCH[1]}.1"
+            else
+              VERSION_Z="${BASH_REMATCH[2]}"
+              ((VERSION_Z++))
+              VERSION="${BASH_REMATCH[1]}.${VERSION_Z}"
+            fi
+            echo "The new version will be: $VERSION"
+            echo "halushko/cinema-${{ inputs.repository-name }}:$VERSION" >> ./${{ inputs.repository-name }}_tags.tmp
+          else
+            echo "No valid version found"
+            exit 1
+          fi
+        shell: bash
+      - name: Upload TAGs artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: ${{ inputs.repository-name }}_tags_file
+          path: ./${{ inputs.repository-name }}_tags.tmp
+  create_images:
+    uses: ./.github/workflows/docker-create-tags.yml
+    with:
+      repository-name: ${{ inputs.repository-name }}
+      common-tags: '[alpha, beta, master]'
+    needs: get_beta_tag
