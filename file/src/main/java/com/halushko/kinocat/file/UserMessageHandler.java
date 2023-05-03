@@ -43,7 +43,7 @@ public class UserMessageHandler extends InputMessageHandler {
         }
         URL fileUrl = new URL(FILE_URL_PREFIX + rm.getValue(RabbitMessage.KEYS.FILE_PATH));
         long userId = rm.getUserId();
-        String fileName = String.format("%s%s", rm.getValue(RabbitMessage.KEYS.FILE_PATH), ".torrent");
+        String fileName = String.format("%s%s", rm.getValue("FILE_ID"), ".torrent");
 
         File localFile = new File("/home/torrent_files/" + fileName);
         try (InputStream is = fileUrl.openStream()) {

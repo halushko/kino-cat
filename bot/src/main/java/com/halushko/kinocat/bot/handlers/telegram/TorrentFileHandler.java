@@ -34,7 +34,7 @@ public class TorrentFileHandler extends UserMessageHandler {
         try {
             RabbitMessage rm = new RabbitMessage(chatId);
             rm.addValue(FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath());
-            rm.addValue(FILE_NAME, update.getMessage().getDocument().getFileName());
+            rm.addValue("FILE_ID", update.getMessage().getDocument().getFileId());
             rm.addValue(TEXT, normalizedValue(message));
             rm.addValue("CAPTION", caption);
             rm.addValue("SIZE", String.valueOf(fileSize));
