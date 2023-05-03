@@ -8,7 +8,6 @@ on:
     secrets:
       docker-token:
         required: true
-        type: string
 jobs:
   clean_beta_images:
     runs-on: ubuntu-latest
