@@ -3,7 +3,7 @@ name: Push in beta
 on:
   push:
     branches:
-      - 'beta-*'
+      - '*'
     if: >
       github.ref_type == 'branch' &&
       github.base_ref, 'refs/heads/alpha/') &&
@@ -41,7 +41,7 @@ jobs:
     secrets:
       docker-username: ${{ secrets.DOCKER_USERNAME }}
       docker-password: ${{ secrets.DOCKER_PASSWORD }}
-    needs: get_alpha_tags
+    needs: get_beta_tags
   clean_beta_images:
     strategy:
       matrix:
