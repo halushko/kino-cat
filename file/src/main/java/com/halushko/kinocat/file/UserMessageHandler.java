@@ -16,9 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.FILE_NAME;
-import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.FILE_PATH;
-
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
 
@@ -44,9 +41,9 @@ public class UserMessageHandler extends InputMessageHandler {
             Logger.getRootLogger().warn(String.format("The file size is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
             return;
         }
-        URL fileUrl = new URL(FILE_URL_PREFIX + rm.getValue(FILE_PATH));
+        URL fileUrl = new URL(FILE_URL_PREFIX + rm.getValue(RabbitMessage.KEYS.FILE_PATH));
         long userId = rm.getUserId();
-        String fileName = String.format("%s%s", UUID.randomUUID(), ".torrent");
+        String fileName = String.format("%s%s", rm.getValue(RabbitMessage.KEYS.FILE_NAME), ".torrent");
 
         File localFile = new File("/home/torrent_files/" + fileName);
         try (InputStream is = fileUrl.openStream()) {
