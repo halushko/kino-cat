@@ -7,7 +7,7 @@ on:
     if: >
       github.ref_type == 'branch' &&
       github.base_ref == 'refs/heads/alpha/' &&
-      github.ref != refs/heads/alpha/ &&
+      github.ref != 'refs/heads/alpha' &&
       startsWith(github.ref, 'refs/heads/alpha/')
 
 jobs:
