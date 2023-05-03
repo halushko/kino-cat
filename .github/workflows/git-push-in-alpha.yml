@@ -44,5 +44,6 @@ jobs:
     uses: ./.github/workflows/docker-clean-beta-images.yml
     with:
       repository-name: ${{ matrix.service }}
+    secrets:
       docker-token: ${{ secrets.DOCKER_TOKEN }}
     needs: push_images
