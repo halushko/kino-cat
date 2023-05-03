@@ -42,11 +42,3 @@ jobs:
       docker-username: ${{ secrets.DOCKER_USERNAME }}
       docker-password: ${{ secrets.DOCKER_PASSWORD }}
     needs: get_beta_tags
-  clean_beta_images:
-    strategy:
-      matrix:
-        service: [ bot, text, file, torrent ]
-    uses: ./.github/workflows/docker-clean-beta-images.yml
-    with:
-      repository-name: ${{ matrix.service }}
-    needs: push_images
