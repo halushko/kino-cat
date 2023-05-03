@@ -59,3 +59,8 @@ sudo systemctl start docker-compose.service
 ```
 sudo systemctl status docker-compose.service
 ```
+
+Add this text to  /etc/fstab To automount the USB drive
+```
+UUID=<check by blkid command>   /folder/where/docker-compose/located      <ntfs or other>    defaults        0       0
+```
