@@ -3,7 +3,8 @@ name: Push in beta
 on:
   push:
     branches:
-      - '*'
+      - 'beta-*'
+      - 'BETA-*'
     if: >
       github.ref_type == 'branch' &&
       github.base_ref == 'refs/heads/alpha/' &&
