@@ -37,6 +37,12 @@ jobs:
       docker-username: ${{ secrets.DOCKER_USERNAME }}
       docker-password: ${{ secrets.DOCKER_PASSWORD }}
     needs: get_alpha_tags
+  get_docker_token:
+    uses: ./.github/workflows/docker-get-token.yml
+    secrets:
+      docker-username: ${{ secrets.DOCKER_USERNAME }}
+      docker-password: ${{ secrets.DOCKER_PASSWORD }}
+    needs: push_images
   clean_beta_images:
     strategy:
       matrix:
@@ -44,4 +50,4 @@ jobs:
     uses: ./.github/workflows/docker-clean-beta-images.yml
     with:
       repository-name: ${{ matrix.service }}
-    needs: push_images
+    needs: get_docker_token

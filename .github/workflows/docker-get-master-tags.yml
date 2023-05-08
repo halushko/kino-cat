@@ -39,4 +39,4 @@ jobs:
     with:
       repository-name: ${{ inputs.repository-name }}
       common-tags: '[alpha, beta, master]'
-    needs: get_master_tag
+    needs: get_beta_tag

@@ -10,15 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.0.2
+      - name: Download TOKEN artifact
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: dh_token_file
+          path: .
       - name: Delete beta tags
         run: |
+          DOCKER_TOKEN=$(cat token.tmp)
           BETA_TAGS=$(curl -s https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags?page_size=1024 | jq '.results[].name' | grep -E "^\".+_[0-9]+\"$" || true)
           if [ -n "$BETA_TAGS" ]; then
             echo "Tags are not empty"
             for TAG in $BETA_TAGS; do
               TAG=$(echo $TAG | sed 's/"//g')
               echo "Delete image $TAG"
-              curl -X DELETE -H "Authorization: JWT ${{ secrets.DOCKER_TOKEN }}" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags/$TAG
+              curl -X DELETE -H "Authorization: JWT $DOCKER_TOKEN" -H "Accept: application/json" https://registry.hub.docker.com/v2/repositories/halushko/cinema-${{ inputs.repository-name }}/tags/$TAG
             done
           else
             echo "No beta tags found."

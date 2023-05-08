@@ -19,13 +19,12 @@ public class TorrentFileHandler extends UserMessageHandler {
         long chatId = update.getMessage().getChatId();
         String uploadedFileId = update.getMessage().getDocument().getFileId();
         long fileSize = update.getMessage().getDocument().getFileSize();
-        String fileName = update.getMessage().getDocument().getFileName();
         String mimeType = update.getMessage().getDocument().getMimeType();
         String message = update.getMessage().getText();
         String caption = update.getMessage().getCaption();
         Logger.getRootLogger().debug(
                 String.format("[TorrentFileHandler] chatId:%s, uploadedFileId:%s, fileName:%s, message:%s, caption:%s",
-                        chatId, uploadedFileId, fileName, message, caption
+                        chatId, uploadedFileId, update.getMessage().getDocument().getFileName(), message, caption
                 )
         );
 
@@ -35,7 +34,7 @@ public class TorrentFileHandler extends UserMessageHandler {
         try {
             RabbitMessage rm = new RabbitMessage(chatId);
             rm.addValue(FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath());
-            rm.addValue(FILE_NAME, fileName);
+            rm.addValue("FILE_ID", update.getMessage().getDocument().getFileId());
             rm.addValue(TEXT, normalizedValue(message));
             rm.addValue("CAPTION", caption);
             rm.addValue("SIZE", String.valueOf(fileSize));

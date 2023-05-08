@@ -3,11 +3,13 @@ name: Push in beta
 on:
   push:
     branches:
-      - 'BETA_*'
+      - 'beta-*'
+      - 'BETA-*'
     if: >
       github.ref_type == 'branch' &&
-      github.base_ref, 'refs/heads/alpha/') &&
-      startsWith(github.ref, 'refs/heads/')
+      github.base_ref == 'refs/heads/alpha/' &&
+      github.ref != 'refs/heads/alpha' &&
+      startsWith(github.ref, 'refs/heads/alpha/')
 
 jobs:
   build_core:
@@ -41,12 +43,4 @@ jobs:
     secrets:
       docker-username: ${{ secrets.DOCKER_USERNAME }}
       docker-password: ${{ secrets.DOCKER_PASSWORD }}
-    needs: get_alpha_tags
-  clean_beta_images:
-    strategy:
-      matrix:
-        service: [ bot, text, file, torrent ]
-    uses: ./.github/workflows/docker-clean-beta-images.yml
-    with:
-      repository-name: ${{ matrix.service }}
-    needs: push_images
+    needs: get_beta_tags
