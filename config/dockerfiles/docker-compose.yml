@@ -70,7 +70,6 @@ services:
       - rabbitmq
     volumes:
       - ./workdir/mediadata:/home/media/torrent/complete
-      - ./workdir/config/transmission/uncompleted_downloads:/home/media/torrent/downloads
       - ./workdir/config/files_from_telegram:/home/media/torrent/torrent_files
       - ./workdir/config/transmission/torrents:/var/lib/transmission/config/torrents
       - ./workdir/config/transmission/resume:/var/lib/transmission/config/resume
