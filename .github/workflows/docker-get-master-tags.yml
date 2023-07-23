@@ -38,5 +38,5 @@ jobs:
     uses: ./.github/workflows/docker-create-tags.yml
     with:
       repository-name: ${{ inputs.repository-name }}
-      common-tags: '[alpha, beta, master]'
-    needs: get_beta_tag
+      common-tags: '[alpha, beta, latest]'
+    needs: get_master_tag

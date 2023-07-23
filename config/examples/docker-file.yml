@@ -6,9 +6,9 @@ x-common-variables: &common-variables
   RABBIT_PORT: 5672
   RABBIT_IP: 10.10.255.254
 
-  BOT_TOKEN: <token>
-  BOT_NAME: <name>
-  BOT_TRUSTED_USERS: <user_id, user_id, ...>
+  BOT_TOKEN: 6103416881:AAFSQ_h1GImrAI05FaAGnx4Yez2eZM9M5uJc
+  BOT_NAME: halushko_video_bot
+  BOT_TRUSTED_USERS: 413504868
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000
@@ -30,7 +30,7 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:alpha
+    image: halushko/cinema-bot:latest
     environment: *common-variables
     restart: always
     container_name: "bot"
@@ -40,7 +40,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.2
   text:
-    image: halushko/cinema-text:alpha
+    image: halushko/cinema-text:latest
     environment: *common-variables
     restart: always
     container_name: "text"
@@ -50,7 +50,7 @@ services:
     depends_on:
       - rabbitmq
   file:
-    image: halushko/cinema-file:alpha
+    image: halushko/cinema-file:latest
     environment: *common-variables
     restart: always
     container_name: "file"
@@ -62,7 +62,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.4
   torrent:
-    image: halushko/cinema-torrent:alpha
+    image: halushko/cinema-torrent:latest
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -92,6 +92,13 @@ services:
       - ./workdir/mediadata:/movies
     restart: unless-stopped
     network_mode: host
+  parser:
+    image: halushko/vytiag-pdf-parser:latest
+    environment:
+      BOT_TOKEN: 6049151976:A1AEzov9MIAiAAiHJbGFWFXCVnNqpMM9VjF0
+      BOT_TRUSTED_USERS: 413504868,5144539887
+    restart: always
+    container_name: "parser"
 networks:
   cat_private_network:
     driver: bridge
