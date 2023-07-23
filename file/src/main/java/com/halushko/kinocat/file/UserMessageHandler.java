@@ -14,6 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.UUID;
+
+import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.FILE_NAME;
+import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.FILE_PATH;
 
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
