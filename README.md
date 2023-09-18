@@ -23,6 +23,11 @@ sudo apt-get -f -y install docker docker.io docker-compose
 ```
 sudo docker-compose up
 ```
+or, if all services cant start in a 60 sec:
+'''
+sudo -s
+env COMPOSE_HTTP_TIMEOUT=60000 docker-compose up
+```
 5. If you need, you can add to autorun
   - Create a new file named docker-compose.service in /etc/systemd/system/ directory:
 ```
