@@ -8,8 +8,6 @@
 #noinspection RubyInterpreter
 
 BRANCH = ENV['BRANCH'] || 'master'
-BRANCH = ENV['BRANCH'] || 'master'
-BRANCH = ENV['BRANCH'] || 'master'
 
 Vagrant.configure("2") do |config|
   # The most common configuration options are documented and commented below.

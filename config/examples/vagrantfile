@@ -1,0 +1,35 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/mantic64"
+  
+  config.vm.network "public_network", ip: "192.168.50.135" #change IP
+  config.ssh.forward_agent = true
+  config.vbguest.auto_update = true
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--memory", "12288"]
+    vb.customize ["modifyvm", :id, "--cpus", "8"]
+    # vb.customize ["modifyvm", :id, "--usb", "on"]
+    vb.customize ["modifyvm", :id, "--usbxhci", "on"]
+    vb.customize ["usbfilter", "add", "0", "--target", :id, "--name", "usbflash", "--vendorid", "0x8564", "--productid", "0x7000"]
+    # vb.customize ["usbfilter", "add", "0", "--target", :id, "--name", "usbflash", "--manufacturer", "Kingston", "--product", "DTR30G2"]
+  end
+
+
+  config.vm.provision "file", source: "run.sh", destination: "/home/vagrant/run.sh"
+  config.vm.provision "file", source: "docker-compose.yml", destination: "/home/vagrant/docker-compose.yml"
+  #config.vm.provision "file", source: "docker-compose.service", destination: "/etc/systemd/system/docker-compose.service"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y docker.io docker-compose vim screen
+    usermod -aG docker vagrant
+    mkdir -p /home/vagrant/workdir
+    echo "UUID=779DB7ED03DED64A   /home/vagrant/workdir      ntfs    defaults        0       0" >> /etc/fstab
+    mount -a
+    sudo cp /vagrant/docker-compose.service /etc/systemd/system/docker-compose.service
+    sudo chown vagrant:vagrant /etc/systemd/system/docker-compose.service
+    sudo chmod 644 /etc/systemd/system/docker-compose.service 
+    systemctl daemon-reload
+    systemctl enable docker-compose.service
+  SHELL
+end
