@@ -5,6 +5,7 @@ import com.halushko.kinocat.bot.handlers.telegram.MyPingHandler;
 import com.halushko.kinocat.bot.handlers.telegram.TextHandler;
 import com.halushko.kinocat.bot.handlers.telegram.TorrentFileHandler;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -28,12 +29,15 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     public static final String BOT_NAME = System.getenv("BOT_NAME");
 
+    @lombok.Getter
     public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+
+    @lombok.Getter
     public static final String BOT_TRUSTED_USERS = System.getenv("BOT_TRUSTED_USERS");
 
     private static final Set<Long> trustedUserIds = new HashSet<>();
 
-    private static final Collection<UserMessageHandler> handlers = new ArrayList<UserMessageHandler>() {{
+    private static final Collection<UserMessageHandler> handlers = new ArrayList<>() {{
         add(new MyPingHandler());
         add(new TextHandler());
         add(new TorrentFileHandler());
@@ -63,11 +67,6 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return BOT_NAME;
-    }
-
-    @Override
-    public String getBotToken() {
-        return BOT_TOKEN;
     }
 
     public static boolean validateUser(long userId) {
@@ -101,14 +100,13 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     }
 
     private static void parseTrustedUsersEnv() {
-        String[] userIds = BOT_TRUSTED_USERS.split(",");
-        for (String userId : userIds) {
+        Arrays.stream(BOT_TRUSTED_USERS.split(",")).forEach(userId -> {
             try {
-                trustedUserIds.add(new Long(userId));
+                trustedUserIds.add(Long.getLong(userId));
                 log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is trusted", userId));
             } catch (Exception e) {
                 log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is invalid", userId));
             }
-        }
+        });
     }
 }
