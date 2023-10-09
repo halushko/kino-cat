@@ -50,26 +50,26 @@ public class RabbitMessage {
         return this;
     }
 
-    public RabbitMessage getValue(KEYS key) {
-        return getValue(key.name());
+    public RabbitMessage getSubMessage(KEYS key) {
+        return getSubMessage(key.name());
     }
-    public RabbitMessage getValue(String key) {
-        return new RabbitMessage(getStringValue(key));
+    public RabbitMessage getSubMessage(String key) {
+        return new RabbitMessage(getValue(key));
     }
 
-    public String getStringValue(KEYS key) {
-        return getStringValue(key.name());
+    public String getValue(KEYS key) {
+        return getValue(key.name());
     }
-    public String getStringValue(String key) {
+    public String getValue(String key) {
         return convertToString(convertJsonToMap(json).get(key));
     }
 
     public String getText() {
-        return getStringValue(KEYS.TEXT);
+        return getValue(KEYS.TEXT);
     }
 
     public long getUserId() {
-        return Long.parseLong(getStringValue(KEYS.USER_ID));
+        return Long.parseLong(getValue(KEYS.USER_ID));
     }
 
     public String getRabbitMessageText(){

@@ -100,7 +100,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     private static void parseTrustedUsersEnv() {
         Arrays.stream(BOT_TRUSTED_USERS.split(",")).forEach(userId -> {
             try {
-                trustedUserIds.add(Long.getLong(userId));
+                trustedUserIds.add(Long.parseLong(userId));
                 log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is trusted", userId));
             } catch (Exception e) {
                 log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is invalid", userId));
