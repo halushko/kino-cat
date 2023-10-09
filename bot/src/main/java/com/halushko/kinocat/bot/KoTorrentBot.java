@@ -17,6 +17,7 @@ import java.util.*;
 
 import static com.halushko.kinocat.core.rabbit.RabbitJson.unNormalizeText;
 
+@SuppressWarnings("deprecation")
 @Slf4j
 public class KoTorrentBot extends TelegramLongPollingBot {
     public static KoTorrentBot BOT;
@@ -37,7 +38,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     private static final Set<Long> trustedUserIds = new HashSet<>();
 
-    private static final Collection<UserMessageHandler> handlers = new ArrayList<>() {{
+    private static final Collection<UserMessageHandler> handlers = new ArrayList<UserMessageHandler>() {{
         add(new MyPingHandler());
         add(new TextHandler());
         add(new TorrentFileHandler());
