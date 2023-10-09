@@ -14,7 +14,7 @@ public class SendTextMessageToUser extends InputMessageHandler {
     protected void getDeliverCallbackPrivate(RabbitMessage message) {
         long chatId = message.getUserId();
         String text = unNormalizeText(message.getText());
-        log.debug(String.format("[SendTextMessageToUser] Send text chatId:%s, text:%s", chatId, text));
+        log.debug("[SendTextMessageToUser] Send text chatId:{}, text:{}", chatId, text);
         sendText(chatId, text);
     }
     @Override

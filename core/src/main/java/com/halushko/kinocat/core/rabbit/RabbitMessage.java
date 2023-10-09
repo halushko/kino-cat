@@ -1,70 +1,118 @@
 package com.halushko.kinocat.core.rabbit;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.halushko.kinocat.core.rabbit.RabbitJson.normalizedValue;
-import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.*;
+import java.util.*;
 
+@SuppressWarnings({"UnusedReturnValue", "unused"})
 @Slf4j
 public class RabbitMessage {
-    private final RabbitJson json;
-
     public enum KEYS {
-        USER_ID, TEXT, CONSUMER, FILE_NAME, FILE_PATH;
+        USER_ID, TEXT, CONSUMER, FILE_NAME, FILE_PATH
     }
+
+    private String json;
+    private final static ObjectMapper mapper = new ObjectMapper() {{
+        enable(SerializationFeature.INDENT_OUTPUT);
+    }};
 
     public RabbitMessage(long userId) {
-        json = RabbitJson.create(USER_ID, String.valueOf(userId));
+        addValue(KEYS.USER_ID, String.valueOf(userId));
+    }
+    public RabbitMessage(String key, Object value) {
+        addValue(key, value);
     }
 
-    public RabbitMessage(String message) {
-        log.debug(String.format("[RabbitMessage] Start create RabbitMessage text=%s", message));
-        json = RabbitJson.create(message);
-        log.debug(String.format("[RabbitMessage] Result RabbitMessage for text=%s is json=%s", message, json));
+    public RabbitMessage(long key, Object value) {
+        this(String.valueOf(key), value);
     }
 
-    public RabbitMessage(long userId, String text) {
-        log.debug(String.format("[RabbitMessage] Start create RabbitMessage user=%s, text=%s", userId, text));
-        text = normalizedValue(text);
-        log.debug(String.format("[RabbitMessage] Normalized text=%s", text));
-        json = RabbitJson.create(USER_ID, String.valueOf(userId)).add(TEXT, text);
-        log.debug(String.format("[RabbitMessage] Result RabbitMessage for user=%s is json=%s", userId, json));
-    }
-
-    public String getText() {
-        return json.getString(TEXT);
-    }
-
-    public long getUserId() {
-        return json.getLong(USER_ID);
-    }
-
-    public RabbitMessage addValue(String key, String value) {
-        log.debug(String.format("[addValue] Start add to json (key, value)=(%s, %s) before_json=%s", key, value, json));
-        json.add(key, value);
-        log.debug(String.format("[addValue] Result json after adding of (key, value)=(%s, %s) after_json=%s", key, value, json));
-        return this;
+    public RabbitMessage(String json) {
+        this.json = json;
     }
 
     public RabbitMessage addValue(KEYS key, String value) {
         return addValue(key.name(), value);
     }
+    public RabbitMessage addValue(String key, Object value) {
+        log.debug("[addValue] Start add to json (key, value)=({}, {}) before_json={}", key, value, json);
+        json = convertToString(convertJsonToMap(json).put(key, value));
+        return this;
+    }
 
-    public String getValue(KEYS key) {
+    public RabbitMessage getValue(KEYS key) {
         return getValue(key.name());
     }
-    public String getValue(String key) {
-        return json.getString(key);
+    public RabbitMessage getValue(String key) {
+        return new RabbitMessage(getStringValue(key));
     }
 
-    public String getRabbitMessageText() {
-        return json.toString();
+    public String getStringValue(KEYS key) {
+        return getStringValue(key.name());
     }
-    public String getNormalisedText() {
-        return RabbitJson.unNormalizeText(json.toString());
+    public String getStringValue(String key) {
+        return convertToString(convertJsonToMap(json).get(key));
+    }
+
+    public String getText() {
+        return getStringValue(KEYS.TEXT);
+    }
+
+    public long getUserId() {
+        return Long.getLong(getStringValue(KEYS.USER_ID));
+    }
+
+    public String getRabbitMessageText(){
+        return json;
     }
 
     public byte[] getRabbitMessageBytes() {
         return getRabbitMessageText().getBytes();
+    }
+
+    private static String convertToString(final Object value) {
+        String result = "!!!Error!!!";
+        try {
+            result = value instanceof String ? (String)value : mapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            log.error("[convertToString] error={}", e.getMessage());
+        }
+        log.debug("[convertToString] result={}", result);
+        return result;
+    }
+
+    private static Map<String, Object> convertJsonToMap(String json) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        try {
+            result = convertJsonToMap(mapper.readTree(json));
+        } catch (JsonProcessingException e) {
+            log.error("[convertJsonToMap] error={}", e.getMessage());
+        }
+        log.debug("[convertJsonToMap] result={}", result);
+        return result;
+    }
+
+    private static Map<String, Object> convertJsonToMap(JsonNode jsonNode) {
+        Map<String, Object> resultMap = new HashMap<>();
+        jsonNode.fields().forEachRemaining(entry -> resultMap.put(entry.getKey(), parseJsonNode(entry.getValue())));
+        return resultMap;
+    }
+
+    private static Object parseJsonNode(JsonNode jsonNode) {
+        if (jsonNode.isObject()) {
+            return convertJsonToMap(jsonNode);
+        } else if (jsonNode.isArray()) {
+            List<Object> list = new ArrayList<>();
+            for (JsonNode entry : jsonNode) {
+                list.add(parseJsonNode(entry));
+            }
+            return list;
+        } else {
+            return jsonNode.asText();
+        }
     }
 }

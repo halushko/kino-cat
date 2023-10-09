@@ -15,7 +15,7 @@ public class TextHandler extends UserMessageHandler {
         long chatId = update.getMessage().getChatId();
         String message = RabbitJson.normalizedValue(update.getMessage().getText());
 
-        log.debug(String.format("[TextHandler] chatId:%s, message:%s", chatId, message));
+        log.debug("[TextHandler] chatId:{}, message:{}", chatId, message);
 
         RabbitMessage rm = new RabbitMessage(chatId, message);
         RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_TEXT);

@@ -16,12 +16,12 @@ public abstract class InputMessageHandler implements Runnable {
     @Override
     public void run() {
         String queue = getQueue();
-        log.debug(String.format("[run] Start Input Message Handler. Queue: %s", queue));
+        log.debug("[run] Start Input Message Handler. Queue: {}", queue);
 
         try {
-            log.debug(String.format("[run] Start connection for queue: %s", queue));
+            log.debug("[run] Start connection for queue: {}", queue);
             readMessage(getQueue(), getDeliverCallback());
-            log.debug(String.format("[run] '%s' connected", queue));
+            log.debug("[run] '{}' connected", queue);
         } catch (Exception e) {
             log.error(String.format("[run] Unknown error during connection to queue '%s'", queue), e);
             try {
@@ -35,17 +35,17 @@ public abstract class InputMessageHandler implements Runnable {
 
     protected DeliverCallback getDeliverCallback() {
         return (consumerTag, delivery) -> {
-            log.debug(String.format("[getDeliverCallback] Get DeliverCallback for queue '%s' started", getQueue()));
+            log.debug("[getDeliverCallback] Get DeliverCallback for queue '{}' started", getQueue());
             String body = new String(delivery.getBody(), StandardCharsets.UTF_8);
-            log.debug(String.format("[getDeliverCallback] body: '%s'", body));
+            log.debug("[getDeliverCallback] body: '{}'", body);
             RabbitMessage message = new RabbitMessage(body);
-            log.debug(String.format("[getDeliverCallback] RabbitMessage: '%s'", message.getRabbitMessageText()));
+            log.debug("[getDeliverCallback] RabbitMessage: '{}'", message.getRabbitMessageText());
             getDeliverCallbackLog(message);
         };
     }
 
     private void getDeliverCallbackLog(RabbitMessage message) {
-        log.debug(String.format("[InputMessageHandler] Start processing message=%s", message.getRabbitMessageText()));
+        log.debug("[InputMessageHandler] Start processing message={}", message.getRabbitMessageText());
         getDeliverCallbackPrivate(message);
         log.debug("[InputMessageHandler] Finish processing");
     }

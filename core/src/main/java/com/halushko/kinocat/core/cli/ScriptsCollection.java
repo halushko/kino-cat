@@ -14,12 +14,12 @@ public class ScriptsCollection {
     }
 
     public Command getCommand(String text) {
-        log.debug(String.format("Try to get command from text [%s]", text));
+        log.debug("Try to get command from text [{}]", text);
         if (text == null) return new Command("");
 
         Command tmp = new Command(text);
         getCommandList().forEach(tmp::tryToSetScript);
-        log.debug(String.format("Command is command=%s, script=%s, queue=%s", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue()));
+        log.debug("Command is command=%s, script={}, queue={}", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue());
         return tmp;
     }
 

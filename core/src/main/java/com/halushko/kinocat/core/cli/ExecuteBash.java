@@ -11,7 +11,7 @@ import java.util.List;
 public class ExecuteBash {
     public static List<String> executeViaCLI(String script) {
         String command = String.format("sh %s%s", "/home/app/", script);
-        log.debug(String.format("[executeViaCLI] Execute script: %s", command));
+        log.debug("[executeViaCLI] Execute script: {}", command);
         List<String> result = new ArrayList<>();
 
         ProcessBuilder processBuilder = new ProcessBuilder(command);

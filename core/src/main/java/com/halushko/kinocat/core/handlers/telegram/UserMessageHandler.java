@@ -29,6 +29,6 @@ public abstract class UserMessageHandler {
     }
 
     public void sendAnswer(long userId, String messageText) {
-        log.debug(String.format("Dummy answer: userId:%s, message:%s", userId, messageText));
+        log.debug("Dummy answer: userId: {}, message: {}", userId, messageText);
     }
 }

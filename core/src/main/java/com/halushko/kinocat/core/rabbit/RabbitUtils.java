@@ -21,15 +21,6 @@ public class RabbitUtils {
         }
     };
 
-    private static final ConnectionFactory localConnectionFactory = new ConnectionFactory() {
-        {
-            setHost("localhost");
-            setUsername(RABBIT_USERNAME);
-            setPassword(RABBIT_PASSWORD);
-            setPort(RABBIT_PORT);
-            setAutomaticRecoveryEnabled(false);
-        }
-    };
 
     private static Connection connection = createConnection();
 
@@ -84,15 +75,16 @@ public class RabbitUtils {
         }
     }
 
+    @Slf4j
     static class MyShutdownListener implements ShutdownListener {
         @Override
         public void shutdownCompleted(ShutdownSignalException cause) {
-            cause.printStackTrace();
+            log.error("[shutdownCompleted] Error: ", cause);
         }
     }
 
     public static void postMessage(RabbitMessage message, String queue) {
-        log.debug(String.format("[postMessage] Start post rabbit message. message=%s, queue=%s", message.getRabbitMessageText(), queue));
+        log.debug("[postMessage] Start post rabbit message. message={}, queue={}", message.getRabbitMessageText(), queue);
         try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicPublish("", queue, null, message.getRabbitMessageBytes());
@@ -102,15 +94,13 @@ public class RabbitUtils {
     }
 
     public static void postMessage(long chatId, String text, String queue) {
-        log.debug(String.format("[postMessage] Start post text message. text=%s, queue=%s", text, queue));
-        text = RabbitJson.normalizedValue(text);
-        log.debug(String.format("[postMessage] Post text message. text=%s, queue=%s", text, queue));
+        log.debug("[postMessage] Start post text message. text={}, queue={}", text, queue);
         postMessage(new RabbitMessage(chatId, text), queue);
     }
 
     public static void readMessage(String queue, DeliverCallback deliverCallback) {
         try {
-            log.debug(String.format("[readMessage] Start read message for queue=%s", queue));
+            log.debug("[readMessage] Start read message for queue={}", queue);
             Channel channel = newConnection().createChannel();
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {
