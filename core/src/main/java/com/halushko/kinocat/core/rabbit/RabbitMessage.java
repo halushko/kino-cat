@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.util.*;
 
@@ -15,7 +16,7 @@ public class RabbitMessage {
         USER_ID, TEXT, CONSUMER, FILE_NAME, FILE_PATH
     }
 
-    private String json;
+    private String json = "";
     private final static ObjectMapper mapper = new ObjectMapper() {{
         enable(SerializationFeature.INDENT_OUTPUT);
     }};
@@ -27,8 +28,11 @@ public class RabbitMessage {
         addValue(key, value);
     }
 
-    public RabbitMessage(long key, Object value) {
-        this(String.valueOf(key), value);
+    public RabbitMessage(long userId, String text) {
+        log.debug("[RabbitMessage] Start create RabbitMessage user={}, text={}", userId, text);
+        addValue(KEYS.USER_ID, String.valueOf(userId));
+        addValue(KEYS.TEXT, text);
+        log.debug("[RabbitMessage] Result RabbitMessage for user={} is json={}", userId, json);
     }
 
     public RabbitMessage(String json) {
@@ -40,7 +44,9 @@ public class RabbitMessage {
     }
     public RabbitMessage addValue(String key, Object value) {
         log.debug("[addValue] Start add to json (key, value)=({}, {}) before_json={}", key, value, json);
-        json = convertToString(convertJsonToMap(json).put(key, value));
+        val map = convertJsonToMap(json);
+        map.put(key, value);
+        json = convertToString(map);
         return this;
     }
 
@@ -63,7 +69,7 @@ public class RabbitMessage {
     }
 
     public long getUserId() {
-        return Long.getLong(getStringValue(KEYS.USER_ID));
+        return Long.parseLong(getStringValue(KEYS.USER_ID));
     }
 
     public String getRabbitMessageText(){
@@ -75,6 +81,7 @@ public class RabbitMessage {
     }
 
     private static String convertToString(final Object value) {
+        if(String.valueOf(value).equalsIgnoreCase("null")) return "";
         String result = "!!!Error!!!";
         try {
             result = value instanceof String ? (String)value : mapper.writeValueAsString(value);

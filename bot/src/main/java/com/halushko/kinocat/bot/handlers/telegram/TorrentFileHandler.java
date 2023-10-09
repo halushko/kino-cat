@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import static com.halushko.kinocat.core.rabbit.RabbitJson.normalizedValue;
 import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.*;
 
 @Slf4j
@@ -33,13 +32,13 @@ public class TorrentFileHandler extends UserMessageHandler {
         uploadedFile.setFileId(uploadedFileId);
 
         try {
-            RabbitMessage rm = new RabbitMessage(chatId);
-            rm.addValue(FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath());
-            rm.addValue("FILE_ID", update.getMessage().getDocument().getFileId());
-            rm.addValue(TEXT, normalizedValue(message));
-            rm.addValue("CAPTION", caption);
-            rm.addValue("SIZE", String.valueOf(fileSize));
-            rm.addValue("MIME_TYPE", mimeType);
+            RabbitMessage rm = new RabbitMessage(chatId).
+                    addValue(FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath()).
+                    addValue("FILE_ID", update.getMessage().getDocument().getFileId()).
+                    addValue(TEXT, message).
+                    addValue("CAPTION", caption).
+                    addValue("SIZE", String.valueOf(fileSize)).
+                    addValue("MIME_TYPE", mimeType);
 
             RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_FILE);
         } catch (TelegramApiException e) {

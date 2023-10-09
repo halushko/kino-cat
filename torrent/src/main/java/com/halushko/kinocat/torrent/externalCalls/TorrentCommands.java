@@ -2,7 +2,6 @@ package com.halushko.kinocat.torrent.externalCalls;
 
 import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.handlers.input.ExternalCliCommandExecutor;
-import com.halushko.kinocat.core.rabbit.RabbitJson;
 import com.halushko.kinocat.core.rabbit.RabbitMessage;
 import com.halushko.kinocat.torrent.internalScripts.ViewTorrentInfo;
 
@@ -29,13 +28,11 @@ public class TorrentCommands extends ExternalCliCommandExecutor {
             }
         }
 
-        return RabbitJson.normalizedValue(
-                String.format("%s\n%s%s\n%s%s\n%s%s\n%s%s", name,
-                        Constants.Commands.Torrent.PAUSE, arg,
-                        Constants.Commands.Torrent.RESUME, arg,
-                        Constants.Commands.Torrent.TORRENT_INFO, arg,
-                        Constants.Commands.Text.REMOVE_COMMAND, arg
-                )
+        return String.format("%s\n%s%s\n%s%s\n%s%s\n%s%s", name,
+                Constants.Commands.Torrent.PAUSE, arg,
+                Constants.Commands.Torrent.RESUME, arg,
+                Constants.Commands.Torrent.TORRENT_INFO, arg,
+                Constants.Commands.Text.REMOVE_COMMAND, arg
         );
     }
 

@@ -15,8 +15,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.*;
 
-import static com.halushko.kinocat.core.rabbit.RabbitJson.unNormalizeText;
-
 @SuppressWarnings("deprecation")
 @Slf4j
 public class KoTorrentBot extends TelegramLongPollingBot {
@@ -84,11 +82,10 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             return;
         }
         try {
-            final String text = unNormalizeText(str);
-            log.debug("[BOT.sendText] Send text chatId:{}, text:{}", chatId, text);
+            log.debug("[BOT.sendText] Send text chatId:{}, text:{}", chatId, str);
             BOT.execute(new SendMessage() {{
                             setChatId(chatId);
-                            setText(text);
+                            setText(str);
                         }}
             );
         } catch (TelegramApiException ex) {
