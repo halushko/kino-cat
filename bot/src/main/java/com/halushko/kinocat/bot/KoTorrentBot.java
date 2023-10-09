@@ -38,7 +38,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     private static final Set<Long> trustedUserIds = new HashSet<>();
 
-    private static final Collection<UserMessageHandler> handlers = new ArrayList<UserMessageHandler>() {{
+    private static final Collection<UserMessageHandler> handlers = new ArrayList<>() {{
         add(new MyPingHandler());
         add(new TextHandler());
         add(new TorrentFileHandler());
