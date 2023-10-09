@@ -1,12 +1,13 @@
 package com.halushko.kinocat.torrent.entities;
 
 import com.halushko.kinocat.torrent.internalScripts.ViewTorrentInfo;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
+@Slf4j
 public class ActiveTorrentEntity {
     private final static String REGEX_LIST = "\\s*(.+?)\\s{2,}(.+?)%\\s{2,}(.+?)\\s{2,}(.*?)\\s{2,}(.+?)\\s{2,}(.+?)\\s{2,}(.+?)\\s{2,}(\\w+?)\\s{2,}(.+?)$";
     private final static String REGEX_TOTAL_SIZE = ".*Total size:\\s+(.+?)\\s+(\\w+)\\s+\\(.*";
@@ -61,9 +62,9 @@ public class ActiveTorrentEntity {
 
     public ActiveTorrentEntity(String line) {
         Matcher m = PATTERN_LIST.matcher(line);
-        Logger.getRootLogger().debug(String.format("[ActiveTorrentEntity] line = %s", line));
+        log.debug(String.format("[ActiveTorrentEntity] line = %s", line));
         if (m.find()) {
-            Logger.getRootLogger().debug("[ActiveTorrentEntity] found");
+            log.debug("[ActiveTorrentEntity] found");
             id = m.group(1).replaceAll("\\*", "");
             done = Double.parseDouble(m.group(2));
             have = m.group(3);

@@ -1,9 +1,10 @@
 package com.halushko.kinocat.core.cli;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
+@Slf4j
 public class ScriptsCollection {
     private Map<String, Script> allCommands;
     private final List<Script> values = new ArrayList<>();
@@ -13,12 +14,12 @@ public class ScriptsCollection {
     }
 
     public Command getCommand(String text) {
-        Logger.getRootLogger().debug(String.format("Try to get command from text [%s]", text));
+        log.debug(String.format("Try to get command from text [%s]", text));
         if (text == null) return new Command("");
 
         Command tmp = new Command(text);
         getCommandList().forEach(tmp::tryToSetScript);
-        Logger.getRootLogger().debug(String.format("Command is command=%s, script=%s, queue=%s", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue()));
+        log.debug(String.format("Command is command=%s, script=%s, queue=%s", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue()));
         return tmp;
     }
 
@@ -42,6 +43,6 @@ public class ScriptsCollection {
         }
         StringBuilder sb = new StringBuilder("All commands:\n");
         allCommands.forEach((key, value) -> sb.append(String.format("%s = %s\n", key, value)));
-        Logger.getRootLogger().debug(sb.toString());
+        log.debug(sb.toString());
     }
 }

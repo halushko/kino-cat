@@ -6,11 +6,12 @@ import com.halushko.kinocat.core.cli.ScriptsCollection;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.core.rabbit.RabbitMessage;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
+@Slf4j
 public class UserMessageHandler extends InputMessageHandler {
     private static final ScriptsCollection scripts = new ScriptsCollection() {{
         addValue("/restart_media_server", "restart.sh", Constants.Queues.MediaServer.EXECUTE_MINIDLNA_COMMAND);
@@ -28,34 +29,34 @@ public class UserMessageHandler extends InputMessageHandler {
 
     @Override
     protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
-        Logger.getRootLogger().debug("[UserMessageHandler] Start DeliverCallbackPrivate for " + getQueue());
+        log.debug("[UserMessageHandler] Start DeliverCallbackPrivate for " + getQueue());
         try {
             String text = rabbitMessage.getText();
             long userId = rabbitMessage.getUserId();
-            Logger.getRootLogger().debug(String.format("[UserMessageHandler] user_id=%s, text=%s", userId, text));
+            log.debug(String.format("[UserMessageHandler] user_id=%s, text=%s", userId, text));
             Command command = scripts.getCommand(text);
             String finalCommand = command.getFinalCommand();
-            Logger.getRootLogger().debug(String.format("[UserMessageHandler] Command: [getFinalCommand=%s]", finalCommand));
+            log.debug(String.format("[UserMessageHandler] Command: [getFinalCommand=%s]", finalCommand));
             if (finalCommand == null || finalCommand.equals("")) {
                 String message = String.format("[UserMessageHandler] Command %s not found", text);
-                Logger.getRootLogger().debug(message);
+                log.debug(message);
                 RabbitUtils.postMessage(userId, message, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
             } else if (command.getScript().equals(Constants.Commands.Text.SEND_TEXT_TO_USER)) {
                 List<String> additionalArguments = command.getAdditionalArguments();
                 String methodName = additionalArguments.get(0);
-                Logger.getRootLogger().debug(String.format("[UserMessageHandler] The text will be send by method %s to user", methodName));
+                log.debug(String.format("[UserMessageHandler] The text will be send by method %s to user", methodName));
                 Method method = TextGenerators.class.getMethod(methodName, String.class);
                 String result = (String) method.invoke(null, command.getArguments());
                 RabbitUtils.postMessage(userId, result, command.getQueue());
             } else {
-                Logger.getRootLogger().debug(String.format("[UserMessageHandler] Command %s found", text));
+                log.debug(String.format("[UserMessageHandler] Command %s found", text));
                 RabbitMessage message = new RabbitMessage(userId, command.getFinalCommand());
                 message.addValue("ARG", command.getArguments());
                 RabbitUtils.postMessage(message, command.getQueue());
             }
-            Logger.getRootLogger().debug("[UserMessageHandler] Finish DeliverCallbackPrivate for " + getQueue());
+            log.debug("[UserMessageHandler] Finish DeliverCallbackPrivate for " + getQueue());
         } catch (Exception e) {
-            Logger.getRootLogger().error("[UserMessageHandler] During message handle got an error: ", e);
+            log.error("[UserMessageHandler] During message handle got an error: ", e);
         }
     }
 

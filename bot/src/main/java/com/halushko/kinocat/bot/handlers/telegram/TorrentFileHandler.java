@@ -5,7 +5,7 @@ import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
 import com.halushko.kinocat.core.rabbit.RabbitMessage;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import static com.halushko.kinocat.core.rabbit.RabbitJson.normalizedValue;
 import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.*;
 
+@Slf4j
 public class TorrentFileHandler extends UserMessageHandler {
     @Override
     protected void readMessagePrivate(Update update) {
@@ -22,7 +23,7 @@ public class TorrentFileHandler extends UserMessageHandler {
         String mimeType = update.getMessage().getDocument().getMimeType();
         String message = update.getMessage().getText();
         String caption = update.getMessage().getCaption();
-        Logger.getRootLogger().debug(
+        log.debug(
                 String.format("[TorrentFileHandler] chatId:%s, uploadedFileId:%s, fileName:%s, message:%s, caption:%s",
                         chatId, uploadedFileId, update.getMessage().getDocument().getFileName(), message, caption
                 )
@@ -42,7 +43,7 @@ public class TorrentFileHandler extends UserMessageHandler {
 
             RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_FILE);
         } catch (TelegramApiException e) {
-            Logger.getRootLogger().error("[TorrentFileHandler] Error during file processing", e);
+            log.error("[TorrentFileHandler] Error during file processing", e);
             KoTorrentBot.sendText(chatId, e.getMessage());
         }
     }
