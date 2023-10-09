@@ -1,8 +1,11 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'io.freefair.lombok' version '8.3'
+}
+
 group 'com.halushko.kinocat.file'
 version '1.0'
-
-apply plugin: 'java'
-apply plugin: 'application'
 
 compileJava.options.encoding = 'UTF-8'
 

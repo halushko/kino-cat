@@ -1,39 +1,39 @@
 package com.halushko.kinocat.core.cli;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class ExecuteBash {
     public static List<String> executeViaCLI(String script) {
         String command = String.format("sh %s%s", "/home/app/", script);
-        Logger.getRootLogger().debug(String.format("[executeViaCLI] Execute script: %s", command));
-        Process p = null;
+        log.debug(String.format("[executeViaCLI] Execute script: %s", command));
         List<String> result = new ArrayList<>();
 
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.redirectErrorStream(true);
+
         try {
-            p = Runtime.getRuntime().exec(command);
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-                for (String outputLine; (outputLine = br.readLine()) != null; )
+            Process process = processBuilder.start();
+
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String outputLine;
+                while ((outputLine = br.readLine()) != null) {
                     result.add(outputLine);
-            }
-        } catch (Exception e) {
-            Logger.getRootLogger().error("[executeViaCLI] Execute CLI error: ", e);
-        } finally {
-            if (p != null) {
-                try {
-                    p.waitFor();
-                } catch (InterruptedException e) {
-                    Logger.getRootLogger().error("[executeViaCLI] Execute CLI Wait error: ", e);
                 }
-                p.destroy();
             }
+
+            int exitCode = process.waitFor();
+            log.debug("[executeViaCLI] Execution of script finished. Exit code: {}", exitCode);
+        } catch (Exception e) {
+            log.error("[executeViaCLI] Execute CLI error: ", e);
         }
-        Logger.getRootLogger().debug("[executeViaCLI] Execution of script finished. Result is:");
-        result.forEach(Logger.getRootLogger()::debug);
+        log.debug("[executeViaCLI] Execution of script finished. Result is:");
+        result.forEach(log::debug);
         return result;
     }
 }

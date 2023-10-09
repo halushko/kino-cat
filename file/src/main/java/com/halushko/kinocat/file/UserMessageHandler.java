@@ -7,7 +7,7 @@ import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.core.rabbit.RabbitMessage;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,14 +34,14 @@ public class UserMessageHandler extends InputMessageHandler {
                 handleTorrent(rabbitMessage);
             }
         } catch (Exception e) {
-            Logger.getRootLogger().error("During message handle got an error: ", e);
+            log.error("During message handle got an error: ", e);
         }
     }
 
     protected void handleTorrent(RabbitMessage rm) throws MalformedURLException {
         long fileSize = Long.parseLong(rm.getValue("SIZE"));
         if (fileSize > 5242880L) {
-            Logger.getRootLogger().warn(String.format("The file size is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
+            log.warn(String.format("The file size is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
             return;
         }
         URL fileUrl = new URL(FILE_URL_PREFIX + rm.getValue(RabbitMessage.KEYS.FILE_PATH));
