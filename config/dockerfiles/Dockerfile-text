@@ -1,4 +1,6 @@
 FROM openjdk:20-ea-35-jdk-slim
 COPY text-*.jar /home/app/app.jar
 COPY ./src/main/resources/log_properties /home/app
-ENTRYPOINT ["java", "-Dlog4j.configuration=file:/home/app/log4j-${LOGS_LEVEL}.properties", "-jar", "/home/app/app.jar"]
+COPY ./src/main/resources/scripts /home/app
+RUN chmod +X /home/app/*.sh
+ENTRYPOINT ["sh", "/home/app/run.sh"]
