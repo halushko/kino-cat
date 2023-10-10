@@ -1,5 +1,4 @@
 FROM openjdk:20-ea-35-jdk-slim
 COPY bot-*.jar /home/app/app.jar
 COPY ./src/main/resources/log_properties /home/app
-ENTRYPOINT tail -f /dev/null
-#ENTRYPOINT ["java", "-Dlog4j.configuration=file:/home/app/log4j-${LOGS_LEVEL}.properties", "-jar", "/home/app/app.jar"]
+ENTRYPOINT ["java", "-Dlog4j.configuration=file:/home/app/log4j-${LOGS_LEVEL}.properties", "-jar", "/home/app/app.jar"]
