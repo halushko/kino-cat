@@ -71,8 +71,8 @@ services:
     volumes:
       - ./workdir/mediadata:/home/media/torrent/complete
       - ./workdir/config/files_from_telegram:/home/media/torrent/torrent_files
-      - ./workdir/config/transmission/torrents:/var/lib/transmission/config/torrents
-      - ./workdir/config/transmission/resume:/var/lib/transmission/config/resume
+      - ./workdir/config/transmission/torrents:/var/lib/transmission-daemon/.config/transmission-daemon/torrents/
+      - ./workdir/config/transmission/resume:/var/lib/transmission-daemon/.config/transmission-daemon/resume
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.5

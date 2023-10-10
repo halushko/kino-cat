@@ -16,6 +16,8 @@ x-common-variables: &common-variables
 
   PING: /ping
   PONG: pong
+
+  LOGS_LEVEL: info
 services:
   rabbitmq:
     image: rabbitmq:management-alpine
@@ -34,6 +36,8 @@ services:
     environment: *common-variables
     restart: always
     container_name: "bot"
+    volumes:
+      - ./workdir/config/logs:/home/app/
     depends_on:
       - rabbitmq
     networks:
@@ -44,6 +48,8 @@ services:
     environment: *common-variables
     restart: always
     container_name: "text"
+    volumes:
+      - ./workdir/config/logs:/home/app/
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.3
@@ -58,6 +64,7 @@ services:
       - rabbitmq
     volumes:
       - ./workdir/config/files_from_telegram:/home/torrent_files/
+      - ./workdir/config/logs:/home/app/
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.4
@@ -71,8 +78,9 @@ services:
     volumes:
       - ./workdir/mediadata:/home/media/torrent/complete
       - ./workdir/config/files_from_telegram:/home/media/torrent/torrent_files
-      - ./workdir/config/transmission/torrents:/var/lib/transmission/config/torrents
-      - ./workdir/config/transmission/resume:/var/lib/transmission/config/resume
+      - ./workdir/config/transmission/torrents:/var/lib/transmission-daemon/.config/transmission-daemon/torrents/
+      - ./workdir/config/transmission/resume:/var/lib/transmission-daemon/.config/transmission-daemon/resume
+      - ./workdir/config/logs:/home/app/
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.5
