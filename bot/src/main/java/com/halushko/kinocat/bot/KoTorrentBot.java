@@ -28,10 +28,8 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     public static final String BOT_NAME = System.getenv("BOT_NAME");
 
-    @lombok.Getter
     public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
 
-    @lombok.Getter
     public static final String BOT_TRUSTED_USERS = System.getenv("BOT_TRUSTED_USERS");
 
     private static final Set<Long> trustedUserIds = new HashSet<>();
@@ -66,6 +64,11 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return BOT_NAME;
+    }
+
+    @Override
+    public String getBotToken() {
+        return BOT_TOKEN;
     }
 
     public static boolean validateUser(long userId) {
