@@ -1,4 +1,4 @@
-FROM openjdk:8-alpine
+FROM openjdk:20-ea-35-jdk-slim
 
 VOLUME ["/sys/fs/cgroup"]
 RUN apk add transmission-daemon transmission-cli openrc
@@ -10,11 +10,13 @@ RUN chmod 777 -R /home/app
 RUN chmod 777 -R /home/media
 COPY ./src/main/resources/config /var/lib/transmission/config
 COPY ./src/main/resources/commands /home/app
-COPY torrent-*.jar /home/app/app.jar
 
 RUN chmod +X /home/app/*.sh
 RUN openrc
 RUN touch /run/openrc/softlevel
+
+COPY torrent-*.jar /home/app/app.jar
+
 CMD echo 'rc_provide="loopback net"' >> /etc/rc.conf && \
     rc-service transmission-daemon stop && \
     rc-service transmission-daemon start && \
