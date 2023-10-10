@@ -1,13 +1,15 @@
 FROM openjdk:20-ea-35-jdk-slim
 
-VOLUME ["/sys/fs/cgroup"]
+RUN apt-get update
 RUN apt-get -y install transmission-daemon transmission-cli openrc
-RUN mkdir -p /home/media/torrent/downloads
-RUN mkdir -p /home/media/torrent/complete
-RUN mkdir -p /home/media/torrent/torrent_files
-RUN mkdir -p /home/app
-RUN chmod 777 -R /home/app
-RUN chmod 777 -R /home/media
+RUN mkdir -p /home/media/torrent/downloads && \
+    mkdir -p /home/media/torrent/complete && \
+    mkdir -p /home/media/torrent/torrent_files && \
+    mkdir -p /home/app && \
+    chmod 777 -R /home/app && \
+    chmod 777 -R /home/media
+
+VOLUME ["/sys/fs/cgroup"]
 COPY ./src/main/resources/config /var/lib/transmission/config
 COPY ./src/main/resources/commands /home/app
 
