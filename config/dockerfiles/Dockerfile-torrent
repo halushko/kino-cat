@@ -1,7 +1,7 @@
 FROM openjdk:20-ea-35-jdk-slim
 
 VOLUME ["/sys/fs/cgroup"]
-RUN apk add transmission-daemon transmission-cli openrc
+RUN apt-get -y install transmission-daemon transmission-cli openrc
 RUN mkdir -p /home/media/torrent/downloads
 RUN mkdir -p /home/media/torrent/complete
 RUN mkdir -p /home/media/torrent/torrent_files
