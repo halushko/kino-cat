@@ -35,6 +35,8 @@ dependencies {
     implementation 'commons-io:commons-io:+'
     implementation 'org.slf4j:slf4j-log4j12:+'
     implementation fileTree(dir: System.getenv('CORE_LOCATION'), include: ['*.jar'])
+    implementation 'org.projectlombok:lombok:+'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:+'
 }
 
 repositories {
