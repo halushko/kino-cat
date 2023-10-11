@@ -15,8 +15,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.*;
 
-import static com.halushko.kinocat.core.rabbit.RabbitJson.unNormalizeText;
-
 @SuppressWarnings("deprecation")
 @Slf4j
 public class KoTorrentBot extends TelegramLongPollingBot {
@@ -30,10 +28,8 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     public static final String BOT_NAME = System.getenv("BOT_NAME");
 
-    @lombok.Getter
     public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
 
-    @lombok.Getter
     public static final String BOT_TRUSTED_USERS = System.getenv("BOT_TRUSTED_USERS");
 
     private static final Set<Long> trustedUserIds = new HashSet<>();
@@ -70,12 +66,17 @@ public class KoTorrentBot extends TelegramLongPollingBot {
         return BOT_NAME;
     }
 
+    @Override
+    public String getBotToken() {
+        return BOT_TOKEN;
+    }
+
     public static boolean validateUser(long userId) {
         if (trustedUserIds.isEmpty()) {
             parseTrustedUsersEnv();
         }
         boolean valid = trustedUserIds.contains(userId);
-        log.debug(String.format("[validateUser] The user %s is %svalid", userId, valid ? "" : "in"));
+        log.debug("[validateUser] The user {} is {}valid", userId, valid ? "" : "in");
         return valid;
     }
 
@@ -84,11 +85,10 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             return;
         }
         try {
-            final String text = unNormalizeText(str);
-            log.debug(String.format("[BOT.sendText] Send text chatId:%s, text:%s", chatId, text));
+            log.debug("[BOT.sendText] Send text chatId:{}, text:{}", chatId, str);
             BOT.execute(new SendMessage() {{
                             setChatId(chatId);
-                            setText(text);
+                            setText(str);
                         }}
             );
         } catch (TelegramApiException ex) {
@@ -103,7 +103,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     private static void parseTrustedUsersEnv() {
         Arrays.stream(BOT_TRUSTED_USERS.split(",")).forEach(userId -> {
             try {
-                trustedUserIds.add(Long.getLong(userId));
+                trustedUserIds.add(Long.parseLong(userId));
                 log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is trusted", userId));
             } catch (Exception e) {
                 log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is invalid", userId));

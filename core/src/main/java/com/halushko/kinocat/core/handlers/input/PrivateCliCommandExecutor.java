@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class PrivateCliCommandExecutor {
     protected List<String> execute(String arg) {
         String text = String.format("%s%s", getScript(), arg);
-        log.debug(String.format("[PrivateCliCommandExecutor.execute] %s", text));
+        log.debug("[PrivateCliCommandExecutor.execute] {}", text);
         return ExecuteBash.executeViaCLI(getScriptsCollection().getCommand(text).getFinalCommand());
     }
 

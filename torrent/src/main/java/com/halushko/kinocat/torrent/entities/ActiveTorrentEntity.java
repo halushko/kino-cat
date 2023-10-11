@@ -29,20 +29,14 @@ public class ActiveTorrentEntity {
 
 
     public String getStatusIcon() {
-        switch (status != null ? status.toUpperCase() : "") {
-            case "STOPPED":
-                return "\uD83D\uDEAB";
-            case "IDLE":
-                return done == 100.0 ? "✅" : "\uD83D\uDCA4";
-            case "DOWNLOADING":
-                return "⬇️";
-            case "VERIFYING":
-                return "♻";
-            case "SEEDING":
-                return "⬆️";
-            default:
-                return "Status=\"" + status + "\"";
-        }
+        return switch (status != null ? status.toUpperCase() : "") {
+            case "STOPPED" -> "\uD83D\uDEAB";
+            case "IDLE" -> done == 100.0 ? "✅" : "\uD83D\uDCA4";
+            case "DOWNLOADING" -> "⬇️";
+            case "VERIFYING" -> "♻";
+            case "SEEDING" -> "⬆️";
+            default -> "Status=\"" + status + "\"";
+        };
     }
 
     public String getPercents() {
@@ -62,7 +56,7 @@ public class ActiveTorrentEntity {
 
     public ActiveTorrentEntity(String line) {
         Matcher m = PATTERN_LIST.matcher(line);
-        log.debug(String.format("[ActiveTorrentEntity] line = %s", line));
+        log.debug("[ActiveTorrentEntity] line = {}", line);
         if (m.find()) {
             log.debug("[ActiveTorrentEntity] found");
             id = m.group(1).replaceAll("\\*", "");

@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class TorrentsList extends ExternalCliCommandExecutor {
     @Override
     protected String getResultString(List<String> lines, RabbitMessage rabbitMessage) {
-        log.debug(String.format("[TorrentsList] lines=%s", lines));
+        log.debug("[TorrentsList] lines={}", lines);
         if (lines == null || lines.isEmpty()) return "";
 
         return super.getResultString(lines.stream()

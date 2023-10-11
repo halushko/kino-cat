@@ -33,28 +33,28 @@ public class UserMessageHandler extends InputMessageHandler {
         try {
             String text = rabbitMessage.getText();
             long userId = rabbitMessage.getUserId();
-            log.debug(String.format("[UserMessageHandler] user_id=%s, text=%s", userId, text));
+            log.debug("[UserMessageHandler] user_id={} text={}", userId, text);
             Command command = scripts.getCommand(text);
             String finalCommand = command.getFinalCommand();
-            log.debug(String.format("[UserMessageHandler] Command: [getFinalCommand=%s]", finalCommand));
-            if (finalCommand == null || finalCommand.equals("")) {
+            log.debug("[UserMessageHandler] Command: [getFinalCommand={}]", finalCommand);
+            if (finalCommand == null || finalCommand.isEmpty()) {
                 String message = String.format("[UserMessageHandler] Command %s not found", text);
                 log.debug(message);
                 RabbitUtils.postMessage(userId, message, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
             } else if (command.getScript().equals(Constants.Commands.Text.SEND_TEXT_TO_USER)) {
                 List<String> additionalArguments = command.getAdditionalArguments();
                 String methodName = additionalArguments.get(0);
-                log.debug(String.format("[UserMessageHandler] The text will be send by method %s to user", methodName));
+                log.debug("[UserMessageHandler] The text will be send by method {} to user", methodName);
                 Method method = TextGenerators.class.getMethod(methodName, String.class);
                 String result = (String) method.invoke(null, command.getArguments());
                 RabbitUtils.postMessage(userId, result, command.getQueue());
             } else {
-                log.debug(String.format("[UserMessageHandler] Command %s found", text));
+                log.debug("[UserMessageHandler] Command {} found", text);
                 RabbitMessage message = new RabbitMessage(userId, command.getFinalCommand());
                 message.addValue("ARG", command.getArguments());
                 RabbitUtils.postMessage(message, command.getQueue());
             }
-            log.debug("[UserMessageHandler] Finish DeliverCallbackPrivate for " + getQueue());
+            log.debug("[UserMessageHandler] Finish DeliverCallbackPrivate for {}", getQueue());
         } catch (Exception e) {
             log.error("[UserMessageHandler] During message handle got an error: ", e);
         }
