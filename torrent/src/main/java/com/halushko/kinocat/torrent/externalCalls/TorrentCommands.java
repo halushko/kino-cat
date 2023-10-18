@@ -26,8 +26,8 @@ public class TorrentCommands extends TransmissionWebApiExecutor {
     @Override
     protected void executeRequest(SmartJson message) {
         long chatId = message.getUserId();
-        String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", message.getText().split(" ")[0]));
         String torrentId = message.getValue("ARG");
+        String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", message.getValue("SCRIPT")));
         String requestBody = String.format(requestBodyFormat, torrentId);
         log.debug("[executeRequest] Request body:\n{}", requestBody);
 

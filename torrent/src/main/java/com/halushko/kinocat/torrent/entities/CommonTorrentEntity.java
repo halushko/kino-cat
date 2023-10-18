@@ -12,13 +12,14 @@ import java.util.stream.IntStream;
 public class CommonTorrentEntity {
     public final String id;
     private final double percentDone;
-    private final String status;
+    private final int status;
     public final String name;
     private final long totalSize;
 
     public CommonTorrentEntity(Map<String, Object> map){
         val torrent = new SmartJson(map);
-        this.status = getStatusIcon(torrent.getValue("status"));
+        String status = torrent.getValue("status");
+        this.status = status.isEmpty() ? -1 : Integer.parseInt(status);
         this.name = torrent.getValue("name");
         String percentDone = torrent.getValue("percentDone");
         this.percentDone = percentDone.isEmpty() ? 0.0 : Double.parseDouble(percentDone);
@@ -56,8 +57,8 @@ public class CommonTorrentEntity {
                 : " % (" + Math.round((totalSize - (long) (totalSize * percentDone)) / 1000000.0) / 1000.0 + " Gb left)";
     }
 
-    protected String getStatusIcon(String status) {
-        return switch (status != null ? Integer.parseInt(status) : -1) {
+    protected String getStatusIcon() {
+        return switch (status) {
             case 0 -> "⏸";
             case 1 -> "\uD83D\uDD51♾";
             case 2 -> "♾";
