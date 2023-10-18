@@ -19,10 +19,6 @@ import java.net.URL;
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
 
-    private static final ScriptsCollection scripts = new ScriptsCollection() {{
-        addValue(Constants.Commands.Torrent.START_TORRENT_FILE, "start_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
-    }};
-
     @Override
     protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         try {
@@ -48,8 +44,6 @@ public class UserMessageHandler extends InputMessageHandler {
         File localFile = new File("/home/torrent_files/" + fileName);
         try (InputStream is = fileUrl.openStream()) {
             FileUtils.copyInputStreamToFile(is, localFile);
-            Command command = scripts.getCommand(Constants.Commands.Torrent.START_TORRENT_FILE);
-            RabbitUtils.postMessage(userId, String.format("%s %s%s", command.getScript(), "/home/media/torrent/torrent_files/", fileName), command.getQueue());
         } catch (IOException e) {
             RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         }

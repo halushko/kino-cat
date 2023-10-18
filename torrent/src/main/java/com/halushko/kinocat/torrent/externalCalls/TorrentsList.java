@@ -48,7 +48,7 @@ public class TorrentsList extends InputMessageHandlerApiRequest {
                             String line = getLinage(percentDone);
                             String percents = getPercents(percentDone, totalSize);
                             String id = torrent.getValue("id");
-                            sb.append(String.format("%s %s\n%s %s /more_%s", status, name, line, percents, id));
+                            sb.append(String.format("%s %s\n%s %s /more_%s\n", status, name, line, percents, id));
                         } else {
                             throw new RuntimeException("Can't parse torrents list");
                         }
