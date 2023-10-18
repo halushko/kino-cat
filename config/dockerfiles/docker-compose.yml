@@ -93,7 +93,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.2
   text:
-    image: halushko/cinema-text:alpha
+    image: halushko/cinema-text:beta
     environment: *common-variables
     restart: always
     container_name: "text"
