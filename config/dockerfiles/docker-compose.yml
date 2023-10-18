@@ -46,12 +46,28 @@ services:
       - ./workdir/mediadata:/movies
     restart: unless-stopped
     network_mode: host
+  torrent:
+    image: halushko/cinema-torrent:beta
+    environment: *common-variables
+    restart: always
+    container_name: "torrent"
+    depends_on:
+      - media
+    volumes:
+      - ./workdir/config/transmission:/home/app/transmission_config
+      - ./workdir/config/logs:/home/app/logs
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.5
+    ports:
+      - 9091:9091
+      - 51413:51413
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     restart: always
     container_name: "transmission"
     depends_on:
-      - media
+      - torrent
     environment:
       - PUID=1000
       - PGID=1000
@@ -104,21 +120,6 @@ services:
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.4
-  torrent:
-    image: halushko/cinema-torrent:beta
-    environment: *common-variables
-    restart: always
-    container_name: "torrent"
-    depends_on:
-      - bot
-    volumes:
-      - ./workdir/config/logs:/home/app/logs
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.5
-    ports:
-      - 9091:9091
-      - 51413:51413
 networks:
   cat_private_network:
     driver: bridge
