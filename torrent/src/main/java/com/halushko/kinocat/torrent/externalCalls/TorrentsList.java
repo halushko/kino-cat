@@ -22,7 +22,7 @@ public class TorrentsList extends InputMessageHandlerApiRequest {
     protected void getDeliverCallbackPrivate(SmartJson message) {
         long chatId = message.getUserId();
 
-        String requestBody = ResourceReader.readResourceContent("get_torrents_list.json");
+        String requestBody = ResourceReader.readResourceContent("transmission_requests/get_torrents_list.json");
         val responce = send("", "Content-Type", "application/json");
         String sessionIdKey = "X-Transmission-Session-Id";
         String sessionIdValue = responce.getHeader(sessionIdKey);
