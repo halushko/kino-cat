@@ -29,7 +29,7 @@ public class CommonTorrentEntity {
     }
 
     public String generateTorrentCommonInfo(){
-        return String.format("%s %s\n%s %s /more_%s", status, name, getProgressBar(), getGigabytesLeft(), id);
+        return String.format("%s %s\n%s %s /more_%s", getStatusIcon(), name, getProgressBar(), getGigabytesLeft(), id);
     }
 
     public String generateTorrentCommands(){

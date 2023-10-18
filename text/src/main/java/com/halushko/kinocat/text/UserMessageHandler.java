@@ -18,11 +18,11 @@ public class UserMessageHandler extends InputMessageHandler {
 
         addValue("/list", "get_torrents_list.json", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST);
         addValue(Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, "get_torrents_names.json", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_COMMANDS);
-        addValue(Constants.Commands.Torrent.RESUME, "resume_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
-        addValue(Constants.Commands.Torrent.PAUSE, "pause_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.RESUME, "resume_torrent.json", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.PAUSE, "pause_torrent.json", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
         addValue(Constants.Commands.Torrent.TORRENT_INFO, "info_torrent.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_INFO);
-        addValue(Constants.Commands.Torrent.REMOVE_WITH_FILES, "remove_with_files.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
-        addValue(Constants.Commands.Torrent.REMOVE_JUST_TORRENT, "remove_only_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.REMOVE_WITH_FILES, "remove_with_files.json", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.REMOVE_JUST_TORRENT, "remove_only_torrent.json", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
 
         addValue(Constants.Commands.Text.REMOVE_COMMAND, Constants.Commands.Text.SEND_TEXT_TO_USER, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT, Constants.Commands.Text.REMOVE_WARN_TEXT_FUNC);
     }};
