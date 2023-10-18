@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.*;
 
@@ -88,7 +87,7 @@ public class SmartJson {
                 return (List<Object>) value;
             }
         }
-        throw new NotImplementedException();
+        throw new RuntimeException();
     }
 
     public String getText() {
