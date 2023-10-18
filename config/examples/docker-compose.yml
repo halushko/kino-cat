@@ -122,8 +122,8 @@ services:
   parser:
     image: halushko/vytiag-pdf-parser:latest
     environment:
-      BOT_TOKEN: 6049151976:AAEzov9MIAiAAiHJbGFWFXCVnNqpMM9VjF0
-      BOT_TRUSTED_USERS: 43504868,544539887
+      BOT_TOKEN: 6049151976:A1AEzov9MIAiAAiHJbGFWFXCVnNqpMM9VjF0
+      BOT_TRUSTED_USERS: 413504868,5144539887
     restart: always
     container_name: "parser"
 networks:
