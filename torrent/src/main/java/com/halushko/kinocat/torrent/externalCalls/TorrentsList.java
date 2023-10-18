@@ -4,7 +4,7 @@ import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.files.ResourceReader;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
-import com.halushko.kinocat.core.web.WebSender;
+import com.halushko.kinocat.core.web.InputMessageHandlerApiRequest;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 
 @Slf4j
 // https://github.com/transmission/transmission/blob/main/docs/rpc-spec.md
-public class TorrentsList extends WebSender {
+public class TorrentsList extends InputMessageHandlerApiRequest {
     public TorrentsList() {
         super("http", "10.10.255.253", 9091, "transmission/rpc");
     }
@@ -23,12 +23,12 @@ public class TorrentsList extends WebSender {
         long chatId = message.getUserId();
 
         String requestBody = ResourceReader.readResourceContent("get_torrents_list.json");
-        val responce = request("", "Content-Type", "application/json");
+        val responce = send("", "Content-Type", "application/json");
         String sessionIdKey = "X-Transmission-Session-Id";
-        String sessionIdValue = getResponceHeader(responce, sessionIdKey);
+        String sessionIdValue = responce.getHeader(sessionIdKey);
 
-        val responce2 = request(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
-        String bodyJson = getResponceBody(responce2);
+        val responce2 = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
+        String bodyJson = responce2.getBody();
 
         val json = new SmartJson(bodyJson);
         StringBuilder sb = new StringBuilder();
