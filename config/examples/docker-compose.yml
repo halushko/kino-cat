@@ -32,7 +32,7 @@ services:
       - 5672:5672
       - 15672:15672
   bot:
-    image: halushko/cinema-bot:latest
+    image: halushko/cinema-bot:beta
     environment: *common-variables
     restart: always
     container_name: "bot"
@@ -44,7 +44,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.2
   text:
-    image: halushko/cinema-text:latest
+    image: halushko/cinema-text:beta
     environment: *common-variables
     restart: always
     container_name: "text"
@@ -56,7 +56,7 @@ services:
     depends_on:
       - rabbitmq
   file:
-    image: halushko/cinema-file:latest
+    image: halushko/cinema-file:beta
     environment: *common-variables
     restart: always
     container_name: "file"
@@ -69,7 +69,7 @@ services:
       cat_private_network:
         ipv4_address: 10.10.0.4
   torrent:
-    image: halushko/cinema-torrent:latest
+    image: halushko/cinema-torrent:beta
     environment: *common-variables
     restart: always
     container_name: "torrent"
@@ -87,6 +87,22 @@ services:
     ports:
       - 9091:9091
       - 51413:51413
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    restart: always
+    container_name: "transmission"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    volumes:
+      - ./workdir/config/transmission:/config
+      - ./workdir/mediadata:/downloads/complete
+      - ./workdir/config/files_from_telegram:/watch
   media:
     image: lscr.io/linuxserver/plex:latest
     container_name: "media"
@@ -103,8 +119,8 @@ services:
   parser:
     image: halushko/vytiag-pdf-parser:latest
     environment:
-      BOT_TOKEN: 6049151976:A1AEzov9MIAiAAiHJbGFWFXCVnNqpMM9VjF0
-      BOT_TRUSTED_USERS: 413504868,5144539887
+      BOT_TOKEN: 6049151976:AAEzov9MIAiAAiHJbGFWFXCVnNqpMM9VjF0
+      BOT_TRUSTED_USERS: 43504868,544539887
     restart: always
     container_name: "parser"
 networks:

@@ -6,12 +6,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.*;
 
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 @Slf4j
-public class RabbitMessage {
+public class SmartJson {
+    public static final String DEFAULT_KEY = "DEFAULT_KEY";
+
     public enum KEYS {
         USER_ID, TEXT, CONSUMER, FILE_NAME, FILE_PATH
     }
@@ -21,28 +24,34 @@ public class RabbitMessage {
         enable(SerializationFeature.INDENT_OUTPUT);
     }};
 
-    public RabbitMessage(long userId) {
+    public SmartJson(long userId) {
         addValue(KEYS.USER_ID, String.valueOf(userId));
     }
-    public RabbitMessage(String key, Object value) {
+
+    public SmartJson(String key, Object value) {
         addValue(key, value);
     }
 
-    public RabbitMessage(long userId, String text) {
+    public SmartJson(long userId, String text) {
         log.debug("[RabbitMessage] Start create RabbitMessage user={}, text={}", userId, text);
         addValue(KEYS.USER_ID, String.valueOf(userId));
         addValue(KEYS.TEXT, text);
         log.debug("[RabbitMessage] Result RabbitMessage for user={} is json={}", userId, json);
     }
 
-    public RabbitMessage(String json) {
+    public SmartJson(String json) {
         this.json = json;
     }
 
-    public RabbitMessage addValue(KEYS key, String value) {
+    public SmartJson(Map<String, Object> map) {
+        this.json = convertToString(map);
+    }
+
+    public SmartJson addValue(KEYS key, String value) {
         return addValue(key.name(), value);
     }
-    public RabbitMessage addValue(String key, Object value) {
+
+    public SmartJson addValue(String key, Object value) {
         log.debug("[addValue] Start add to json (key, value)=({}, {}) before_json={}", key, value, json);
         val map = convertJsonToMap(json);
         map.put(key, value);
@@ -50,18 +59,36 @@ public class RabbitMessage {
         return this;
     }
 
-    public RabbitMessage getSubMessage(KEYS key) {
+    public SmartJson getSubMessage(KEYS key) {
         return getSubMessage(key.name());
     }
-    public RabbitMessage getSubMessage(String key) {
-        return new RabbitMessage(getValue(key));
+
+    public SmartJson getSubMessage(String key) {
+        return new SmartJson(getValue(key));
     }
 
     public String getValue(KEYS key) {
         return getValue(key.name());
     }
+
     public String getValue(String key) {
         return convertToString(convertJsonToMap(json).get(key));
+    }
+
+    public Map<String, Object> convertToMap() {
+        return convertJsonToMap(json);
+    }
+
+    public List<Object> convertToList() {
+        val map = convertJsonToMap(json);
+        if (map.size() == 1) {
+            Object value = map.values().stream().findFirst().get();
+            if (value instanceof List) {
+                //noinspection unchecked
+                return (List<Object>) value;
+            }
+        }
+        throw new NotImplementedException();
     }
 
     public String getText() {
@@ -72,7 +99,7 @@ public class RabbitMessage {
         return Long.parseLong(getValue(KEYS.USER_ID));
     }
 
-    public String getRabbitMessageText(){
+    public String getRabbitMessageText() {
         return json;
     }
 
@@ -81,10 +108,10 @@ public class RabbitMessage {
     }
 
     private static String convertToString(final Object value) {
-        if(String.valueOf(value).equalsIgnoreCase("null")) return "";
+        if (String.valueOf(value).equalsIgnoreCase("null")) return "";
         String result = "!!!Error!!!";
         try {
-            result = value instanceof String ? (String)value : mapper.writeValueAsString(value);
+            result = value instanceof String ? (String) value : mapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             log.error("[convertToString] error={}", e.getMessage());
         }
@@ -105,7 +132,18 @@ public class RabbitMessage {
 
     private static Map<String, Object> convertJsonToMap(JsonNode jsonNode) {
         Map<String, Object> resultMap = new HashMap<>();
-        jsonNode.fields().forEachRemaining(entry -> resultMap.put(entry.getKey(), parseJsonNode(entry.getValue())));
+        if (jsonNode.isObject()) {
+            jsonNode.fields().forEachRemaining(entry -> resultMap.put(entry.getKey(), parseJsonNode(entry.getValue())));
+        } else if (jsonNode.isArray()) {
+            List<Object> list = new ArrayList<>();
+            for (JsonNode entry : jsonNode) {
+                list.add(parseJsonNode(entry));
+            }
+            resultMap.put(DEFAULT_KEY, list);
+        } else {
+            resultMap.put(DEFAULT_KEY, jsonNode.asText());
+        }
+
         return resultMap;
     }
 

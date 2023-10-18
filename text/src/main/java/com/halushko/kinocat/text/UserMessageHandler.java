@@ -4,7 +4,7 @@ import com.halushko.kinocat.core.cli.Command;
 import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.cli.ScriptsCollection;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,7 +28,7 @@ public class UserMessageHandler extends InputMessageHandler {
     }};
 
     @Override
-    protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
+    protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         log.debug("[UserMessageHandler] Start DeliverCallbackPrivate for " + getQueue());
         try {
             String text = rabbitMessage.getText();
@@ -50,7 +50,7 @@ public class UserMessageHandler extends InputMessageHandler {
                 RabbitUtils.postMessage(userId, result, command.getQueue());
             } else {
                 log.debug("[UserMessageHandler] Command {} found", text);
-                RabbitMessage message = new RabbitMessage(userId, command.getFinalCommand());
+                SmartJson message = new SmartJson(userId, command.getFinalCommand());
                 message.addValue("ARG", command.getArguments());
                 RabbitUtils.postMessage(message, command.getQueue());
             }

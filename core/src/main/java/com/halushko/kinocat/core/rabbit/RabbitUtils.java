@@ -83,7 +83,7 @@ public class RabbitUtils {
         }
     }
 
-    public static void postMessage(RabbitMessage message, String queue) {
+    public static void postMessage(SmartJson message, String queue) {
         log.debug("[postMessage] Start post rabbit message. message={}, queue={}", message.getRabbitMessageText(), queue);
         try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
@@ -95,7 +95,7 @@ public class RabbitUtils {
 
     public static void postMessage(long chatId, String text, String queue) {
         log.debug("[postMessage] Start post text message. text={}, queue={}", text, queue);
-        postMessage(new RabbitMessage(chatId, text), queue);
+        postMessage(new SmartJson(chatId, text), queue);
     }
 
     public static void readMessage(String queue, DeliverCallback deliverCallback) {

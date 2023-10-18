@@ -1,33 +1,97 @@
 package com.halushko.kinocat.torrent.externalCalls;
 
 import com.halushko.kinocat.core.cli.Constants;
-import com.halushko.kinocat.core.handlers.input.ExternalCliCommandExecutor;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
-import com.halushko.kinocat.torrent.entities.ActiveTorrentEntity;
+import com.halushko.kinocat.core.files.ResourceReader;
+import com.halushko.kinocat.core.rabbit.SmartJson;
+import com.halushko.kinocat.core.rabbit.RabbitUtils;
+import com.halushko.kinocat.core.web.WebSender;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 @Slf4j
-public class TorrentsList extends ExternalCliCommandExecutor {
-    @Override
-    protected String getResultString(List<String> lines, RabbitMessage rabbitMessage) {
-        log.debug("[TorrentsList] lines={}", lines);
-        if (lines == null || lines.isEmpty()) return "";
+// https://github.com/transmission/transmission/blob/main/docs/rpc-spec.md
+public class TorrentsList extends WebSender {
+    public TorrentsList() {
+        super("http", "10.10.255.253", 9091, "transmission/rpc");
+    }
 
-        return super.getResultString(lines.stream()
-                        .map(ActiveTorrentEntity::new)
-                        .filter(a -> !"-1".equals(a.id))
-                        .sorted((o1, o2) -> o1.status == null ? -1 : o1.status.compareToIgnoreCase(o2.status))
-                        .map(a -> String.format("%s %s\n%s %s%s", a.getStatusIcon(), a.name, a.getPercents(), Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, a.id))
-                        .collect(Collectors.toList()),
-                rabbitMessage
-        );
+    @Override
+    protected void getDeliverCallbackPrivate(SmartJson message) {
+        long chatId = message.getUserId();
+
+        String requestBody = ResourceReader.readResourceContent("get_torrents_list.json");
+        val responce = request("", "Content-Type", "application/json");
+        String sessionIdKey = "X-Transmission-Session-Id";
+        String sessionIdValue = getResponceHeader(responce, sessionIdKey);
+
+        val responce2 = request(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
+        String bodyJson = getResponceBody(responce2);
+
+        val json = new SmartJson(bodyJson);
+        StringBuilder sb = new StringBuilder();
+        String requestResult = json.getValue("result");
+        if ("success".equalsIgnoreCase(requestResult)) {
+            json.getSubMessage("arguments")
+                    .getSubMessage("torrents")
+                    .convertToList()
+                    .forEach(torrentMap -> {
+                        if (torrentMap instanceof Map) {
+                            //noinspection unchecked
+                            val torrent = new SmartJson((Map<String, Object>) torrentMap);
+                            String status = getStatusIcon(torrent.getValue("status"));
+                            String name = torrent.getValue("name");
+                            double percentDone = Double.parseDouble(torrent.getValue("percentDone"));
+                            long totalSize = Long.parseLong(torrent.getValue("totalSize"));
+                            String line = getLinage(percentDone);
+                            String percents = getPercents(percentDone, totalSize);
+                            String id = torrent.getValue("id");
+                            sb.append(String.format("%s %s\n%s %s /more_%s", status, name, line, percents, id));
+                        } else {
+                            throw new RuntimeException("Can't parse torrents list");
+                        }
+                    });
+        } else {
+            sb.append(String.format("result of request is: %s", requestResult));
+        }
+
+        RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
     }
 
     @Override
     protected String getQueue() {
         return Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST;
+    }
+
+    protected String getLinage(double done) {
+        int blocks = 20;
+        int blackBlocks = (int) (done * blocks);
+        StringBuilder line = new StringBuilder();
+
+        IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
+        IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
+
+        return "||" + line + "||";
+    }
+
+    protected String getPercents(double done, long totalSize) {
+        return done == 1.0
+                ? " (done)"
+                : " % (" + Math.round((totalSize - (long) (totalSize * done)) / 1000000.0) / 1000.0 + " Gb left)";
+    }
+
+    protected String getStatusIcon(String status) {
+        return switch (status != null ? Integer.parseInt(status) : -1) {
+            case 0 -> "\uD83D\uDEAB";
+            case 1 -> "\uD83D\uDD51♾";
+            case 2 -> "♾";
+            case 3 -> "\uD83D\uDD51⬇️";
+            case 4 -> "⬇️";
+            case 5 -> "\uD83D\uDD51⬆️";
+            case 6 -> "⬆️";
+            default -> "\uD83C\uDD98";
+        };
     }
 }

@@ -2,7 +2,7 @@ package com.halushko.kinocat.torrent.externalCalls;
 
 import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.handlers.input.ExternalCliCommandExecutor;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.torrent.internalScripts.ViewTorrentInfo;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class TorrentCommands extends ExternalCliCommandExecutor {
     private final static Pattern PATTERN_GET_NAME = Pattern.compile(REGEX_GET_NAME);
 
     @Override
-    protected String getResultString(List<String> lines, RabbitMessage rabbitMessage) {
+    protected String getResultString(List<String> lines, SmartJson rabbitMessage) {
         if (lines == null || lines.isEmpty()) return "Something went wrong with EXECUTE_TORRENT_COMMAND_FILE_COMMANDS";
         String arg = rabbitMessage.getValue("ARG");
 

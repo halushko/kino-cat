@@ -4,7 +4,7 @@ import com.halushko.kinocat.core.cli.Command;
 import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.cli.ScriptsCollection;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import org.apache.commons.io.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class UserMessageHandler extends InputMessageHandler {
     }};
 
     @Override
-    protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
+    protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         try {
             String mimeType = rabbitMessage.getValue("MIME_TYPE");
             if ("application/x-bittorrent".equalsIgnoreCase(mimeType)) {
@@ -35,13 +35,13 @@ public class UserMessageHandler extends InputMessageHandler {
         }
     }
 
-    protected void handleTorrent(RabbitMessage rm) throws MalformedURLException {
+    protected void handleTorrent(SmartJson rm) throws MalformedURLException {
         long fileSize = Long.parseLong(rm.getValue("SIZE"));
         if (fileSize > 5242880L) {
             log.warn(String.format("The file size is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
             return;
         }
-        URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(RabbitMessage.KEYS.FILE_PATH)).toURL();
+        URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(SmartJson.KEYS.FILE_PATH)).toURL();
         long userId = rm.getUserId();
         String fileName = String.format("%s%s", rm.getValue("FILE_ID"), ".torrent");
 
