@@ -1,0 +1,13 @@
+{
+  "arguments": {
+    "fields": [
+      "id",
+      "name"
+    ],
+    "format": "table",
+    "ids": [
+      %s
+    ]
+  },
+  "method": "torrent-get"
+}

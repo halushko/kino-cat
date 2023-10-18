@@ -16,8 +16,8 @@ public class UserMessageHandler extends InputMessageHandler {
     private static final ScriptsCollection scripts = new ScriptsCollection() {{
         addValue("/restart_media_server", "restart.sh", Constants.Queues.MediaServer.EXECUTE_MINIDLNA_COMMAND);
 
-        addValue("/list", "list_torrents.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST);
-        addValue(Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, "info_torrent.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_COMMANDS);
+        addValue("/list", "get_torrents_list.json", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST);
+        addValue(Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, "get_torrents_names.json", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_COMMANDS);
         addValue(Constants.Commands.Torrent.RESUME, "resume_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
         addValue(Constants.Commands.Torrent.PAUSE, "pause_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
         addValue(Constants.Commands.Torrent.TORRENT_INFO, "info_torrent.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_INFO);

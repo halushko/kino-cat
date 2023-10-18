@@ -1,13 +1,11 @@
 package com.halushko.kinocat.file;
 
-import com.halushko.kinocat.core.cli.Command;
 import com.halushko.kinocat.core.cli.Constants;
-import com.halushko.kinocat.core.cli.ScriptsCollection;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
-import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
-import org.apache.commons.io.FileUtils;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

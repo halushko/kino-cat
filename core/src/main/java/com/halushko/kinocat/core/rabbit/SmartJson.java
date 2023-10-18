@@ -71,7 +71,7 @@ public class SmartJson {
     }
 
     public String getValue(String key) {
-        return convertToString(convertJsonToMap(json).get(key));
+        return convertToString(convertJsonToMap(json).getOrDefault(key, ""));
     }
 
     public Map<String, Object> convertToMap() {
