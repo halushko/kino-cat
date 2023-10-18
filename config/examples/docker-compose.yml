@@ -59,9 +59,6 @@ services:
     networks:
       cat_private_network:
         ipv4_address: 10.10.0.5
-    ports:
-      - 9091:9091
-      - 51413:51413
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     restart: always
