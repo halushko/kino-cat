@@ -11,6 +11,7 @@ import com.halushko.kinocat.torrent.internalScripts.ViewTorrentInfo;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -25,7 +26,7 @@ public class TorrentCommands extends TransmissionWebApiExecutor {
     @Override
     protected void executeRequest(SmartJson message) {
         long chatId = message.getUserId();
-        String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", message.getText()));
+        String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", message.getText().split(" ")[0]));
         String torrentId = message.getValue("ARG");
         String requestBody = String.format(requestBodyFormat, torrentId);
         log.debug("[executeRequest] Request body:\n{}", requestBody);
