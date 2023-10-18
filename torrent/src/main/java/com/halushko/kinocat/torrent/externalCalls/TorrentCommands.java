@@ -8,6 +8,7 @@ import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.web.InputMessageHandlerApiRequest;
 import com.halushko.kinocat.torrent.entities.CommonTorrentEntity;
 import com.halushko.kinocat.torrent.internalScripts.ViewTorrentInfo;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.util.List;
@@ -15,32 +16,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class TorrentCommands extends TransmissionWebApiExecutor {
     public TorrentCommands() {
         super();
     }
-//    @Override
-//    protected String getResultString(List<String> lines, SmartJson rabbitMessage) {
-//        if (lines == null || lines.isEmpty()) return "Something went wrong with EXECUTE_TORRENT_COMMAND_FILE_COMMANDS";
-//        String arg = rabbitMessage.getValue("ARG");
-//
-//        Matcher matcher;
-//        String name = "";
-//        for (String info : ViewTorrentInfo.getInfo(arg)) {
-//            matcher = PATTERN_GET_NAME.matcher(info);
-//            if (matcher.find()) {
-//                name = matcher.group(1);
-//                break;
-//            }
-//        }
-//
-//        return String.format("%s\n%s%s\n%s%s\n%s%s\n%s%s", name,
-//                Constants.Commands.Torrent.PAUSE, arg,
-//                Constants.Commands.Torrent.RESUME, arg,
-//                Constants.Commands.Torrent.TORRENT_INFO, arg,
-//                Constants.Commands.Text.REMOVE_COMMAND, arg
-//        );
-//    }
 
     @Override
     protected void executeRequest(SmartJson message) {
@@ -48,9 +28,11 @@ public class TorrentCommands extends TransmissionWebApiExecutor {
         String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", message.getText()));
         String torrentId = message.getValue("ARG");
         String requestBody = String.format(requestBodyFormat, torrentId);
+        log.debug("[executeRequest] Request body:\n{}", requestBody);
 
         val responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
         String bodyJson = responce.getBody();
+        log.debug("[executeRequest] Responce body:\n{}", bodyJson);
         val json = new SmartJson(bodyJson);
 
         StringBuilder sb = new StringBuilder();
