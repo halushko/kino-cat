@@ -39,11 +39,11 @@ public class SmartJson {
     }
 
     public SmartJson(String json) {
-        this.json = json;
+        this.json = json == null ? "" : json;
     }
 
     public SmartJson(Map<String, Object> map) {
-        this.json = convertToString(map);
+        this.json = map == null ? "" : convertToString(map);
     }
 
     public SmartJson addValue(KEYS key, String value) {

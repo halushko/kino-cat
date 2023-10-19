@@ -12,6 +12,7 @@ public interface Constants {
         interface Torrent {
             String EXECUTE_VOID_TORRENT_COMMAND = "EXECUTE_TORRENT_COMMAND_QUEUE";
             String EXECUTE_TORRENT_COMMAND_LIST = "EXECUTE_TORRENT_COMMAND_LIST";
+            String EXECUTE_TORRENT_COMMAND_LIST_FILES = "EXECUTE_TORRENT_COMMAND_LIST_FILES";
             String EXECUTE_TORRENT_COMMAND_INFO = "EXECUTE_TORRENT_COMMAND_INFO";
             String EXECUTE_TORRENT_COMMAND_COMMANDS = "EXECUTE_TORRENT_COMMAND_FILE_COMMANDS";
 
@@ -31,6 +32,7 @@ public interface Constants {
             String TORRENT_INFO = "/full_info_";
             String REMOVE_WITH_FILES = "/approve_with_files_";
             String REMOVE_JUST_TORRENT = "/approve_just_torrent_";
+            String LIST_FILES = "/list_";
         }
 
         interface Text {

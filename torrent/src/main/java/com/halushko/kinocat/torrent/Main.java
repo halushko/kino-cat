@@ -1,5 +1,6 @@
 package com.halushko.kinocat.torrent;
 
+import com.halushko.kinocat.torrent.externalCalls.FilesList;
 import com.halushko.kinocat.torrent.externalCalls.TorrentCommands;
 import com.halushko.kinocat.torrent.externalCalls.TorrentsList;
 import com.halushko.kinocat.torrent.externalCalls.VoidTorrentOperator;
@@ -11,5 +12,6 @@ public class Main {
         new VoidTorrentOperator().run();
         new TorrentsList().run();
         new TorrentCommands().run();
+        new FilesList().run();
     }
 }

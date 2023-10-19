@@ -1,35 +1,22 @@
 package com.halushko.kinocat.torrent.externalCalls;
 
 import com.halushko.kinocat.core.cli.Constants;
-import com.halushko.kinocat.core.rabbit.SmartJson;
-import com.halushko.kinocat.torrent.entities.CommonTorrentEntity;
+import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-
-import java.util.Map;
 
 @Slf4j
-public class TorrentCommands extends TransmissionWebApiExecutor {
+public class TorrentCommands extends GetTorrent {
     public TorrentCommands() {
         super();
     }
 
     @Override
-    protected String executeRequest(SmartJson json) {
-        StringBuilder sb = new StringBuilder();
-        json.getSubMessage("arguments")
-                .getSubMessage("torrents")
-                .convertToList()
-                .forEach(torrentMap -> {
-                    if (torrentMap instanceof Map) {
-                        //noinspection unchecked
-                        val torrent = new CommonTorrentEntity((Map<String, Object>) torrentMap);
-                        sb.append(torrent.generateTorrentCommands()).append("\n");
-                    } else {
-                        throw new RuntimeException("Can't generate torrent commands for torrent");
-                    }
-                });
-        return sb.toString();
+    protected String generateAnswer(TorrentEntity torrent){
+        return String.format("%s\n%s%s\n%s%s\n%s%s\n%s%s", torrent.getName(),
+                Constants.Commands.Torrent.PAUSE, torrent.getId(),
+                Constants.Commands.Torrent.RESUME, torrent.getId(),
+                Constants.Commands.Torrent.TORRENT_INFO, torrent.getId(),
+                Constants.Commands.Text.REMOVE_COMMAND, torrent.getId());
     }
 
     @Override
