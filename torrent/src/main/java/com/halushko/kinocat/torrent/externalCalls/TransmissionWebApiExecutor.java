@@ -4,6 +4,7 @@ import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.files.ResourceReader;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
+import com.halushko.kinocat.core.web.ApiResponce;
 import com.halushko.kinocat.core.web.InputMessageHandlerApiRequest;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -23,8 +24,8 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         log.debug("[executeRequest] Message:\n{}", message.getRabbitMessageText());
         long chatId = message.getUserId();
         if (sessionIdValue == null) {
+            //new session
             val responce = send("", "Content-Type", "application/json");
-            String sessionIdKey = "X-Transmission-Session-Id";
             this.sessionIdValue = responce.getHeader(sessionIdKey);
         }
         String arguments = message.getValue("ARG");
@@ -32,7 +33,14 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         String requestBody = String.format(requestBodyFormat, (Object[]) arguments.split(" "));
         log.debug("[executeRequest] Request body:\n{}", requestBody);
 
-        val responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
+        ApiResponce responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
+        if(responce.getHeader("Content-Type").contains("409: Conflict")){
+            //expired session
+            this.sessionIdValue = responce.getHeader(sessionIdKey);
+            responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
+        }
+
+
         String bodyJson = responce.getBody();
         log.debug("[executeRequest] Responce body:\n{}", bodyJson);
         val json = new SmartJson(bodyJson);
