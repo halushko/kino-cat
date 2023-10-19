@@ -15,7 +15,7 @@ public class SubTorrentEntity {
 
     public SubTorrentEntity(Object obj, String parentId) {
         if (!(obj instanceof Map)) {
-            throw new RuntimeException("[TorrentEntity] Can't parse torrent");
+            throw new RuntimeException("[SubTorrentEntity] Can't parse torrent");
         }
         //noinspection unchecked
         val torrent = new SmartJson((Map<String, Object>) obj);

@@ -25,6 +25,7 @@ public interface Constants {
 
     interface Commands {
         interface Torrent {
+            String LIST_TORRENTS = "/list";
             String START_TORRENT_FILE = "/start_torrent";
             String LIST_TORRENT_COMMANDS = "/more_";
             String RESUME = "/resume_";
@@ -32,7 +33,7 @@ public interface Constants {
             String TORRENT_INFO = "/full_info_";
             String REMOVE_WITH_FILES = "/approve_with_files_";
             String REMOVE_JUST_TORRENT = "/approve_just_torrent_";
-            String LIST_FILES = "/list_";
+            String LIST_FILES = "/view_";
         }
 
         interface Text {
