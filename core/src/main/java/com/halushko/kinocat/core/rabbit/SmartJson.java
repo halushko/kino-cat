@@ -79,11 +79,14 @@ public class SmartJson {
     }
 
     public List<Object> convertToList() {
+        if(json == null || json.isEmpty()) {
+            return Collections.emptyList();
+        }
         val map = convertJsonToMap(json);
         if (map.isEmpty()){
             return Collections.emptyList();
         } else if (map.size() == 1) {
-            Object value = map.values().stream().findFirst().get();
+            val value = map.values().stream().findFirst().get();
             if (value instanceof List) {
                 //noinspection unchecked
                 return (List<Object>) value;
