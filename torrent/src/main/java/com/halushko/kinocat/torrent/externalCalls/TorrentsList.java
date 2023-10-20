@@ -14,7 +14,7 @@ public class TorrentsList extends GetTorrent {
 
     @Override
     protected String generateAnswer(TorrentEntity torrent) {
-        return String.format("%s %s\n%s %s /more_%s", getStatusIcon(torrent), torrent.getName(), getProgressBar(torrent), getGigabytesLeft(torrent), torrent.getId());
+        return String.format("%s %s\n%s %s\n/more_%s /focus_%s", getStatusIcon(torrent), torrent.getName(), getProgressBar(torrent), getGigabytesLeft(torrent), torrent.getId(), torrent.getId());
     }
     protected String getProgressBar(TorrentEntity torrent) {
         int blocks = 20;

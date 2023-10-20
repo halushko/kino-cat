@@ -80,12 +80,18 @@ public class SmartJson {
 
     public List<Object> convertToList() {
         val map = convertJsonToMap(json);
-        if (map.size() == 1) {
+        if (map.isEmpty()){
+            return Collections.emptyList();
+        } else if (map.size() == 1) {
             Object value = map.values().stream().findFirst().get();
             if (value instanceof List) {
                 //noinspection unchecked
                 return (List<Object>) value;
+            } else {
+                log.error("[convertToList] The requested string is not an Array. Json={}", json);
             }
+        } else {
+            log.error("[convertToList] There are more than one nodes, but expected the only one and Array. Json={}", json);
         }
         throw new RuntimeException();
     }
