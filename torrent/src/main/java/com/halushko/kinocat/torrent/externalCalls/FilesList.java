@@ -11,12 +11,20 @@ public class FilesList extends GetTorrent {
     @Override
     protected String generateAnswer(TorrentEntity torrent) {
         StringBuilder sb = new StringBuilder();
-        torrent.getFiles().forEach(file -> sb.append(getFileInfo(file)).append("\n"));
+        SubTorrentEntity previousFile = null;
+        for (SubTorrentEntity currentFile : torrent.getFiles()) {
+            sb.append(getFileInfo(previousFile, currentFile)).append("\n");
+            previousFile = currentFile;
+        }
         return sb.toString();
     }
 
-    protected String getFileInfo(SubTorrentEntity file){
-        return String.format("%s\n%s\n||%s|| %s", String.join("/", file.getFolders()), file.getName(), getProgressBar(file), getGigabytesLeft(file));
+    protected String getFileInfo(SubTorrentEntity previousFile, SubTorrentEntity currentFile) {
+        return String.format("%s%s\n||%s|| %s",
+                getFolderText(previousFile, currentFile),
+                currentFile.getName(),
+                getProgressBar(currentFile), getGigabytesLeft(currentFile)
+        );
     }
 
     protected String getGigabytesLeft(SubTorrentEntity torrent) {
@@ -42,6 +50,15 @@ public class FilesList extends GetTorrent {
         IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
 
         return line.toString();
+    }
+
+    protected String getFolderText(SubTorrentEntity previousFile, SubTorrentEntity currentFile) {
+        if (currentFile.getFolders().isEmpty()) {
+            if (previousFile == null || !previousFile.getFolders().equals(currentFile.getFolders())) {
+                return "/" + String.join("\n//", currentFile.getFolders()) + "\n";
+            }
+        }
+        return "";
     }
 
     @Override
