@@ -2,7 +2,7 @@ package com.halushko.kinocat.core.handlers.input;
 
 import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.cli.ExecuteBash;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class ExternalCliCommandExecutor extends InputMessageHandler {
     @Override
-    protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
+    protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         long userId = rabbitMessage.getUserId();
         String script = rabbitMessage.getText();
 
@@ -27,7 +27,7 @@ public abstract class ExternalCliCommandExecutor extends InputMessageHandler {
             log.error("[ExternalCliCommandExecutor] Error during CLI execution: ", e);
         }
     }
-    protected String getResultString(List<String> lines, RabbitMessage rabbitMessage) {
+    protected String getResultString(List<String> lines, SmartJson rabbitMessage) {
         return lines == null || lines.isEmpty() ? "" : lines.stream().map(a -> a + "\n").collect(Collectors.joining());
     }
 }
