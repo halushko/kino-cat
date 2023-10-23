@@ -12,7 +12,7 @@ import lombok.val;
 // https://github.com/transmission/transmission/blob/main/docs/rpc-spec.md
 @Slf4j
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
-    protected String sessionIdValue;
+    private static String sessionIdValue;
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
 
     public TransmissionWebApiExecutor() {
@@ -25,18 +25,20 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         long chatId = message.getUserId();
         if (sessionIdValue == null) {
             //new session
+            log.debug("[executeRequest] Create a new session");
+
             val responce = send("", "Content-Type", "application/json");
-            this.sessionIdValue = responce.getHeader(sessionIdKey);
+            TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
         }
-        String arguments = message.getValue("ARG");
         String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", message.getValue("SCRIPT")));
-        String requestBody = String.format(requestBodyFormat, (Object[]) arguments.split(" "));
+        String requestBody = String.format(requestBodyFormat, (Object[]) message.getValue("ARG").split(" "));
         log.debug("[executeRequest] Request body:\n{}", requestBody);
 
         ApiResponce responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
-        if(responce.getHeader("Content-Type").contains("409: Conflict")){
+        if(responce.getBody().contains("409: Conflict")){
             //expired session
-            this.sessionIdValue = responce.getHeader(sessionIdKey);
+            log.debug("[executeRequest] Recreate a session");
+            TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
             responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
         }
 

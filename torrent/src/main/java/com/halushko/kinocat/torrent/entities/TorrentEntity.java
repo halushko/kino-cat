@@ -39,10 +39,7 @@ public class TorrentEntity {
         String eta = torrent.getValue("eta");
         this.eta = eta.isEmpty() ? -1L : Long.parseLong(totalSize);
 
-        fillSubTorrents(torrent.getSubMessage("files"));
-    }
-
-    private void fillSubTorrents(SmartJson json) {
-        json.convertToList().forEach(file -> files.add(new SubTorrentEntity(file, id)));
+        val files = torrent.getSubMessage("files").convertToList();
+        files.forEach(file -> this.files.add(new SubTorrentEntity(file, id)));
     }
 }

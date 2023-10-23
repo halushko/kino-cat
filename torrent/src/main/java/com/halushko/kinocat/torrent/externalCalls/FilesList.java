@@ -17,7 +17,7 @@ public class FilesList extends GetTorrent {
     }
 
     protected String getFileInfo(SubTorrentEntity file){
-        return String.format("||%s|| %s | %s", getProgressBar(file), file.getName().substring(0, 20), getGigabytesLeft(file));
+        return String.format("%s\n||%s|| %s", file.getName(), getProgressBar(file), getGigabytesLeft(file));
     }
 
     protected String getGigabytesLeft(SubTorrentEntity torrent) {
@@ -42,7 +42,7 @@ public class FilesList extends GetTorrent {
         IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
         IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
 
-        return "||" + line + "||";
+        return line.toString();
     }
 
     @Override
