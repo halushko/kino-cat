@@ -1,12 +1,13 @@
 package com.halushko.kinocat.core.cli;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Getter
+@Getter(AccessLevel.PUBLIC)
 public class Script {
     private final String command;
     private final String script;

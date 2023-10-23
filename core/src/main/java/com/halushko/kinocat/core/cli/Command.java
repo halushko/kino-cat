@@ -47,6 +47,7 @@ public class Command {
     }
 
     private void setCommandText(Script pojo) {
+        log.debug("[setCommandText] Command={}, Script={}, fullText={}, Description={}, Queue={}, Arguments={}", pojo.getCommand(), pojo.getScript(), fullText, pojo.getDescription(), pojo.getQueue(), pojo.getParams());
         this.command = pojo.getCommand();
         this.script = pojo.getScript() == null || script.trim().isEmpty() ? "" : pojo.getScript();
         this.arguments = fullText.replaceAll(this.command, "").trim();
