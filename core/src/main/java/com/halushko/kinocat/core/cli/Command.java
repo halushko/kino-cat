@@ -44,6 +44,8 @@ public class Command {
             log.debug("[tryToSetScript] BINGO! Starts with {}. Candidate for {} found", candidate.getCommand(), fullCommand);
             setCommandText(candidate);
         }
+        log.debug("[tryToSetScript] Command={}, Script={}, fullText={}, Description={}, Queue={}, Arguments={}", getCommand(), getScript(), fullText, getDescription(), getQueue(), getArguments());
+
     }
 
     private void setCommandText(Script pojo) {
