@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 @Getter
 @Slf4j
@@ -18,7 +18,23 @@ public class TorrentEntity {
     private final int status;
     private final long totalSize;
     private final long eta;
-    private final List<SubTorrentEntity> files = new ArrayList<>();
+    private final TreeSet<SubTorrentEntity> files = new TreeSet<>((str1, str2) -> {
+        List<String> folders1 = str1.getFolders();
+        List<String> folders2 = str2.getFolders();
+
+        for (int i = 0; i < Math.min(folders1.size(), folders2.size()); i++) {
+            int result = folders1.get(i).compareTo(folders2.get(i));
+            if (result != 0) {
+                return result;
+            }
+        }
+
+        if(folders1.size() != folders2.size()) {
+            return Integer.compare(folders1.size(), folders2.size());
+        }
+
+        return str1.getName().compareTo(str2.getName());
+    });
 
     public TorrentEntity(Object obj) {
         if (!(obj instanceof Map)) {

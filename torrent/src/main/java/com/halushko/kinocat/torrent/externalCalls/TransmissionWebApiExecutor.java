@@ -53,7 +53,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         if ("success".equalsIgnoreCase(requestResult)) {
             output = executeRequest(json);
         } else {
-            output = String.format("result of request is: %s", requestResult);
+            output = String.format("result of request is: %s", responceBody);
         }
 
         RabbitUtils.postMessage(chatId, output, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);

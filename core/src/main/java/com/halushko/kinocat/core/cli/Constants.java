@@ -33,7 +33,7 @@ public interface Constants {
             String TORRENT_INFO = "/full_info_";
             String REMOVE_WITH_FILES = "/approve_with_files_";
             String REMOVE_JUST_TORRENT = "/approve_just_torrent_";
-            String LIST_FILES = "/view_";
+            String LIST_FILES = "/files_";
         }
 
         interface Text {

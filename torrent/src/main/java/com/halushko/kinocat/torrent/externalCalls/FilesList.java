@@ -4,7 +4,6 @@ import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.torrent.entities.SubTorrentEntity;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 
-import java.util.Comparator;
 import java.util.stream.IntStream;
 
 public class FilesList extends GetTorrent {
@@ -12,12 +11,12 @@ public class FilesList extends GetTorrent {
     @Override
     protected String generateAnswer(TorrentEntity torrent) {
         StringBuilder sb = new StringBuilder();
-        torrent.getFiles().stream().sorted(Comparator.comparing(SubTorrentEntity::getName)).forEach(file -> sb.append(getFileInfo(file)).append("\n"));
+        torrent.getFiles().forEach(file -> sb.append(getFileInfo(file)).append("\n"));
         return sb.toString();
     }
 
     protected String getFileInfo(SubTorrentEntity file){
-        return String.format("%s\n||%s|| %s", file.getName(), getProgressBar(file), getGigabytesLeft(file));
+        return String.format("%s\n%s\n||%s|| %s", String.join("/", file.getFolders()), file.getName(), getProgressBar(file), getGigabytesLeft(file));
     }
 
     protected String getGigabytesLeft(SubTorrentEntity torrent) {
