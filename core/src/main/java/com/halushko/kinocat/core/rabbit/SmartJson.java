@@ -134,7 +134,6 @@ public class SmartJson {
         } catch (JsonProcessingException e) {
             log.error("[convertJsonToMap] error={}", e.getMessage());
         }
-        log.debug("[convertJsonToMap] result={}", result);
         return result;
     }
 

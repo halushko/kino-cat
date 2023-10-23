@@ -11,7 +11,8 @@ public abstract class GetTorrent extends TransmissionWebApiExecutor {
     @Override
     protected final String executeRequest(SmartJson json) {
         List<TorrentEntity> torrents = new ArrayList<>();
-        json.getSubMessage("arguments")
+        json.getSubMessage("OUTPUT")
+                .getSubMessage("arguments")
                 .getSubMessage("torrents")
                 .convertToList()
                 .forEach(torrentMap -> torrents.add(new TorrentEntity(torrentMap)));
