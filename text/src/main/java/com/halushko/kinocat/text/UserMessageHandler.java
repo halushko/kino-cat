@@ -53,6 +53,7 @@ public class UserMessageHandler extends InputMessageHandler {
                 SmartJson message = new SmartJson(userId, command.getFinalCommand());
                 message.addValue("ARG", command.getArguments());
                 message.addValue("SCRIPT", command.getScript());
+                message.addValue("COMMAND", command.getFinalCommand());
                 RabbitUtils.postMessage(message, command.getQueue());
             }
             log.debug("[UserMessageHandler] Finish DeliverCallbackPrivate for {}", getQueue());

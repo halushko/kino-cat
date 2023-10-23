@@ -53,7 +53,7 @@ public class FilesList extends GetTorrent {
     }
 
     protected String getFolderText(SubTorrentEntity previousFile, SubTorrentEntity currentFile) {
-        if (currentFile.getFolders().isEmpty()) {
+        if (!currentFile.getFolders().isEmpty()) {
             if (previousFile == null || !previousFile.getFolders().equals(currentFile.getFolders())) {
                 return "/" + String.join("\n//", currentFile.getFolders()) + "\n";
             }
