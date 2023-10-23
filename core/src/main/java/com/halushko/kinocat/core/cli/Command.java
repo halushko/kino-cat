@@ -1,16 +1,26 @@
 package com.halushko.kinocat.core.cli;
 
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public class Command {
     private final String fullText;
-    private String executorQueue;
+    @Getter
+    private String queue;
+    @Getter
     private String command = "";
+    @Getter
     private String script = "";
+    @Getter
     private String arguments = "";
-
-    private List<String> additionalArguments = new ArrayList<>();
+    @Getter
+    private String description = "";
+    @Getter
+    private final List<String> additionalArguments = new ArrayList<>();
 
     public Command(String str) {
         this.fullText = str;
@@ -18,9 +28,9 @@ public class Command {
 
     public void tryToSetScript(Script candidate) {
         if (candidate == null) return;
+        log.debug("[tryToSetScript] Candidate {}", candidate.getCommand());
 
         String fullCommand = fullText.split(" ")[0];
-
         if (!fullCommand.endsWith("_")) {
             if (candidate.getCommand().equals(fullCommand)) {
                 setCommandText(candidate);
@@ -29,43 +39,28 @@ public class Command {
         if (fullText.startsWith(candidate.getCommand()) && this.command.length() < candidate.getCommand().length()) {
             setCommandText(candidate);
         }
+        log.debug("[tryToSetScript] Command={}, Script={}, fullText={}, Description={}, Queue={}, Arguments={}", getCommand(), getScript(), fullText, getDescription(), getQueue(), getArguments());
+
     }
 
     private void setCommandText(Script pojo) {
+        log.debug("[setCommandText] Command={}, Script={}, fullText={}, Description={}, Queue={}, Arguments={}", pojo.getCommand(), pojo.getScript(), fullText, pojo.getDescription(), pojo.getQueue(), pojo.getParams());
         this.command = pojo.getCommand();
-        this.script = pojo.getScript();
+        this.script = pojo.getScript() == null || pojo.getScript().trim().isEmpty() ? "" : pojo.getScript();
         this.arguments = fullText.replaceAll(this.command, "").trim();
-//        this.arguments = this.arguments.length() > 0 ? " " + this.arguments : "";
-        this.executorQueue = pojo.getQueue();
+        this.description = pojo.getDescription();
+        this.queue = pojo.getQueue();
         this.additionalArguments.clear();
         this.additionalArguments.addAll(pojo.getParams());
     }
 
-    public String getScript() {
-        return script == null || script.trim().equals("") ? "" : script;
-    }
-
-    public String getArguments() {
-        return arguments == null || arguments.trim().equals("") ? "" : arguments;
-    }
-
     public String getFinalCommand() {
-        if (getScript().equals("") ) {
-            return "";
-        } else {
-            return String.format("%s%s%s", getScript(), "".equals(getArguments()) ? "" : " ", getArguments());
-        }
-    }
-
-    public String getQueue() {
-        return executorQueue;
-    }
-
-    public List<String> getAdditionalArguments() {
-        return additionalArguments;
-    }
-
-    public String getCommand() {
-        return command;
+        return getScript().isEmpty() ?
+                "" :
+                String.format("%s%s%s",
+                        getScript(),
+                        getArguments().isEmpty() ? "" : " ",
+                        getArguments()
+                );
     }
 }

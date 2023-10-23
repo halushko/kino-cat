@@ -45,9 +45,9 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         }
 
         log.debug("[executeRequest] Responce body:\n{}", responceBody);
-        val json = new SmartJson(responceBody);
+        val json = new SmartJson("INPUT", message.getRabbitMessageText()).addValue("OUTPUT", responceBody);
 
-        String requestResult = json.getValue("result");
+        String requestResult = json.getSubMessage("OUTPUT").getValue("result");
 
         String output;
         if ("success".equalsIgnoreCase(requestResult)) {
