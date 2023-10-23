@@ -35,17 +35,17 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         log.debug("[executeRequest] Request body:\n{}", requestBody);
 
         ApiResponce responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
-        if(responce.getBody().contains("409: Conflict")){
+        String responceBody = responce.getBody();
+        if(responceBody.contains("409: Conflict")){
             //expired session
             log.debug("[executeRequest] Recreate a session");
             TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
             responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
+            responceBody = responce.getBody();
         }
 
-
-        String bodyJson = responce.getBody();
-        log.debug("[executeRequest] Responce body:\n{}", bodyJson);
-        val json = new SmartJson(bodyJson);
+        log.debug("[executeRequest] Responce body:\n{}", responceBody);
+        val json = new SmartJson(responceBody);
 
         String requestResult = json.getValue("result");
 

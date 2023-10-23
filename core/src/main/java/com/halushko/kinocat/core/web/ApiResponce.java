@@ -7,6 +7,7 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
+@SuppressWarnings("unused")
 @Slf4j
 public class ApiResponce {
     private final HttpResponse httpResponse;
@@ -15,6 +16,7 @@ public class ApiResponce {
             log.debug("[ApiResponce] Responce is null");
         }
         this.httpResponse = httpResponse;
+
     }
 
     public String getHeader(String headerKey) {
@@ -29,8 +31,10 @@ public class ApiResponce {
     }
 
     public String getBody() {
+        log.debug("[getBody] Start to get body");
+
         if (httpResponse == null) {
-            log.debug("[getBody] Responce is null. Can't get body");
+            log.error("[getBody] Responce is null. Can't get body");
             return "";
         }
         try {
