@@ -10,7 +10,7 @@ public class FilesList extends GetTorrent {
 
     @Override
     protected String generateAnswer(TorrentEntity torrent) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(torrent.getName()).append("\n/");
         SubTorrentEntity previousFile = null;
         for (SubTorrentEntity currentFile : torrent.getFiles()) {
             sb.append(getFileInfo(previousFile, currentFile)).append("\n");
