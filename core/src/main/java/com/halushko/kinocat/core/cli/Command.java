@@ -1,5 +1,6 @@
 package com.halushko.kinocat.core.cli;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,17 +10,17 @@ import java.util.List;
 @Slf4j
 public class Command {
     private final String fullText;
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private String queue;
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private String command = "";
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private String script = "";
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private String arguments = "";
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private String description = "";
-    @Getter
+    @Getter(AccessLevel.PUBLIC)
     private final List<String> additionalArguments = new ArrayList<>();
 
     public Command(String str) {
@@ -35,11 +36,12 @@ public class Command {
         if (!fullCommand.endsWith("_")) {
             log.debug("[tryToSetScript] Not ends with _");
             if (candidate.getCommand().equals(fullCommand)) {
+                log.debug("[tryToSetScript] BINGO! Not ends with _. Candidate for {} found", fullCommand);
                 setCommandText(candidate);
             }
         }
         if (fullText.startsWith(candidate.getCommand()) && this.command.length() < candidate.getCommand().length()) {
-            log.debug("[tryToSetScript] Starts with {}", candidate.getCommand());
+            log.debug("[tryToSetScript] BINGO! Starts with {}. Candidate for {} found", candidate.getCommand(), fullCommand);
             setCommandText(candidate);
         }
     }
