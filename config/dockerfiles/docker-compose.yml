@@ -16,6 +16,8 @@ x-common-variables: &common-variables
 
   PING: /ping
   PONG: pong
+
+  LOGS_LEVEL: info
 services:
   rabbitmq:
     image: rabbitmq:management-alpine
@@ -29,59 +31,11 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-  bot:
-    image: halushko/cinema-bot:alpha
-    environment: *common-variables
-    restart: always
-    container_name: "bot"
-    depends_on:
-      - rabbitmq
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.2
-  text:
-    image: halushko/cinema-text:alpha
-    environment: *common-variables
-    restart: always
-    container_name: "text"
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.3
-    depends_on:
-      - rabbitmq
-  file:
-    image: halushko/cinema-file:alpha
-    environment: *common-variables
-    restart: always
-    container_name: "file"
-    depends_on:
-      - rabbitmq
-    volumes:
-      - ./workdir/config/files_from_telegram:/home/torrent_files/
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.4
-  torrent:
-    image: halushko/cinema-torrent:alpha
-    environment: *common-variables
-    restart: always
-    container_name: "torrent"
-    depends_on:
-      - rabbitmq
-    volumes:
-      - ./workdir/mediadata:/home/media/torrent/complete
-      - ./workdir/config/files_from_telegram:/home/media/torrent/torrent_files
-      - ./workdir/config/transmission/torrents:/var/lib/transmission/config/torrents
-      - ./workdir/config/transmission/resume:/var/lib/transmission/config/resume
-    networks:
-      cat_private_network:
-        ipv4_address: 10.10.0.5
-    ports:
-      - 9091:9091
-      - 51413:51413
   media:
     image: lscr.io/linuxserver/plex:latest
     container_name: "media"
+    depends_on:
+      - rabbitmq
     environment:
       - PUID=1000
       - PGID=1000
@@ -92,6 +46,77 @@ services:
       - ./workdir/mediadata:/movies
     restart: unless-stopped
     network_mode: host
+  torrent:
+    image: halushko/cinema-torrent:beta
+    environment: *common-variables
+    restart: always
+    container_name: "torrent"
+    depends_on:
+      - media
+    volumes:
+      - ./workdir/config/transmission:/home/app/transmission_config
+      - ./workdir/config/logs:/home/app/logs
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.5
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    restart: always
+    container_name: "transmission"
+    depends_on:
+      - torrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    ports:
+      - 9091:9091
+      - 51413:51413
+      - 51413:51413/udp
+    volumes:
+      - ./workdir/config/transmission:/config
+      - ./workdir/mediadata:/downloads/complete
+      - ./workdir/config/files_from_telegram:/watch
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.255.253
+  bot:
+    image: halushko/cinema-bot:beta
+    environment: *common-variables
+    restart: always
+    container_name: "bot"
+    volumes:
+      - ./workdir/config/logs:/home/app/logs
+    depends_on:
+      - transmission
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.2
+  text:
+    image: halushko/cinema-text:beta
+    environment: *common-variables
+    restart: always
+    container_name: "text"
+    volumes:
+      - ./workdir/config/logs:/home/app/logs
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.3
+    depends_on:
+      - bot
+  file:
+    image: halushko/cinema-file:beta
+    environment: *common-variables
+    restart: always
+    container_name: "file"
+    depends_on:
+      - bot
+    volumes:
+      - ./workdir/config/files_from_telegram:/home/torrent_files/
+      - ./workdir/config/logs:/home/app/logs
+    networks:
+      cat_private_network:
+        ipv4_address: 10.10.0.4
 networks:
   cat_private_network:
     driver: bridge

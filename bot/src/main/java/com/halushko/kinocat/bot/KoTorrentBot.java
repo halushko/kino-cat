@@ -5,7 +5,7 @@ import com.halushko.kinocat.bot.handlers.telegram.MyPingHandler;
 import com.halushko.kinocat.bot.handlers.telegram.TextHandler;
 import com.halushko.kinocat.bot.handlers.telegram.TorrentFileHandler;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,40 +15,41 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import java.util.*;
 
-import static com.halushko.kinocat.core.rabbit.RabbitJson.unNormalizeText;
-
+@SuppressWarnings("deprecation")
+@Slf4j
 public class KoTorrentBot extends TelegramLongPollingBot {
     public static KoTorrentBot BOT;
 
     static {
         for (Map.Entry<String, String> a : System.getenv().entrySet()) {
-            Logger.getRootLogger().debug(a.getKey() + " = [" + a.getValue() + "]");
+            log.debug(a.getKey() + " = [" + a.getValue() + "]");
         }
     }
 
     public static final String BOT_NAME = System.getenv("BOT_NAME");
 
     public static final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+
     public static final String BOT_TRUSTED_USERS = System.getenv("BOT_TRUSTED_USERS");
 
     private static final Set<Long> trustedUserIds = new HashSet<>();
 
-    private static final Collection<UserMessageHandler> handlers = new ArrayList<UserMessageHandler>() {{
+    private static final Collection<UserMessageHandler> handlers = new ArrayList<>() {{
         add(new MyPingHandler());
         add(new TextHandler());
         add(new TorrentFileHandler());
     }};
 
     public static void main(String[] args) {
-        Logger.getRootLogger().debug("Bot starting");
+        log.debug("Bot starting");
         try {
             TelegramBotsApi botapi = new TelegramBotsApi(DefaultBotSession.class);
             BOT = new KoTorrentBot();
             new Thread(new SendTextMessageToUser()).start();
             botapi.registerBot(BOT);
-            Logger.getRootLogger().debug("Bot has been started");
+            log.debug("Bot has been started");
         } catch (Exception e) {
-            Logger.getRootLogger().error("Bot start has been fail: ", e);
+            log.error("Bot start has been fail: ", e);
         }
     }
 
@@ -75,7 +76,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             parseTrustedUsersEnv();
         }
         boolean valid = trustedUserIds.contains(userId);
-        Logger.getRootLogger().debug(String.format("[validateUser] The user %s is %svalid", userId, valid ? "" : "in"));
+        log.debug("[validateUser] The user {} is {}valid", userId, valid ? "" : "in");
         return valid;
     }
 
@@ -84,15 +85,14 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             return;
         }
         try {
-            final String text = unNormalizeText(str);
-            Logger.getRootLogger().debug(String.format("[BOT.sendText] Send text chatId:%s, text:%s", chatId, text));
+            log.debug("[BOT.sendText] Send text chatId:{}, text:{}", chatId, str);
             BOT.execute(new SendMessage() {{
                             setChatId(chatId);
-                            setText(text);
+                            setText(str);
                         }}
             );
         } catch (TelegramApiException ex) {
-            Logger.getRootLogger().error("Can't send text message to user: ", ex);
+            log.error("Can't send text message to user: ", ex);
         }
     }
 
@@ -101,14 +101,13 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     }
 
     private static void parseTrustedUsersEnv() {
-        String[] userIds = BOT_TRUSTED_USERS.split(",");
-        for (String userId : userIds) {
+        Arrays.stream(BOT_TRUSTED_USERS.split(",")).forEach(userId -> {
             try {
-                trustedUserIds.add(new Long(userId));
-                Logger.getRootLogger().warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is trusted", userId));
+                trustedUserIds.add(Long.parseLong(userId));
+                log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is trusted", userId));
             } catch (Exception e) {
-                Logger.getRootLogger().warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is invalid", userId));
+                log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is invalid", userId));
             }
-        }
+        });
     }
 }

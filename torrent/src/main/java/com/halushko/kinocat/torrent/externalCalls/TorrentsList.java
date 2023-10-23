@@ -1,28 +1,55 @@
 package com.halushko.kinocat.torrent.externalCalls;
 
 import com.halushko.kinocat.core.cli.Constants;
-import com.halushko.kinocat.core.handlers.input.ExternalCliCommandExecutor;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
-import com.halushko.kinocat.torrent.entities.ActiveTorrentEntity;
-import org.apache.log4j.Logger;
+import com.halushko.kinocat.torrent.entities.TorrentEntity;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public class TorrentsList extends ExternalCliCommandExecutor {
+@Slf4j
+public class TorrentsList extends GetTorrent {
+    public TorrentsList() {
+        super();
+    }
+
     @Override
-    protected String getResultString(List<String> lines, RabbitMessage rabbitMessage) {
-        Logger.getRootLogger().debug(String.format("[TorrentsList] lines=%s", lines));
-        if (lines == null || lines.isEmpty()) return "";
-
-        return super.getResultString(lines.stream()
-                        .map(ActiveTorrentEntity::new)
-                        .filter(a -> !"-1".equals(a.id))
-                        .sorted((o1, o2) -> o1.status == null ? -1 : o1.status.compareToIgnoreCase(o2.status))
-                        .map(a -> String.format("%s %s\n%s %s%s", a.getStatusIcon(), a.name, a.getPercents(), Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, a.id))
-                        .collect(Collectors.toList()),
-                rabbitMessage
+    protected String generateAnswer(TorrentEntity torrent) {
+        return String.format("%s %s\n%s %s\n%s%s %s%s"
+                , getStatusIcon(torrent), torrent.getName()
+                , getProgressBar(torrent), getGigabytesLeft(torrent)
+                , Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, torrent.getId()
+                , Constants.Commands.Torrent.LIST_FILES, torrent.getId()
         );
+    }
+
+    protected String getProgressBar(TorrentEntity torrent) {
+        int blocks = 20;
+        int blackBlocks = (int) (torrent.getPercentDone() * blocks);
+        StringBuilder line = new StringBuilder();
+
+        IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
+        IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
+
+        return "||" + line + "||";
+    }
+
+    protected String getGigabytesLeft(TorrentEntity torrent) {
+        return torrent.getPercentDone() == 1.0
+                ? " (done)"
+                : " % (" + Math.round((torrent.getTotalSize() - (long) (torrent.getTotalSize() * torrent.getPercentDone())) / 1000000.0) / 1000.0 + " Gb left)";
+    }
+
+    protected String getStatusIcon(TorrentEntity torrent) {
+        return switch (torrent.getStatus()) {
+            case 0 -> "⏸";
+            case 1 -> "\uD83D\uDD51♾";
+            case 2 -> "♾";
+            case 3 -> "\uD83D\uDD51⬇️";
+            case 4 -> "⬇️";
+            case 5 -> "\uD83D\uDD51⬆️";
+            case 6 -> "♻️";
+            default -> "\uD83C\uDD98";
+        };
     }
 
     @Override

@@ -1,3 +1,6 @@
-FROM openjdk:8-alpine
+FROM openjdk:20-ea-35-jdk-slim
 COPY file-*.jar /home/app/app.jar
-ENTRYPOINT ["java", "-jar", "/home/app/app.jar"]
+COPY ./src/main/resources/log_properties /home/app
+COPY ./src/main/resources/scripts /home/app
+RUN chmod +X /home/app/*.sh
+ENTRYPOINT ["sh", "/home/app/run.sh"]

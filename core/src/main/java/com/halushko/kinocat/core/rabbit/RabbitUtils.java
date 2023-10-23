@@ -2,8 +2,9 @@ package com.halushko.kinocat.core.rabbit;
 
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.rabbitmq.client.*;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RabbitUtils {
     private final static String RABBIT_IP = System.getenv("RABBIT_IP");
     private final static String RABBIT_USERNAME = System.getenv("RABBITMQ_DEFAULT_USER");
@@ -20,15 +21,6 @@ public class RabbitUtils {
         }
     };
 
-    private static final ConnectionFactory localConnectionFactory = new ConnectionFactory() {
-        {
-            setHost("localhost");
-            setUsername(RABBIT_USERNAME);
-            setPassword(RABBIT_PASSWORD);
-            setPort(RABBIT_PORT);
-            setAutomaticRecoveryEnabled(false);
-        }
-    };
 
     private static Connection connection = createConnection();
 
@@ -46,7 +38,7 @@ public class RabbitUtils {
                         Thread.sleep(InputMessageHandler.LONG_PAUSE_MILIS);
                     } catch (InterruptedException ignored) {
                     }
-                    Logger.getRootLogger().error("Error while open connection. ", e);
+                    log.error("Error while open connection. ", e);
                     connection = null;
                 }
             } while (true);
@@ -54,13 +46,13 @@ public class RabbitUtils {
     }
 
     private static Connection newConnection() {
-        Logger.getRootLogger().debug("[newConnection] Get Connection");
+        log.debug("[newConnection] Get Connection");
         synchronized (connectionFactory) {
             if (!connection.isOpen()) {
-                Logger.getRootLogger().debug("[newConnection] Connection is closed");
+                log.debug("[newConnection] Connection is closed");
                 closeConnection();
                 connection = createConnection();
-                Logger.getRootLogger().debug("[newConnection] New connection created");
+                log.debug("[newConnection] New connection created");
             }
             return connection;
         }
@@ -71,11 +63,11 @@ public class RabbitUtils {
         synchronized (connectionFactory) {
             if (connection != null) {
                 try {
-                    Logger.getRootLogger().debug("[closeConnection] Closing of Connection");
+                    log.debug("[closeConnection] Closing of Connection");
                     connection.close();
-                    Logger.getRootLogger().debug("[closeConnection] Connection closed");
+                    log.debug("[closeConnection] Connection closed");
                 } catch (Exception e) {
-                    Logger.getRootLogger().error("[closeConnection] Error while close connection. ", e);
+                    log.error("[closeConnection] Error while close connection. ", e);
                 } finally {
                     connection = null;
                 }
@@ -83,39 +75,38 @@ public class RabbitUtils {
         }
     }
 
+    @Slf4j
     static class MyShutdownListener implements ShutdownListener {
         @Override
         public void shutdownCompleted(ShutdownSignalException cause) {
-            cause.printStackTrace();
+            log.error("[shutdownCompleted] Error: ", cause);
         }
     }
 
-    public static void postMessage(RabbitMessage message, String queue) {
-        Logger.getRootLogger().debug(String.format("[postMessage] Start post rabbit message. message=%s, queue=%s", message.getRabbitMessageText(), queue));
+    public static void postMessage(SmartJson message, String queue) {
+        log.debug("[postMessage] Start post rabbit message. message={}, queue={}", message.getRabbitMessageText(), queue);
         try (Channel channel = newConnection().createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicPublish("", queue, null, message.getRabbitMessageBytes());
         } catch (Exception e) {
-            Logger.getRootLogger().error("[postMessage] Error while post message. ", e);
+            log.error("[postMessage] Error while post message. ", e);
         }
     }
 
     public static void postMessage(long chatId, String text, String queue) {
-        Logger.getRootLogger().debug(String.format("[postMessage] Start post text message. text=%s, queue=%s", text, queue));
-        text = RabbitJson.normalizedValue(text);
-        Logger.getRootLogger().debug(String.format("[postMessage] Post text message. text=%s, queue=%s", text, queue));
-        postMessage(new RabbitMessage(chatId, text), queue);
+        log.debug("[postMessage] Start post text message. text={}, queue={}", text, queue);
+        postMessage(new SmartJson(chatId, text), queue);
     }
 
     public static void readMessage(String queue, DeliverCallback deliverCallback) {
         try {
-            Logger.getRootLogger().debug(String.format("[readMessage] Start read message for queue=%s", queue));
+            log.debug("[readMessage] Start read message for queue={}", queue);
             Channel channel = newConnection().createChannel();
             channel.queueDeclare(queue, false, false, false, null);
             channel.basicConsume(queue, true, deliverCallback, consumerTag -> {
             });
         } catch (Exception e) {
-            Logger.getRootLogger().error("[readMessage] Error while read message. ", e);
+            log.error("[readMessage] Error while read message. ", e);
         }
     }
 }

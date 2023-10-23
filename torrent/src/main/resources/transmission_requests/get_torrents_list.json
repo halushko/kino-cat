@@ -1,0 +1,17 @@
+{
+  "method": "torrent-get",
+  "arguments": {
+    "fields": [
+      "id",
+      "addedDate",
+      "name",
+      "totalSize",
+      "error",
+      "errorString",
+      "eta",
+      "percentDone",
+      "queuePosition",
+      "status"
+    ]
+  }
+}
