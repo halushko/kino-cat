@@ -1,13 +1,12 @@
 package com.halushko.kinocat.core.cli;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Getter(AccessLevel.PUBLIC)
+@Getter
 public class Script {
     private final String command;
     private final String script;
@@ -15,7 +14,7 @@ public class Script {
     private final String description;
     private final List<String> params = new ArrayList<>();
 
-    Script(String command, String script, String description, String queue, String... params) {
+    Script(String command, String description, String script, String queue, String... params) {
         this.command = command;
         this.script = script;
         this.description = description;

@@ -1,6 +1,5 @@
 package com.halushko.kinocat.core.cli;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,17 +9,17 @@ import java.util.List;
 @Slf4j
 public class Command {
     private final String fullText;
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private String queue;
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private String command = "";
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private String script = "";
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private String arguments = "";
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private String description = "";
-    @Getter(AccessLevel.PUBLIC)
+    @Getter
     private final List<String> additionalArguments = new ArrayList<>();
 
     public Command(String str) {
