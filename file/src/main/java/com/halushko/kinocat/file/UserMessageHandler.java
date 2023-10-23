@@ -1,13 +1,11 @@
 package com.halushko.kinocat.file;
 
-import com.halushko.kinocat.core.cli.Command;
 import com.halushko.kinocat.core.cli.Constants;
-import com.halushko.kinocat.core.cli.ScriptsCollection;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
-import org.apache.commons.io.FileUtils;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,12 +17,8 @@ import java.net.URL;
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
 
-    private static final ScriptsCollection scripts = new ScriptsCollection() {{
-        addValue(Constants.Commands.Torrent.START_TORRENT_FILE, "start_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
-    }};
-
     @Override
-    protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
+    protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         try {
             String mimeType = rabbitMessage.getValue("MIME_TYPE");
             if ("application/x-bittorrent".equalsIgnoreCase(mimeType)) {
@@ -35,21 +29,19 @@ public class UserMessageHandler extends InputMessageHandler {
         }
     }
 
-    protected void handleTorrent(RabbitMessage rm) throws MalformedURLException {
+    protected void handleTorrent(SmartJson rm) throws MalformedURLException {
         long fileSize = Long.parseLong(rm.getValue("SIZE"));
         if (fileSize > 5242880L) {
             log.warn(String.format("The file size is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
             return;
         }
-        URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(RabbitMessage.KEYS.FILE_PATH)).toURL();
+        URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(SmartJson.KEYS.FILE_PATH)).toURL();
         long userId = rm.getUserId();
         String fileName = String.format("%s%s", rm.getValue("FILE_ID"), ".torrent");
 
         File localFile = new File("/home/torrent_files/" + fileName);
         try (InputStream is = fileUrl.openStream()) {
             FileUtils.copyInputStreamToFile(is, localFile);
-            Command command = scripts.getCommand(Constants.Commands.Torrent.START_TORRENT_FILE);
-            RabbitUtils.postMessage(userId, String.format("%s %s%s", command.getScript(), "/home/media/torrent/torrent_files/", fileName), command.getQueue());
         } catch (IOException e) {
             RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         }

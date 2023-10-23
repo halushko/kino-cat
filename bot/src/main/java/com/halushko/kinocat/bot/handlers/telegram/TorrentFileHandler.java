@@ -3,14 +3,14 @@ package com.halushko.kinocat.bot.handlers.telegram;
 import com.halushko.kinocat.bot.KoTorrentBot;
 import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import static com.halushko.kinocat.core.rabbit.RabbitMessage.KEYS.*;
+import static com.halushko.kinocat.core.rabbit.SmartJson.KEYS.*;
 
 @Slf4j
 public class TorrentFileHandler extends UserMessageHandler {
@@ -32,7 +32,7 @@ public class TorrentFileHandler extends UserMessageHandler {
         uploadedFile.setFileId(uploadedFileId);
 
         try {
-            RabbitMessage rm = new RabbitMessage(chatId).
+            SmartJson rm = new SmartJson(chatId).
                     addValue(FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath()).
                     addValue("FILE_ID", update.getMessage().getDocument().getFileId()).
                     addValue(TEXT, message).

@@ -4,7 +4,7 @@ import com.halushko.kinocat.core.cli.Command;
 import com.halushko.kinocat.core.cli.Constants;
 import com.halushko.kinocat.core.cli.ScriptsCollection;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,19 +16,19 @@ public class UserMessageHandler extends InputMessageHandler {
     private static final ScriptsCollection scripts = new ScriptsCollection() {{
         addValue("/restart_media_server", "restart.sh", Constants.Queues.MediaServer.EXECUTE_MINIDLNA_COMMAND);
 
-        addValue("/list", "list_torrents.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST);
-        addValue(Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, "info_torrent.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_COMMANDS);
-        addValue(Constants.Commands.Torrent.RESUME, "resume_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
-        addValue(Constants.Commands.Torrent.PAUSE, "pause_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.LIST_TORRENTS, "get_torrents_list.json", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST);
+        addValue(Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, "get_torrents_names.json", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_COMMANDS);
+        addValue(Constants.Commands.Torrent.LIST_FILES, "file_list.json", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST_FILES);
+        addValue(Constants.Commands.Torrent.RESUME, "resume_torrent.json", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.PAUSE, "pause_torrent.json", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
         addValue(Constants.Commands.Torrent.TORRENT_INFO, "info_torrent.sh", Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_INFO);
-        addValue(Constants.Commands.Torrent.REMOVE_WITH_FILES, "remove_with_files.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
-        addValue(Constants.Commands.Torrent.REMOVE_JUST_TORRENT, "remove_only_torrent.sh", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
-
+        addValue(Constants.Commands.Torrent.REMOVE_WITH_FILES, "remove_with_files.json", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
+        addValue(Constants.Commands.Torrent.REMOVE_JUST_TORRENT, "remove_only_torrent.json", Constants.Queues.Torrent.EXECUTE_VOID_TORRENT_COMMAND);
         addValue(Constants.Commands.Text.REMOVE_COMMAND, Constants.Commands.Text.SEND_TEXT_TO_USER, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT, Constants.Commands.Text.REMOVE_WARN_TEXT_FUNC);
     }};
 
     @Override
-    protected void getDeliverCallbackPrivate(RabbitMessage rabbitMessage) {
+    protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         log.debug("[UserMessageHandler] Start DeliverCallbackPrivate for " + getQueue());
         try {
             String text = rabbitMessage.getText();
@@ -50,8 +50,9 @@ public class UserMessageHandler extends InputMessageHandler {
                 RabbitUtils.postMessage(userId, result, command.getQueue());
             } else {
                 log.debug("[UserMessageHandler] Command {} found", text);
-                RabbitMessage message = new RabbitMessage(userId, command.getFinalCommand());
+                SmartJson message = new SmartJson(userId, command.getFinalCommand());
                 message.addValue("ARG", command.getArguments());
+                message.addValue("SCRIPT", command.getScript());
                 RabbitUtils.postMessage(message, command.getQueue());
             }
             log.debug("[UserMessageHandler] Finish DeliverCallbackPrivate for {}", getQueue());

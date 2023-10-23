@@ -1,6 +1,6 @@
 package com.halushko.kinocat.core.handlers.input;
 
-import com.halushko.kinocat.core.rabbit.RabbitMessage;
+import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.rabbitmq.client.DeliverCallback;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,20 +38,20 @@ public abstract class InputMessageHandler implements Runnable {
             log.debug("[getDeliverCallback] Get DeliverCallback for queue '{}' started", getQueue());
             String body = new String(delivery.getBody(), StandardCharsets.UTF_8);
             log.debug("[getDeliverCallback] body: '{}'", body);
-            RabbitMessage message = new RabbitMessage(body);
+            SmartJson message = new SmartJson(body);
             log.debug("[getDeliverCallback] RabbitMessage: '{}'", message.getRabbitMessageText());
             getDeliverCallbackLog(message);
         };
     }
 
-    private void getDeliverCallbackLog(RabbitMessage message) {
+    private void getDeliverCallbackLog(SmartJson message) {
         log.debug("[InputMessageHandler] Start processing message={}", message.getRabbitMessageText());
         getDeliverCallbackPrivate(message);
         log.debug("[InputMessageHandler] Finish processing");
     }
 
 
-    protected abstract void getDeliverCallbackPrivate(RabbitMessage message);
+    protected abstract void getDeliverCallbackPrivate(SmartJson message);
 
     protected abstract String getQueue();
 }
