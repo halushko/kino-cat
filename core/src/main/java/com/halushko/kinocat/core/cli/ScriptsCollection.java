@@ -9,17 +9,18 @@ public class ScriptsCollection {
     private Map<String, Script> allCommands;
     private final List<Script> values = new ArrayList<>();
 
+    @SuppressWarnings("unused")
     public void addValue(String command, String description, String script, String queue, String... args) {
         values.add(new Script(command, description, script, queue, args));
     }
 
     public Command getCommand(String text) {
-        log.debug("Try to get command from text [{}]", text);
+        log.debug("[getCommand] Try to get command from text [{}]", text);
         if (text == null) return new Command("");
 
         Command tmp = new Command(text);
         getCommandList().forEach(tmp::tryToSetScript);
-        log.debug("Command is command={}, script={}, queue={}", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue());
+        log.debug("[getCommand] Command is command={}, script={}, queue={}", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue());
         return tmp;
     }
 
