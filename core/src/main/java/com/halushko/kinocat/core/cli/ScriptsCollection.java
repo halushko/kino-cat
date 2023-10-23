@@ -4,13 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 @Slf4j
 public class ScriptsCollection {
     private Map<String, Script> allCommands;
     private final List<Script> values = new ArrayList<>();
 
-    public void addValue(String command, String script, String queue, String... args) {
-        values.add(new Script(command, script, queue, args));
+    public void addValue(String command, String description, String script, String queue, String... args) {
+        values.add(new Script(command, description, script, queue, args));
     }
 
     public Command getCommand(String text) {
@@ -19,7 +20,7 @@ public class ScriptsCollection {
 
         Command tmp = new Command(text);
         getCommandList().forEach(tmp::tryToSetScript);
-        log.debug("Command is command=%s, script={}, queue={}", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue());
+        log.debug("Command is command={}, script={}, queue={}", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue());
         return tmp;
     }
 

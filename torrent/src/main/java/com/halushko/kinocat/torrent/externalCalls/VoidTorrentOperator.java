@@ -11,6 +11,6 @@ public class VoidTorrentOperator extends TransmissionWebApiExecutor {
 
     @Override
     protected String executeRequest(SmartJson message) {
-        return String.format("Команда [%s] виконана без помилок", message.getValue("COMMAND"));
+        return String.format("Команда [%s] виконана без помилок", message.getValue("DESCRIPTION"));
     }
 }
