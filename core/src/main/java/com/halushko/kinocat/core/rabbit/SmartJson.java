@@ -15,7 +15,7 @@ public class SmartJson {
     public static final String DEFAULT_KEY = "DEFAULT_KEY";
 
     public enum KEYS {
-        USER_ID, TEXT, CONSUMER, FILE_NAME, FILE_PATH
+        USER_ID, TEXT, COMMAND_ARGUMENTS, INPUT, OUTPUT, FILE_PATH, MIME_TYPE, SIZE, CAPTION, FILE_ID
     }
 
     private String json = "";
@@ -27,6 +27,9 @@ public class SmartJson {
         addValue(KEYS.USER_ID, String.valueOf(userId));
     }
 
+    public SmartJson(KEYS key, Object value) {
+        this(key.name(), value);
+    }
     public SmartJson(String key, Object value) {
         addValue(key, value);
     }

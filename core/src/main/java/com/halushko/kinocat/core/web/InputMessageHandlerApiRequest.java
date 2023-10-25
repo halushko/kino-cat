@@ -53,4 +53,6 @@ public abstract class InputMessageHandlerApiRequest extends InputMessageHandler 
                 collect(Collectors.toMap(i -> headers[i], i -> headers[i + 1], (a, b) -> b, LinkedHashMap::new));
         return send(body, headerMap);
     }
+    protected abstract String getRequest();
+
 }

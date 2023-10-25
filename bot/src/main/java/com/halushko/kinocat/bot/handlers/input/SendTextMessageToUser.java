@@ -1,6 +1,6 @@
 package com.halushko.kinocat.bot.handlers.input;
 
-import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import lombok.extern.slf4j.Slf4j;

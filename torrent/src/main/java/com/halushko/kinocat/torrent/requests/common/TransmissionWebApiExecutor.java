@@ -1,6 +1,6 @@
-package com.halushko.kinocat.torrent.externalCalls;
+package com.halushko.kinocat.torrent.requests.common;
 
-import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.core.files.ResourceReader;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
@@ -30,13 +30,13 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             val responce = send("", "Content-Type", "application/json");
             TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
         }
-        String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", message.getValue("SCRIPT")));
-        String requestBody = String.format(requestBodyFormat, (Object[]) message.getValue("ARG").split(" "));
+        String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", getRequest()));
+        String requestBody = String.format(requestBodyFormat, message.getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS).convertToList().toArray());
         log.debug("[executeRequest] Request body:\n{}", requestBody);
 
         ApiResponce responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
         String responceBody = responce.getBody();
-        if(responceBody.contains("409: Conflict")){
+        if (responceBody.contains("409: Conflict")) {
             //expired session
             log.debug("[executeRequest] Recreate a session");
             TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
@@ -45,20 +45,18 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         }
 
         log.debug("[executeRequest] Responce body:\n{}", responceBody);
-        val json = new SmartJson("INPUT", message.getRabbitMessageText()).addValue("OUTPUT", responceBody);
+        SmartJson json = new SmartJson(SmartJson.KEYS.INPUT, message.getRabbitMessageText()).addValue(SmartJson.KEYS.OUTPUT, responceBody);
 
-        String requestResult = json.getSubMessage("OUTPUT").getValue("result");
-
-        String output;
-        if ("success".equalsIgnoreCase(requestResult)) {
-            output = executeRequest(json);
-        } else {
-            output = String.format("result of request is: %s", responceBody);
-        }
+        String output = isResultValid(json)
+                ? executeRequest(json)
+                : String.format("result of request is: %s", responceBody);
 
         RabbitUtils.postMessage(chatId, output, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
-
     }
 
     protected abstract String executeRequest(SmartJson message);
+
+    protected boolean isResultValid(SmartJson result) {
+        return "success".equalsIgnoreCase(result.getSubMessage(SmartJson.KEYS.OUTPUT).getValue("result"));
+    }
 }

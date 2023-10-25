@@ -1,7 +1,8 @@
-package com.halushko.kinocat.torrent.externalCalls;
+package com.halushko.kinocat.torrent.requests.concrete;
 
-import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
+import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,6 +22,11 @@ public class TorrentCommands extends GetTorrent {
 
     @Override
     protected String getQueue() {
-        return Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_COMMANDS;
+        return Constants.Queues.Torrent.TORRENT_COMMANDS;
+    }
+
+    @Override
+    protected String getRequest() {
+        return "get_torrents_names.json";
     }
 }

@@ -1,6 +1,6 @@
 package com.halushko.kinocat.file;
 
-import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.halushko.kinocat.core.rabbit.SmartJson.KEYS.*;
 @Slf4j
 public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
@@ -20,7 +21,7 @@ public class UserMessageHandler extends InputMessageHandler {
     @Override
     protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         try {
-            String mimeType = rabbitMessage.getValue("MIME_TYPE");
+            String mimeType = rabbitMessage.getValue(MIME_TYPE);
             if ("application/x-bittorrent".equalsIgnoreCase(mimeType)) {
                 handleTorrent(rabbitMessage);
             }
@@ -30,14 +31,14 @@ public class UserMessageHandler extends InputMessageHandler {
     }
 
     protected void handleTorrent(SmartJson rm) throws MalformedURLException {
-        long fileSize = Long.parseLong(rm.getValue("SIZE"));
+        long fileSize = Long.parseLong(rm.getValue(SIZE));
         if (fileSize > 5242880L) {
             log.warn(String.format("The file size is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
             return;
         }
-        URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(SmartJson.KEYS.FILE_PATH)).toURL();
+        URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(FILE_PATH)).toURL();
         long userId = rm.getUserId();
-        String fileName = String.format("%s%s", rm.getValue("FILE_ID"), ".torrent");
+        String fileName = String.format("%s%s", rm.getValue(FILE_ID), ".torrent");
 
         File localFile = new File("/home/torrent_files/" + fileName);
         try (InputStream is = fileUrl.openStream()) {
