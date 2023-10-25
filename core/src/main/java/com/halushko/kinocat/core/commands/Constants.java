@@ -18,6 +18,7 @@ public interface Constants {
             String PAUSE_TORRENT = "EXECUTE_TORRENT_COMMAND_PAUSE_TORRENT";
             String RESUME_ALL = "EXECUTE_TORRENT_COMMAND_RESUME_ALL_TORRENTS";
             String PAUSE_ALL = "EXECUTE_TORRENT_COMMAND_PAUSE_ALL_TORRENTS";
+            String DELETE = "EXECUTE_TORRENT_COMMAND_DELETE";
             String DELETE_ONLY_TORRENT = "EXECUTE_TORRENT_COMMAND_DELETE_ONLY_TORRENT";
             String DELETE_WITH_FILES = "EXECUTE_TORRENT_COMMAND_DELETE_WITH_FILES";
 
@@ -40,12 +41,13 @@ public interface Constants {
             String REMOVE_WITH_FILES = "/approve_with_files_";
             String REMOVE_JUST_TORRENT = "/approve_just_torrent_";
             String LIST_FILES = "/files_";
+            String REMOVE_COMMAND = "/remove_";
+
         }
 
         interface Text {
             String SEND_TEXT_TO_USER = "#$SEND_TEXT_TO_USER$#";
             String SEPARATOR = "#$SEPARATOR$#";
-            String REMOVE_COMMAND = "/remove_";
             String REMOVE_WARN_TEXT_FUNC = "askRemoveTorrent";
         }
     }

@@ -22,7 +22,7 @@ public class UserMessageHandler extends InputMessageHandler {
         addValue(Constants.Commands.Torrent.REMOVE_WITH_FILES, Constants.Queues.Torrent.DELETE_WITH_FILES);
         addValue(Constants.Commands.Torrent.REMOVE_JUST_TORRENT, Constants.Queues.Torrent.DELETE_ONLY_TORRENT);
 
-//        addValue(Constants.Commands.Text.REMOVE_COMMAND, "", Constants.Commands.Text.SEND_TEXT_TO_USER, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT, Constants.Commands.Text.REMOVE_WARN_TEXT_FUNC);
+        addValue(Constants.Commands.Torrent.REMOVE_COMMAND, Constants.Queues.Torrent.DELETE);
     }};
 
     @Override

@@ -13,6 +13,7 @@ public class Main {
         new FilesList().run();
         new PauseAll().run();
         new PauseTorrent().run();
+        new RemoveTorrentCommand().run();
         new ResumeAll().run();
         new ResumeTorrent().run();
         new TorrentCommands().run();
