@@ -17,7 +17,7 @@ public class TorrentCommands extends GetTorrent {
                 Constants.Commands.Torrent.PAUSE, torrent.getId(),
                 Constants.Commands.Torrent.RESUME, torrent.getId(),
                 Constants.Commands.Torrent.TORRENT_INFO, torrent.getId(),
-                Constants.Commands.Text.REMOVE_COMMAND, torrent.getId());
+                Constants.Commands.Torrent.REMOVE_COMMAND, torrent.getId());
     }
 
     @Override
