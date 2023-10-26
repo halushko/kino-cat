@@ -31,11 +31,10 @@ public class FilesList extends GetTorrent {
     protected String getGigabytesLeft(SubTorrentEntity torrent) {
         long completed = torrent.getBytesCompleted();
         long full = torrent.getLength();
-        double percents = (double) completed / full;
 
-        return percents == 1.0
+        return full == completed
                 ? " (done)"
-                : " % (" + Math.round((full - full * completed) / 1000000.0) / 1000.0 + " Gb left)";
+                : " % (" + Math.round((full - completed) / 1000000.0) / 1000.0 + " Gb left)";
     }
 
     protected String getProgressBar(SubTorrentEntity torrent) {
