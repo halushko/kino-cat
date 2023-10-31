@@ -61,4 +61,9 @@ public class TorrentsList extends GetTorrent {
     protected String getRequest() {
         return "get_torrents_list.json";
     }
+
+    @Override
+    protected String partitionDescription() {
+        return "Торенти ";
+    }
 }

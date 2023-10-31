@@ -54,7 +54,10 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             int i = 0;
             int j = 0;
             boolean flag = false;
-            StringBuilder sb = new StringBuilder("Торенти 01-09\n");
+            StringBuilder sb = new StringBuilder();
+            if(addDescription()) {
+                sb.append(partitionDescription()).append("01-0").append(result.size() < 10 ? result.size() : 9);
+            }
             for (String answer : result) {
                 i++;
                 if (i < 10) {
@@ -65,7 +68,10 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     flag = false;
                     i = 0;
                     j++;
-                    sb = new StringBuilder("Торенти ").append(j * 10).append("-").append(j * 11 < result.size() ? j * 10 + 9 : result.size());
+                    sb = new StringBuilder();
+                    if(addDescription()) {
+                        sb.append(partitionDescription()).append(j * 10).append("-").append(j * 11 < result.size() ? j * 10 + 9 : result.size());
+                    }
                 }
             }
             if(flag) {
@@ -80,5 +86,13 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
 
     protected boolean isResultValid(SmartJson result) {
         return "success".equalsIgnoreCase(result.getSubMessage(SmartJson.KEYS.OUTPUT).getValue("result"));
+    }
+
+    protected String partitionDescription() {
+        return "";
+    }
+
+    protected boolean addDescription() {
+        return partitionDescription() != null && !partitionDescription().isEmpty();
     }
 }
