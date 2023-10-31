@@ -10,7 +10,7 @@ import java.util.Map;
 @Slf4j
 class CommandChecker {
     private final String fullText;
-    private Command command;
+    private Command command = new Command();
 
     private CommandChecker(String str) {
         this.fullText = str;
