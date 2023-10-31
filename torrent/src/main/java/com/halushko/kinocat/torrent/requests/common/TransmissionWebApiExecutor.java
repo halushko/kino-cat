@@ -56,7 +56,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             boolean flag = false;
             StringBuilder sb = new StringBuilder();
             if(addDescription()) {
-                sb.append(partitionDescription()).append("01-0").append(result.size() < 10 ? result.size() : 9);
+                sb.append(partitionDescription()).append("01-0").append(result.size() < 10 ? result.size() : 9).append("\n");
             }
             for (String answer : result) {
                 i++;
@@ -70,7 +70,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     j++;
                     sb = new StringBuilder();
                     if(addDescription()) {
-                        sb.append(partitionDescription()).append(j * 10).append("-").append(j * 11 < result.size() ? j * 10 + 9 : result.size());
+                        sb.append(partitionDescription()).append(j * 10).append("-").append(result.size() <= j * 11 ? j * 10 + 9 : result.size()).append("\n");
                     }
                 }
             }
