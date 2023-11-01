@@ -36,8 +36,8 @@ public class TorrentsList extends GetTorrent {
 
     protected String getGigabytesLeft(TorrentEntity torrent) {
         return torrent.getPercentDone() == 1.0
-                ? " (done)"
-                : " % (" + Math.round((torrent.getTotalSize() - (long) (torrent.getTotalSize() * torrent.getPercentDone())) / 1000000.0) / 1000.0 + " Gb left)";
+                ? " (заверш)"
+                : " % (" + Math.round((torrent.getTotalSize() - (long) (torrent.getTotalSize() * torrent.getPercentDone())) / 1000000.0) / 1000.0 + " Gb залиш)";
     }
 
     protected String getStatusIcon(TorrentEntity torrent) {

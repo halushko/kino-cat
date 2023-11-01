@@ -11,7 +11,7 @@ public class FilesList extends GetTorrent {
 
     @Override
     protected String generateAnswer(TorrentEntity torrent) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("Торент ").append(torrent.getName()).append("\n/\n");
         SubTorrentEntity previousFile = null;
         for (SubTorrentEntity currentFile : torrent.getFiles()) {
             sb.append(getFileInfo(previousFile, currentFile)).append("\n");
@@ -33,8 +33,8 @@ public class FilesList extends GetTorrent {
         long full = torrent.getLength();
 
         return full == completed
-                ? " (done)"
-                : " % (" + Math.round((full - completed) / 1000000.0) / 1000.0 + " Gb left)";
+                ? " (заверш)"
+                : " % (" + Math.round((full - completed) / 1000000.0) / 1000.0 + " Gb залиш)";
     }
 
     protected String getProgressBar(SubTorrentEntity torrent) {
