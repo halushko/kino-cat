@@ -4,9 +4,11 @@ import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.torrent.entities.SubTorrentEntity;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.stream.IntStream;
 
+@Slf4j
 public class FilesList extends GetTorrent {
 
     @Override
@@ -53,15 +55,20 @@ public class FilesList extends GetTorrent {
     }
 
     protected String getFolderText(SubTorrentEntity previousFile, SubTorrentEntity currentFile) {
+        log.debug("[getFolderText] folders=[{}], size={}, file name={}", currentFile.getFolders(), currentFile.getFolders().size(), currentFile.getName());
         if (currentFile.getFolders().isEmpty()) {
+            log.debug("[getFolderText] Folder is empty");
             return "";
         }
         if (currentFile.getFolders().size() == 1 && currentFile.getFolders().get(0).equals(currentFile.getName())) {
+            log.debug("[getFolderText] Folder equal to file");
             return "";
         }
         if (previousFile == null || !previousFile.getFolders().equals(currentFile.getFolders())) {
+            log.debug("[getFolderText] New folder");
             return "/ " + String.join("\n//", currentFile.getFolders()) + "\n";
         }
+        log.debug("[getFolderText] Else");
         return "";
     }
 
