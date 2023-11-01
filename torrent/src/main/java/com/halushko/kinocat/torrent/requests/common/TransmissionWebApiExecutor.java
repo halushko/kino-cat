@@ -56,8 +56,8 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             boolean flag = false;
             StringBuilder sb = null;
             for (String answer : result) {
-                i++;
-                if (i >= 10) {
+                if (++i > 10) {
+                    log.debug("[executeRequest] New message created:\n{}", sb);
                     flag = false;
                     i = 1;
                     j++;
@@ -66,12 +66,13 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     }
                     sb = new StringBuilder();
                     if(addDescription()) {
-                        sb.append(partitionDescription()).append(j * 10).append("-").append(result.size() <= (j+1) * 10 ? result.size() : j * 10 + 9).append("\n");
+                        sb.append(partitionDescription()).append(j * 10).append("-").append(result.size() <= (j+1) * 10 ? result.size() : j * 10 + 9).append("\n\n");
                     }
                 } else {
                     flag = true;
                 }
                 sb.append(answer).append("\n");
+                log.debug("[executeRequest] Message:\n{}", sb);
             }
             if(flag) {
                 RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
