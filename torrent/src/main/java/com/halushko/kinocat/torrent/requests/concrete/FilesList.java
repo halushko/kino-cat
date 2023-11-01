@@ -25,12 +25,13 @@ public class FilesList extends GetTorrent {
     protected String getFileInfo(SubTorrentEntity previousFile, SubTorrentEntity currentFile) {
         String folder = getFolderText(previousFile, currentFile);
         String file = currentFile.getName();
-        log.debug("[getFileInfo] folder:\n{}\nfile:\n{}", folder, file);
-        return String.format("%s---%s\n||%s|| %s",
+        String result = String.format("%s---%s\n||%s|| %s",
                 folder,
                 file,
                 getProgressBar(currentFile), getGigabytesLeft(currentFile)
         );
+        log.debug("[getFileInfo]\nfolder:\n{}\nfile:\n{}\nresult:\n{}", folder, file, result);
+        return result;
     }
 
     protected String getGigabytesLeft(SubTorrentEntity torrent) {
