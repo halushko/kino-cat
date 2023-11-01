@@ -4,16 +4,14 @@ import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.torrent.entities.SubTorrentEntity;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.stream.IntStream;
 
-@Slf4j
 public class FilesList extends GetTorrent {
 
     @Override
     protected String generateAnswer(TorrentEntity torrent) {
-        StringBuilder sb = new StringBuilder(torrent.getName()).append("\n/");
+        StringBuilder sb = new StringBuilder();
         SubTorrentEntity previousFile = null;
         for (SubTorrentEntity currentFile : torrent.getFiles()) {
             sb.append(getFileInfo(previousFile, currentFile)).append("\n");
@@ -23,15 +21,11 @@ public class FilesList extends GetTorrent {
     }
 
     protected String getFileInfo(SubTorrentEntity previousFile, SubTorrentEntity currentFile) {
-        String folder = getFolderText(previousFile, currentFile);
-        String file = currentFile.getName();
-        String result = String.format("%s---%s\n||%s|| %s",
-                folder,
-                file,
+        return String.format("%s---%s\n||%s|| %s",
+                getFolderText(previousFile, currentFile),
+                currentFile.getName(),
                 getProgressBar(currentFile), getGigabytesLeft(currentFile)
         );
-        log.debug("[getFileInfo]\nfolder:\n{}\nfile:\n{}\nresult:\n{}", folder, file, result);
-        return result;
     }
 
     protected String getGigabytesLeft(SubTorrentEntity torrent) {
@@ -59,20 +53,18 @@ public class FilesList extends GetTorrent {
     }
 
     protected String getFolderText(SubTorrentEntity previousFile, SubTorrentEntity currentFile) {
-        log.debug("[getFolderText] folders=[{}], size={}, file name={}", currentFile.getFolders(), currentFile.getFolders().size(), currentFile.getName());
         if (currentFile.getFolders().isEmpty()) {
-            log.debug("[getFolderText] Folder is empty");
             return "";
         }
         if (currentFile.getFolders().size() == 1 && currentFile.getFolders().get(0).equals(currentFile.getName())) {
-            log.debug("[getFolderText] Folder equal to file");
             return "";
         }
-        if (previousFile == null || !previousFile.getFolders().equals(currentFile.getFolders())) {
-            log.debug("[getFolderText] New folder");
-            return "/ " + String.join("\n//", currentFile.getFolders()) + "\n";
+        if (!(previousFile != null && previousFile.getFolders().equals(currentFile.getFolders()))) {
+            return "/ " + String.join("\n//", currentFile.getFolders()) + "\n---";
         }
-        log.debug("[getFolderText] Else");
+        if(previousFile.getFolders().equals(currentFile.getFolders())) {
+            return "---";
+        }
         return "";
     }
 
