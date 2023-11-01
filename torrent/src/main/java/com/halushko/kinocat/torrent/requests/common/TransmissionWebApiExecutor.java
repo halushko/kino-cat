@@ -55,6 +55,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             int j = -1;
             StringBuilder sb = null;
             for (String answer : result) {
+                log.debug("[executeRequest] answer={}", answer);
                 if (++i > 10) {
                     log.debug("[executeRequest] New message created");
                     i = 1;
