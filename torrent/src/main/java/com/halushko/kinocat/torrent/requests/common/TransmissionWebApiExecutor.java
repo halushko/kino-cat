@@ -53,28 +53,26 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             val result = executeRequest(json);
             int i = 999;
             int j = -1;
-            boolean flag = false;
             StringBuilder sb = null;
             for (String answer : result) {
                 if (++i > 10) {
-                    log.debug("[executeRequest] New message created:\n{}", sb);
+                    log.debug("[executeRequest] New message created");
                     i = 1;
                     j++;
-                    if(sb != null) {
+                    if (sb != null) {
                         RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
-                        flag = false;
+                        log.debug("[executeRequest] Send message:\n{}", sb);
                     }
                     sb = new StringBuilder();
-                    if(addDescription()) {
-                        sb.append(partitionDescription()).append(j * 10).append("-").append(result.size() <= (j+1) * 10 ? result.size() : j * 10 + 9).append("\n\n");
+                    if (addDescription()) {
+                        sb.append(partitionDescription()).append(j * 10).append("-").append(result.size() <= (j + 1) * 10 ? result.size() : j * 10 + 9).append("\n\n");
                     }
-                } else {
-                    flag = true;
                 }
                 sb.append(answer).append("\n");
                 log.debug("[executeRequest] Message:\n{}", sb);
             }
-            if(flag) {
+            if (sb != null) {
+                log.debug("[executeRequest] Send message:\n{}", sb);
                 RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
             }
         } else {
