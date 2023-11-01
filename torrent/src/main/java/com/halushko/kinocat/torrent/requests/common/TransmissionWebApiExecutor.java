@@ -51,28 +51,27 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
 
         if (isResultValid(json)) {
             val result = executeRequest(json);
-            int i = 0;
-            int j = 0;
+            int i = 999;
+            int j = -1;
             boolean flag = false;
-            StringBuilder sb = new StringBuilder();
-            if(addDescription()) {
-                sb.append(partitionDescription()).append("01-0").append(result.size() < 10 ? result.size() : 9).append("\n");
-            }
+            StringBuilder sb = null;
             for (String answer : result) {
                 i++;
-                if (i < 10) {
-                    sb.append(answer).append("\n");
-                    flag = true;
-                } else {
-                    RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+                if (i >= 10) {
                     flag = false;
-                    i = 0;
+                    i = 1;
                     j++;
+                    if(sb != null) {
+                        RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+                    }
                     sb = new StringBuilder();
                     if(addDescription()) {
-                        sb.append(partitionDescription()).append(j * 10).append("-").append(result.size() <= j * 11 ? j * 10 + 9 : result.size()).append("\n");
+                        sb.append(partitionDescription()).append(j * 10).append("-").append(result.size() <= (j+1) * 10 ? result.size() : j * 10 + 9).append("\n");
                     }
+                } else {
+                    flag = true;
                 }
+                sb.append(answer).append("\n");
             }
             if(flag) {
                 RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
