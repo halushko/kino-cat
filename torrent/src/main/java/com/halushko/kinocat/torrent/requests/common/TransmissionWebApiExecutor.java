@@ -58,11 +58,11 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             for (String answer : result) {
                 if (++i > 10) {
                     log.debug("[executeRequest] New message created:\n{}", sb);
-                    flag = false;
                     i = 1;
                     j++;
                     if(sb != null) {
                         RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+                        flag = false;
                     }
                     sb = new StringBuilder();
                     if(addDescription()) {
