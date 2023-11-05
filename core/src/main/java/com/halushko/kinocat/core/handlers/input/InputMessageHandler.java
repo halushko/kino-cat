@@ -14,6 +14,7 @@ import static com.halushko.kinocat.core.rabbit.RabbitUtils.readMessage;
 public abstract class InputMessageHandler implements Runnable {
     public static final long LONG_PAUSE_MILIS = Long.parseLong(System.getenv("LONG_PAUSE_MILIS"));
     public static final long MEDIUM_PAUSE_MILIS = Long.parseLong(System.getenv("MEDIUM_PAUSE_MILIS"));
+    public static final String OUTPUT_SEPARATOR = "#OUTPUT_SEPARATOR#";
 
     @Override
     public void run() {
@@ -54,7 +55,8 @@ public abstract class InputMessageHandler implements Runnable {
     }
 
     protected String printResult(long chatId, String text){
-        RabbitUtils.postMessage(chatId, text, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+        String replacedString = text.replaceAll(OUTPUT_SEPARATOR + "(?=" + OUTPUT_SEPARATOR + ")", ",");
+        RabbitUtils.postMessage(chatId, replacedString, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         return "";
     }
 

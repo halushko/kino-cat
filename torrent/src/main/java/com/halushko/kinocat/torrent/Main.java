@@ -10,11 +10,9 @@ public class Main {
         new DeleteOnlyTorrent().run();
         new DeleteWithFiles().run();
         new FilesList().run();
-        new PauseAll().run();
         new PauseTorrent().run();
-        new RemoveTorrentCommand().run();
-        new ResumeAll().run();
         new ResumeTorrent().run();
+        new RemoveTorrentCommand().run();
         new PrintTorrentCommands().run();
         new TorrentsList().run();
 

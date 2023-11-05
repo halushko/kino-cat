@@ -57,7 +57,7 @@ public class SmartJson {
         return new SmartJson(getValue(key));
     }
 
-    public SmartJson addValue(KEYS key, String value) {
+    public SmartJson addValue(KEYS key, Object value) {
         return addValue(key.name(), value);
     }
     public SmartJson addValue(String key, Object value) {

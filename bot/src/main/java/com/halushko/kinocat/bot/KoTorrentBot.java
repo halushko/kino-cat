@@ -4,6 +4,7 @@ import com.halushko.kinocat.bot.handlers.input.SendTextMessageToUser;
 import com.halushko.kinocat.bot.handlers.telegram.MyPingHandler;
 import com.halushko.kinocat.bot.handlers.telegram.TextHandler;
 import com.halushko.kinocat.bot.handlers.telegram.TorrentFileHandler;
+import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -88,7 +89,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
             log.debug("[BOT.sendText] Send text chatId:{}, text:{}", chatId, str);
             BOT.execute(new SendMessage() {{
                             setChatId(chatId);
-                            setText(str);
+                            setText(str.replace(InputMessageHandler.OUTPUT_SEPARATOR, "\n"));
                         }}
             );
         } catch (TelegramApiException ex) {

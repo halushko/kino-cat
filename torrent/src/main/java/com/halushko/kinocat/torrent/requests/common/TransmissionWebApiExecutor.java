@@ -12,7 +12,6 @@ import java.util.List;
 // https://github.com/transmission/transmission/blob/main/docs/rpc-spec.md
 @Slf4j
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
-    protected final static String OUTPUT_SEPARATOR = "#$OUTPUT_SEPARATOR$#";
     private static String sessionIdValue;
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
 
@@ -32,7 +31,9 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
         }
         String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", getRequest()));
-        String requestBody = String.format(requestBodyFormat, message.getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS).convertToList().toArray());
+        Object[] requestBodyFormatArguments = message.getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS).convertToList().toArray();
+        log.debug("[executeRequest] Request body format:\n{}Request body format arguments:\n{}", requestBodyFormat, requestBodyFormatArguments);
+        String requestBody = String.format(requestBodyFormat, requestBodyFormatArguments);
         log.debug("[executeRequest] Request body:\n{}", requestBody);
 
         ApiResponce responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
@@ -68,7 +69,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                         sb.append(textOfMessageBegin()).append(j * 10).append("-").append(result.size() <= (j + 1) * 10 ? result.size() : j * 10 + 9).append("\n\n");
                     }
                 }
-                sb.append(answer).append("\n");
+                sb.append(answer).append(OUTPUT_SEPARATOR);
                 log.debug("[executeRequest] Message:\n{}", sb);
             }
             if (sb != null) {
