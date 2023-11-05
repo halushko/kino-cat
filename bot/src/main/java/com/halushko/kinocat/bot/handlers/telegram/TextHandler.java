@@ -1,6 +1,6 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
-import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;

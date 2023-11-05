@@ -1,4 +1,4 @@
-package com.halushko.kinocat.core.cli;
+package com.halushko.kinocat.core.commands;
 
 @SuppressWarnings("unused")
 public interface Constants {
@@ -10,11 +10,17 @@ public interface Constants {
         }
 
         interface Torrent {
-            String EXECUTE_VOID_TORRENT_COMMAND = "EXECUTE_TORRENT_COMMAND_QUEUE";
-            String EXECUTE_TORRENT_COMMAND_LIST = "EXECUTE_TORRENT_COMMAND_LIST";
-            String EXECUTE_TORRENT_COMMAND_LIST_FILES = "EXECUTE_TORRENT_COMMAND_LIST_FILES";
-            String EXECUTE_TORRENT_COMMAND_INFO = "EXECUTE_TORRENT_COMMAND_INFO";
-            String EXECUTE_TORRENT_COMMAND_COMMANDS = "EXECUTE_TORRENT_COMMAND_FILE_COMMANDS";
+            String TORRENTS_LIST = "EXECUTE_TORRENT_COMMAND_LIST";
+            String FILES_LIST = "EXECUTE_TORRENT_COMMAND_LIST_FILES";
+            String TORRENT_INFO = "EXECUTE_TORRENT_COMMAND_INFO";
+            String TORRENT_COMMANDS = "EXECUTE_TORRENT_COMMAND_SHOW_COMMANDS";
+            String RESUME_TORRENT = "EXECUTE_TORRENT_COMMAND_RESUME_TORRENT";
+            String PAUSE_TORRENT = "EXECUTE_TORRENT_COMMAND_PAUSE_TORRENT";
+            String RESUME_ALL = "EXECUTE_TORRENT_COMMAND_RESUME_ALL_TORRENTS";
+            String PAUSE_ALL = "EXECUTE_TORRENT_COMMAND_PAUSE_ALL_TORRENTS";
+            String DELETE = "EXECUTE_TORRENT_COMMAND_DELETE";
+            String DELETE_ONLY_TORRENT = "EXECUTE_TORRENT_COMMAND_DELETE_ONLY_TORRENT";
+            String DELETE_WITH_FILES = "EXECUTE_TORRENT_COMMAND_DELETE_WITH_FILES";
 
         }
 
@@ -26,20 +32,22 @@ public interface Constants {
     interface Commands {
         interface Torrent {
             String LIST_TORRENTS = "/list";
-            String START_TORRENT_FILE = "/start_torrent";
             String LIST_TORRENT_COMMANDS = "/more_";
             String RESUME = "/resume_";
             String PAUSE = "/pause_";
+            String RESUME_ALL = "/resume_all";
+            String PAUSE_ALL = "/pause_all";
             String TORRENT_INFO = "/full_info_";
             String REMOVE_WITH_FILES = "/approve_with_files_";
             String REMOVE_JUST_TORRENT = "/approve_just_torrent_";
             String LIST_FILES = "/files_";
+            String REMOVE_COMMAND = "/remove_";
+
         }
 
         interface Text {
             String SEND_TEXT_TO_USER = "#$SEND_TEXT_TO_USER$#";
             String SEPARATOR = "#$SEPARATOR$#";
-            String REMOVE_COMMAND = "/remove_";
             String REMOVE_WARN_TEXT_FUNC = "askRemoveTorrent";
         }
     }

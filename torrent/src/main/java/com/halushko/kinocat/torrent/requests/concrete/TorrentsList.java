@@ -1,7 +1,8 @@
-package com.halushko.kinocat.torrent.externalCalls;
+package com.halushko.kinocat.torrent.requests.concrete;
 
-import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
+import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.stream.IntStream;
@@ -35,8 +36,8 @@ public class TorrentsList extends GetTorrent {
 
     protected String getGigabytesLeft(TorrentEntity torrent) {
         return torrent.getPercentDone() == 1.0
-                ? " (done)"
-                : " % (" + Math.round((torrent.getTotalSize() - (long) (torrent.getTotalSize() * torrent.getPercentDone())) / 1000000.0) / 1000.0 + " Gb left)";
+                ? " (заверш)"
+                : " % (" + Math.round((torrent.getTotalSize() - (long) (torrent.getTotalSize() * torrent.getPercentDone())) / 1000000.0) / 1000.0 + " Gb залиш)";
     }
 
     protected String getStatusIcon(TorrentEntity torrent) {
@@ -54,6 +55,15 @@ public class TorrentsList extends GetTorrent {
 
     @Override
     protected String getQueue() {
-        return Constants.Queues.Torrent.EXECUTE_TORRENT_COMMAND_LIST;
+        return Constants.Queues.Torrent.TORRENTS_LIST;
+    }
+    @Override
+    protected String getRequest() {
+        return "get_torrents_list.json";
+    }
+
+    @Override
+    protected String textOfMessageBegin() {
+        return "Торенти ";
     }
 }
