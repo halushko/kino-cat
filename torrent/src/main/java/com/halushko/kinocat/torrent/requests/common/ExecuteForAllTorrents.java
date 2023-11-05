@@ -2,10 +2,12 @@ package com.halushko.kinocat.torrent.requests.common;
 
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public abstract class ExecuteForAllTorrents extends VoidTorrentOperator {
     @Override
     protected final List<String> executeRequest(SmartJson message) {
@@ -20,6 +22,7 @@ public abstract class ExecuteForAllTorrents extends VoidTorrentOperator {
     @Override
     protected void executePostAction(SmartJson input, String output) {
         String newArguments = output.replace(OUTPUT_SEPARATOR, ",");
+        log.debug("[executePostAction] Start to execute a post action. input:\n{}\noutput:{}\nqueue:{}", input, output, getQueueForPostAction());
         RabbitUtils.postMessage(
                 input.getUserId(),
                 input.addValue(SmartJson.KEYS.COMMAND_ARGUMENTS, newArguments).getRabbitMessageText(),
