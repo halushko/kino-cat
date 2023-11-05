@@ -1,8 +1,6 @@
 package com.halushko.kinocat.torrent.requests.common;
 
-import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.core.files.ResourceReader;
-import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.web.ApiResponce;
 import com.halushko.kinocat.core.web.InputMessageHandlerApiRequest;
@@ -14,6 +12,7 @@ import java.util.List;
 // https://github.com/transmission/transmission/blob/main/docs/rpc-spec.md
 @Slf4j
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
+    protected final static String OUTPUT_SEPARATOR = "#$OUTPUT_SEPARATOR$#";
     private static String sessionIdValue;
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
 
@@ -22,7 +21,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
     }
 
     @Override
-    protected final void getDeliverCallbackPrivate(SmartJson message) {
+    protected final String getDeliverCallbackPrivate(SmartJson message) {
         log.debug("[executeRequest] Message:\n{}", message.getRabbitMessageText());
         long chatId = message.getUserId();
         if (sessionIdValue == null) {
@@ -48,7 +47,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
 
         log.debug("[executeRequest] Responce body:\n{}", responceBody);
         SmartJson json = new SmartJson(SmartJson.KEYS.INPUT, message.getRabbitMessageText()).addValue(SmartJson.KEYS.OUTPUT, responceBody);
-
+        StringBuilder output = new StringBuilder();
         if (isResultValid(json)) {
             val result = executeRequest(json);
             int i = 999;
@@ -61,24 +60,27 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     i = 1;
                     j++;
                     if (sb != null) {
-                        RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
-                        log.debug("[executeRequest] Send message:\n{}", sb);
+                        log.debug("[executeRequest] Print result:\n{}", sb);
+                        output.append(printResult(chatId, sb.toString())).append(OUTPUT_SEPARATOR);
                     }
                     sb = new StringBuilder();
                     if (addDescription()) {
-                        sb.append(partitionDescription()).append(j * 10).append("-").append(result.size() <= (j + 1) * 10 ? result.size() : j * 10 + 9).append("\n\n");
+                        sb.append(textOfMessageBegin()).append(j * 10).append("-").append(result.size() <= (j + 1) * 10 ? result.size() : j * 10 + 9).append("\n\n");
                     }
                 }
                 sb.append(answer).append("\n");
                 log.debug("[executeRequest] Message:\n{}", sb);
             }
             if (sb != null) {
-                log.debug("[executeRequest] Send message:\n{}", sb);
-                RabbitUtils.postMessage(chatId, sb.toString(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+                log.debug("[executeRequest] Print result:\n{}", sb);
+                output.append(printResult(chatId, sb.toString()));
             }
         } else {
-            RabbitUtils.postMessage(chatId, String.format("result of request is: %s", responceBody), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+            String errorText = String.format("result of request is: %s", responceBody);
+            output.append(errorText);
+            printResult(chatId, errorText);
         }
+        return output.toString();
     }
 
     protected abstract List<String> executeRequest(SmartJson message);
@@ -87,11 +89,12 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         return "success".equalsIgnoreCase(result.getSubMessage(SmartJson.KEYS.OUTPUT).getValue("result"));
     }
 
-    protected String partitionDescription() {
+    protected String textOfMessageBegin() {
         return "";
     }
 
     protected boolean addDescription() {
-        return partitionDescription() != null && !partitionDescription().isEmpty();
+        return textOfMessageBegin() != null && !textOfMessageBegin().isEmpty();
     }
+
 }

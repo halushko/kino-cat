@@ -1,5 +1,7 @@
 package com.halushko.kinocat.core.handlers.input;
 
+import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.rabbitmq.client.DeliverCallback;
 import lombok.extern.slf4j.Slf4j;
@@ -46,12 +48,21 @@ public abstract class InputMessageHandler implements Runnable {
 
     private void getDeliverCallbackLog(SmartJson message) {
         log.debug("[InputMessageHandler] Start processing message={}", message.getRabbitMessageText());
-        getDeliverCallbackPrivate(message);
-        log.debug("[InputMessageHandler] Finish processing");
+        String result = getDeliverCallbackPrivate(message);
+        executePostAction(message, result);
+        log.debug("[InputMessageHandler] Finish processing with result: {}", result);
     }
 
+    protected String printResult(long chatId, String text){
+        RabbitUtils.postMessage(chatId, text, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+        return "";
+    }
 
-    protected abstract void getDeliverCallbackPrivate(SmartJson message);
+    @SuppressWarnings("unused")
+    protected void executePostAction(SmartJson input, String output){
+    }
+
+    protected abstract String getDeliverCallbackPrivate(SmartJson message);
 
     protected abstract String getQueue();
 }

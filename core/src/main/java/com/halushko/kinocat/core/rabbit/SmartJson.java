@@ -30,6 +30,7 @@ public class SmartJson {
     public SmartJson(KEYS key, Object value) {
         this(key.name(), value);
     }
+
     public SmartJson(String key, Object value) {
         addValue(key, value);
     }
@@ -49,10 +50,16 @@ public class SmartJson {
         this.json = map == null ? "" : convertToString(map);
     }
 
+    public SmartJson getSubMessage(KEYS key) {
+        return getSubMessage(key.name());
+    }
+    public SmartJson getSubMessage(String key) {
+        return new SmartJson(getValue(key));
+    }
+
     public SmartJson addValue(KEYS key, String value) {
         return addValue(key.name(), value);
     }
-
     public SmartJson addValue(String key, Object value) {
         log.debug("[addValue] Start add to json (key, value)=({}, {}) before_json={}", key, value, json);
         val map = convertJsonToMap(json);
@@ -61,18 +68,9 @@ public class SmartJson {
         return this;
     }
 
-    public SmartJson getSubMessage(KEYS key) {
-        return getSubMessage(key.name());
-    }
-
-    public SmartJson getSubMessage(String key) {
-        return new SmartJson(getValue(key));
-    }
-
     public String getValue(KEYS key) {
         return getValue(key.name());
     }
-
     public String getValue(String key) {
         return convertToString(convertJsonToMap(json).getOrDefault(key, ""));
     }
@@ -82,11 +80,11 @@ public class SmartJson {
     }
 
     public List<Object> convertToList() {
-        if(json == null || json.isEmpty()) {
+        if (json == null || json.isEmpty()) {
             return Collections.emptyList();
         }
         val map = convertJsonToMap(json);
-        if (map.isEmpty()){
+        if (map.isEmpty()) {
             return Collections.emptyList();
         } else if (map.size() == 1) {
             val value = map.values().stream().findFirst().get();
@@ -105,15 +103,13 @@ public class SmartJson {
     public String getText() {
         return getValue(KEYS.TEXT);
     }
-
     public long getUserId() {
         return Long.parseLong(getValue(KEYS.USER_ID));
     }
 
     public String getRabbitMessageText() {
-        return json;
+        return toString();
     }
-
     public byte[] getRabbitMessageBytes() {
         return getRabbitMessageText().getBytes();
     }
@@ -169,5 +165,10 @@ public class SmartJson {
         } else {
             return jsonNode.asText();
         }
+    }
+
+    @Override
+    public String toString() {
+        return json;
     }
 }

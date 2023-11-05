@@ -6,8 +6,8 @@ import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TorrentCommands extends GetTorrent {
-    public TorrentCommands() {
+public class PrintTorrentCommands extends GetTorrent {
+    public PrintTorrentCommands() {
         super();
     }
 

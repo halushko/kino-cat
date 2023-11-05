@@ -5,7 +5,7 @@ import com.halushko.kinocat.torrent.requests.common.VoidTorrentOperator;
 
 public class DeleteOnlyTorrent extends VoidTorrentOperator {
     @Override
-    protected String getCommandName() {
+    protected String getCommandNameForOutputText() {
         return "видалення торента";
     }
 

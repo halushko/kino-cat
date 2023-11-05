@@ -26,7 +26,7 @@ public class UserMessageHandler extends InputMessageHandler {
     }};
 
     @Override
-    protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
+    protected String getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         log.debug("[UserMessageHandler] Start DeliverCallbackPrivate for " + getQueue());
         try {
             String text = rabbitMessage.getText();
@@ -39,6 +39,7 @@ public class UserMessageHandler extends InputMessageHandler {
         } catch (Exception e) {
             log.error("[UserMessageHandler] During message handle got an error: ", e);
         }
+        return "";
     }
 
     @Override

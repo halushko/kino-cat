@@ -5,7 +5,7 @@ import com.halushko.kinocat.torrent.requests.common.VoidTorrentOperator;
 
 public class DeleteWithFiles extends VoidTorrentOperator {
     @Override
-    protected String getCommandName() {
+    protected String getCommandNameForOutputText() {
         return "видалення торента та всіх файлів, пов'язаних з ним";
     }
 

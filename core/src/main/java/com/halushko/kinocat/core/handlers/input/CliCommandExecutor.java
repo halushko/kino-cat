@@ -1,8 +1,6 @@
 package com.halushko.kinocat.core.handlers.input;
 
-import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.core.rabbit.SmartJson;
-import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -14,7 +12,7 @@ import java.util.List;
 @Slf4j
 public abstract class CliCommandExecutor extends InputMessageHandler {
     @Override
-    protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
+    protected String getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         long userId = rabbitMessage.getUserId();
         String script = rabbitMessage.getText();
 
@@ -23,11 +21,14 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
         try {
             String textResult = getResultString(executeViaCLI(script), rabbitMessage);
             log.debug("[ExternalCliCommandExecutor] textResult: {}", textResult);
-            RabbitUtils.postMessage(userId, textResult, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+            return printResult(userId, textResult);
         } catch (Exception e) {
-            log.error("[ExternalCliCommandExecutor] Error during CLI execution: ", e);
+            String errorText = "[ExternalCliCommandExecutor] Error during CLI execution: ";
+            log.error(errorText, e);
+            return String.format(errorText + "{}", e.getMessage());
         }
     }
+
     protected String getResultString(List<String> lines, SmartJson rabbitMessage) {
         return lines == null ? "" : String.join("\n", lines);
     }

@@ -63,7 +63,7 @@ public class TorrentsList extends GetTorrent {
     }
 
     @Override
-    protected String partitionDescription() {
+    protected String textOfMessageBegin() {
         return "Торенти ";
     }
 }

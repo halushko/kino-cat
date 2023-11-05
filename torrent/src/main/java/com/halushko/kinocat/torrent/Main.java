@@ -1,6 +1,5 @@
 package com.halushko.kinocat.torrent;
 
-import com.halushko.kinocat.torrent.requests.additional.GetAllIds;
 import com.halushko.kinocat.torrent.requests.concrete.*;
 
 public class Main {
@@ -16,9 +15,10 @@ public class Main {
         new RemoveTorrentCommand().run();
         new ResumeAll().run();
         new ResumeTorrent().run();
-        new TorrentCommands().run();
+        new PrintTorrentCommands().run();
         new TorrentsList().run();
 
-        new GetAllIds().run();
+        new PauseAll().run();
+        new ResumeAll().run();
     }
 }

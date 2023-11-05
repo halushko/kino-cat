@@ -19,7 +19,7 @@ public class UserMessageHandler extends InputMessageHandler {
     private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
 
     @Override
-    protected void getDeliverCallbackPrivate(SmartJson rabbitMessage) {
+    protected String getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         try {
             String mimeType = rabbitMessage.getValue(MIME_TYPE);
             if ("application/x-bittorrent".equalsIgnoreCase(mimeType)) {
@@ -28,6 +28,7 @@ public class UserMessageHandler extends InputMessageHandler {
         } catch (Exception e) {
             log.error("During message handle got an error: ", e);
         }
+        return "";
     }
 
     protected void handleTorrent(SmartJson rm) throws MalformedURLException {

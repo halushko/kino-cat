@@ -1,8 +1,8 @@
 {
+  "method": "torrent-start",
   "arguments": {
     "ids": [
       %s
     ]
-  },
-  "method": "torrent-start"
+  }
 }
