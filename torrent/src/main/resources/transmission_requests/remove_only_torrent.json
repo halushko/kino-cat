@@ -1,9 +1,9 @@
 {
+  "method": "torrent-remove",
   "arguments": {
     "delete-local-data": false,
     "ids": [
       %s
     ]
-  },
-  "method": "torrent-remove"
+  }
 }

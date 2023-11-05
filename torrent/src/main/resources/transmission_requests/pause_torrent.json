@@ -1,8 +1,8 @@
 {
+  "method": "torrent-stop",
   "arguments": {
     "ids": [
       %s
     ]
-  },
-  "method": "torrent-stop"
+  }
 }

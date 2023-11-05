@@ -1,29 +1,34 @@
-package com.halushko.kinocat.core.cli;
+package com.halushko.kinocat.core.commands;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.util.*;
 
 @Slf4j
-public class ScriptsCollection {
-    private Map<String, Script> allCommands;
-    private final List<Script> values = new ArrayList<>();
+public class CommandsCollection {
+    private Map<String, Command> allCommands;
+    private final List<Command> values = new ArrayList<>();
 
-    public void addValue(String command, String script, String queue, String... args) {
-        values.add(new Script(command, script, queue, args));
+    @SuppressWarnings("unused")
+    public void addValue(String command, String queue) {
+        values.add(new Command(command, queue, new LinkedHashMap<>()));
+    }
+    @SuppressWarnings("unused")
+    public void addValue(String command, String queue, Map<String, String> params) {
+        values.add(new Command(command, queue, params));
     }
 
+    @SuppressWarnings("unused")
     public Command getCommand(String text) {
-        log.debug("Try to get command from text [{}]", text);
-        if (text == null) return new Command("");
-
-        Command tmp = new Command(text);
-        getCommandList().forEach(tmp::tryToSetScript);
-        log.debug("Command is command=%s, script={}, queue={}", tmp.getFinalCommand(), tmp.getScript(), tmp.getQueue());
-        return tmp;
+        log.debug("[getCommand] Try to get command from text [{}]", text);
+        if (text == null || text.isEmpty()) return new Command();
+        val result =  CommandChecker.getCommand(text, getCommandList());
+        log.debug("[getCommand] Command is command={}, queue={}", result.getCommand(), result.getQueue());
+        return result;
     }
 
-    private Collection<Script> getCommandList() {
+    private Collection<Command> getCommandList() {
         init();
         return allCommands.values();
     }
@@ -31,7 +36,7 @@ public class ScriptsCollection {
     private void init() {
         if (allCommands == null) {
             allCommands = new LinkedHashMap<>();
-            Map<String, Script> allCommandsTemp = new LinkedHashMap<>();
+            Map<String, Command> allCommandsTemp = new LinkedHashMap<>();
             values.sort(Comparator.comparingInt(s -> s.getCommand().length()));
             values.forEach(s -> allCommandsTemp.put(s.getCommand(), s));
             allCommandsTemp.forEach((key, value) -> {

@@ -1,7 +1,7 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
 import com.halushko.kinocat.bot.KoTorrentBot;
-import com.halushko.kinocat.core.cli.Constants;
+import com.halushko.kinocat.core.commands.Constants;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
@@ -34,11 +34,11 @@ public class TorrentFileHandler extends UserMessageHandler {
         try {
             SmartJson rm = new SmartJson(chatId).
                     addValue(FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath()).
-                    addValue("FILE_ID", update.getMessage().getDocument().getFileId()).
+                    addValue(FILE_ID, update.getMessage().getDocument().getFileId()).
                     addValue(TEXT, message).
-                    addValue("CAPTION", caption).
-                    addValue("SIZE", String.valueOf(fileSize)).
-                    addValue("MIME_TYPE", mimeType);
+                    addValue(CAPTION, caption).
+                    addValue(SIZE, String.valueOf(fileSize)).
+                    addValue(MIME_TYPE, mimeType);
 
             RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_FILE);
         } catch (TelegramApiException e) {
