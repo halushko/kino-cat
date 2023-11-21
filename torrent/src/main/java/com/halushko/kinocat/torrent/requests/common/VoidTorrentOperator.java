@@ -9,7 +9,7 @@ import java.util.List;
 @Slf4j
 public abstract class VoidTorrentOperator extends TransmissionWebApiExecutor {
     @Override
-    protected List<String> executeRequest(SmartJson message) {
+    protected List<String> parceResponce(SmartJson message) {
         List<String> result = new ArrayList<>();
         result.add(String.format("Операція %s виконана без помилок", getCommandNameForOutputText()));
         return result;
