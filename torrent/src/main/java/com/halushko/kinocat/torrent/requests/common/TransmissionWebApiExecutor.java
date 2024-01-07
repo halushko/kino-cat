@@ -14,9 +14,10 @@ import java.util.List;
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
     private static String sessionIdValue;
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
+    public static final String TRANSMISSION_IP = System.getenv("TORRENT_IP");
 
     public TransmissionWebApiExecutor() {
-        super("http", "10.10.255.253", 9091, "transmission/rpc");
+        super("http", TRANSMISSION_IP, 9091, "transmission/rpc");
     }
 
     @Override
@@ -52,22 +53,19 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
 
         if (isResultValid(json)) {
             val result = parceResponce(json);
-            int i = 999;
-            int j = -1;
             StringBuilder sb = null;
-            for (String answer : result) {
+            for (int i = 1; i <= result.size(); i++) {
+                String answer = result.get(i-1);
                 log.debug("[getDeliverCallbackPrivate] answer={}", answer);
-                if (++i > 10) {
+                if (i == 1 || i % 10 == 0) {
                     log.debug("[getDeliverCallbackPrivate] New message created");
-                    i = 1;
-                    j++;
                     if (sb != null) {
                         log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
                         output.append(printResult(chatId, sb.toString())).append(OUTPUT_SEPARATOR);
                     }
                     sb = new StringBuilder();
                     if (addDescription()) {
-                        sb.append(textOfMessageBegin()).append(j * 10).append("-").append(result.size() <= (j + 1) * 10 ? result.size() : j * 10 + 9).append("\n\n");
+                        sb.append(textOfMessageBegin()).append(i).append("-").append(result.size() < i + 10 ? result.size() : (i == 1 ? 9 : i + 9)).append("\n\n");
                     }
                 }
                 sb.append(answer).append(OUTPUT_SEPARATOR);
@@ -76,6 +74,9 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             if (sb != null) {
                 log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
                 output.append(printResult(chatId, sb.toString()));
+            } else {
+                log.debug("[getDeliverCallbackPrivate] Result is empty");
+                output.append(printResult(chatId, "Нажаль результат запиту порожній"));
             }
         } else {
             String errorText = String.format("result of request is: %s", responceBody);

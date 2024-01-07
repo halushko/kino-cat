@@ -5,6 +5,7 @@ import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -60,6 +61,7 @@ public class TorrentsList extends GetTorrent {
     protected String getQueue() {
         return Constants.Queues.Torrent.TORRENTS_LIST;
     }
+
     @Override
     protected String getRequest() {
         return "get_torrents_list.json";
@@ -71,9 +73,12 @@ public class TorrentsList extends GetTorrent {
     }
 
     @Override
-    protected Predicate<? super TorrentEntity> getSmartFilter(String arguments) {
-        return element -> ignoreSymbols(element.getName().toUpperCase())
-                .startsWith(ignoreSymbols(arguments));
+    protected Predicate<? super TorrentEntity> getSmartFilter(List<String> arguments) {
+        return element -> arguments.isEmpty() || arguments
+                .stream()
+                .anyMatch(a -> ignoreSymbols(element.getName().toUpperCase())
+                        .contains(ignoreSymbols(a).toUpperCase())
+                );
     }
 
     private String ignoreSymbols(String str) {

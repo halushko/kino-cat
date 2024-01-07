@@ -21,8 +21,9 @@ public class UserMessageHandler extends InputMessageHandler {
 //        addValue(Torrent.TORRENT_INFO, "", "info_torrent.sh", Constants.Queues.Torrent.TORRENT_INFO);
         addValue(Constants.Commands.Torrent.REMOVE_WITH_FILES, Constants.Queues.Torrent.DELETE_WITH_FILES);
         addValue(Constants.Commands.Torrent.REMOVE_JUST_TORRENT, Constants.Queues.Torrent.DELETE_ONLY_TORRENT);
-
         addValue(Constants.Commands.Torrent.REMOVE_COMMAND, Constants.Queues.Torrent.DELETE);
+
+        addValue(Constants.Commands.Text.HELP, Constants.Queues.Torrent.RESUME_ALL);
     }};
 
     @Override

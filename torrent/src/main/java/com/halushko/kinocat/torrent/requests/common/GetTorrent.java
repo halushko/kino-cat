@@ -20,8 +20,12 @@ public abstract class GetTorrent extends TransmissionWebApiExecutor {
                 .map(TorrentEntity::new)
                 .filter(getSmartFilter(
                                 json.getSubMessage(SmartJson.KEYS.INPUT)
-                                        .getValue(SmartJson.KEYS.COMMAND_ARGUMENTS)
-                                        .toUpperCase()
+                                        .getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS)
+                                        .convertToList()
+                                        .stream()
+                                        .map(String::valueOf)
+                                        .filter(a -> a != null && !a.isEmpty())
+                                        .toList()
                         )
                 )
                 .sorted(Comparator.comparing(TorrentEntity::getName))
@@ -49,8 +53,7 @@ public abstract class GetTorrent extends TransmissionWebApiExecutor {
         return new HashSet<>();
     }
 
-    @SuppressWarnings("unused")
-    protected Predicate<? super TorrentEntity> getSmartFilter(String arguments) {
+    protected Predicate<? super TorrentEntity> getSmartFilter(List<String> arguments) {
         return element -> true;
     }
 }

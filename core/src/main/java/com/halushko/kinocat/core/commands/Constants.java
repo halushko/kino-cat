@@ -25,6 +25,9 @@ public interface Constants {
     }
 
     interface Commands {
+        interface Text {
+            String HELP = "/help";
+        }
         interface Torrent {
             String LIST_TORRENTS = "/list";
             String LIST_TORRENT_COMMANDS = "/more_";

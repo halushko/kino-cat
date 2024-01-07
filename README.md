@@ -24,7 +24,7 @@ sudo apt-get -f -y install docker docker.io docker-compose
 sudo docker-compose up
 ```
 or, if all services cant start in a 60 sec:
-'''
+```
 sudo -s
 env COMPOSE_HTTP_TIMEOUT=60000 docker-compose up
 ```
@@ -50,7 +50,6 @@ TimeoutStartSec=0
 
 [Install]
 WantedBy=default.target
-
 ```
 Make sure to replace /path/to/docker-compose/directory with the path to your directory containing the docker-compose.yml file.
   - Save and close the file.
