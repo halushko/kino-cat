@@ -11,12 +11,12 @@ public class CommandsCollection {
     private final List<Command> values = new ArrayList<>();
 
     @SuppressWarnings("unused")
-    public void addValue(String command, String queue) {
-        values.add(new Command(command, queue, new LinkedHashMap<>()));
+    public void addValue(String command, String queue, String description) {
+        values.add(new Command(command, queue, description, new LinkedHashMap<>()));
     }
     @SuppressWarnings("unused")
-    public void addValue(String command, String queue, Map<String, String> params) {
-        values.add(new Command(command, queue, params));
+    public void addValue(String command, String queue, String description, Map<String, String> params) {
+        values.add(new Command(command, queue, description, params));
     }
 
     @SuppressWarnings("unused")
@@ -28,6 +28,10 @@ public class CommandsCollection {
         return result;
     }
 
+    @SuppressWarnings("unused")
+    public Collection<Command> getCommands() {
+        return new ArrayList<>(getCommandList());
+    }
     private Collection<Command> getCommandList() {
         init();
         return allCommands.values();

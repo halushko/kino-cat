@@ -45,6 +45,6 @@ class CommandChecker {
                             .split(delimiter)
             );
         }};
-        command = new Command(candidate.getCommand(), candidate.getQueue(), new SmartJson(arguments));
+        command = new Command(candidate.getCommand(), candidate.getQueue(), candidate.getDescription(), new SmartJson(arguments));
     }
 }
