@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RabbitUtils {
-    private final static String RABBIT_IP = System.getenv("RABBIT_IP");
-    private final static String RABBIT_USERNAME = System.getenv("RABBITMQ_DEFAULT_USER");
-    private final static String RABBIT_PASSWORD = System.getenv("RABBITMQ_DEFAULT_PASS");
-    private final static int RABBIT_PORT = Integer.parseInt(System.getenv("RABBIT_PORT"));
+    private final static String RABBIT_IP = "192.168.50.132";
+    private final static String RABBIT_USERNAME = "rabbit_user";
+    private final static String RABBIT_PASSWORD = "rabbit_pswrd";
+    private final static int RABBIT_PORT = 5672;
 
     private static final ConnectionFactory connectionFactory = new ConnectionFactory() {
         {

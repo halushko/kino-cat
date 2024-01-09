@@ -22,6 +22,10 @@ public interface Constants {
             String DELETE_ONLY_TORRENT = "EXECUTE_TORRENT_COMMAND_DELETE_ONLY_TORRENT";
             String DELETE_WITH_FILES = "EXECUTE_TORRENT_COMMAND_DELETE_WITH_FILES";
         }
+
+        interface Text {
+            String HELP = "DISPLAY_ALL_COMMANDS";
+        }
     }
 
     interface Commands {
