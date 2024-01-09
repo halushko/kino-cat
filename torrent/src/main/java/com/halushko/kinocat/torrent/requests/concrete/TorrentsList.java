@@ -37,7 +37,7 @@ public class TorrentsList extends GetTorrent {
             line.append("▒");
         }
         if (blackBlocks + 1 < blocks) {
-            IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
+            IntStream.range(blackBlocks + 1, blocks).mapToObj(i -> "░").forEach(line::append);
         }
 
         return "||" + line + "||";
