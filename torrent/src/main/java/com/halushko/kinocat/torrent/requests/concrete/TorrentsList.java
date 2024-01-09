@@ -33,7 +33,12 @@ public class TorrentsList extends GetTorrent {
         StringBuilder line = new StringBuilder();
 
         IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
-        IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
+        if(blackBlocks < blocks) {
+            line.append("▒");
+        }
+        if (blackBlocks + 1 < blocks) {
+            IntStream.range(blackBlocks + 1, blocks).mapToObj(i -> "░").forEach(line::append);
+        }
 
         return "||" + line + "||";
     }
