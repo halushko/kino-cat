@@ -14,67 +14,69 @@ import java.util.List;
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
     private static String sessionIdValue;
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
+    public static final String TRANSMISSION_IP = System.getenv("TORRENT_IP");
 
     public TransmissionWebApiExecutor() {
-        super("http", "10.10.255.253", 9091, "transmission/rpc");
+        super("http", TRANSMISSION_IP, 9091, "transmission/rpc");
     }
 
     @Override
     protected final String getDeliverCallbackPrivate(SmartJson message) {
-        log.debug("[executeRequest] Message:\n{}", message.getRabbitMessageText());
+        log.debug("[getDeliverCallbackPrivate] Message:\n{}", message.getRabbitMessageText());
         long chatId = message.getUserId();
         if (sessionIdValue == null) {
             //new session
-            log.debug("[executeRequest] Create a new session");
+            log.debug("[getDeliverCallbackPrivate] Create a new session");
 
             val responce = send("", "Content-Type", "application/json");
             TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
         }
         String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", getRequest()));
-        Object[] requestBodyFormatArguments = message.getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS).convertToList().toArray();
-        log.debug("[executeRequest] Request body format:\n{}Request body format arguments:\n{}", requestBodyFormat, requestBodyFormatArguments);
+        Object[] requestBodyFormatArguments = getRequestArguments(message.getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS));
+        log.debug("[getDeliverCallbackPrivate] Request body format:\n{}\nRequest body format arguments:\n{}", requestBodyFormat, requestBodyFormatArguments);
         String requestBody = String.format(requestBodyFormat, requestBodyFormatArguments);
-        log.debug("[executeRequest] Request body:\n{}", requestBody);
+        log.debug("[getDeliverCallbackPrivate] Request body:\n{}", requestBody);
 
         ApiResponce responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
         String responceBody = responce.getBody();
         if (responceBody.contains("409: Conflict")) {
             //expired session
-            log.debug("[executeRequest] Recreate a session");
+            log.debug("[getDeliverCallbackPrivate] Recreate a session");
             TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
             responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
             responceBody = responce.getBody();
         }
 
-        log.debug("[executeRequest] Responce body:\n{}", responceBody);
+        log.debug("[getDeliverCallbackPrivate] Responce body:\n{}", responceBody);
         SmartJson json = new SmartJson(SmartJson.KEYS.INPUT, message.getRabbitMessageText()).addValue(SmartJson.KEYS.OUTPUT, responceBody);
         StringBuilder output = new StringBuilder();
+
         if (isResultValid(json)) {
-            val result = executeRequest(json);
-            int i = 999;
-            int j = -1;
+            val result = parceResponce(json);
             StringBuilder sb = null;
-            for (String answer : result) {
-                log.debug("[executeRequest] answer={}", answer);
-                if (++i > 10) {
-                    log.debug("[executeRequest] New message created");
-                    i = 1;
-                    j++;
+            for (int i = 1; i <= result.size(); i++) {
+                String answer = result.get(i-1);
+                log.debug("[getDeliverCallbackPrivate] answer={}", answer);
+                if (i == 1 || i % 10 == 0) {
+                    log.debug("[getDeliverCallbackPrivate] New message created");
                     if (sb != null) {
-                        log.debug("[executeRequest] Print result:\n{}", sb);
+                        log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
                         output.append(printResult(chatId, sb.toString())).append(OUTPUT_SEPARATOR);
                     }
                     sb = new StringBuilder();
                     if (addDescription()) {
-                        sb.append(textOfMessageBegin()).append(j * 10).append("-").append(result.size() <= (j + 1) * 10 ? result.size() : j * 10 + 9).append("\n\n");
+                        sb.append(textOfMessageBegin()).append(i).append("-").append(result.size() < i + 10 ? result.size() : (i == 1 ? 9 : i + 9)).append("\n\n");
                     }
                 }
                 sb.append(answer).append(OUTPUT_SEPARATOR);
-                log.debug("[executeRequest] Message:\n{}", sb);
+                log.debug("[getDeliverCallbackPrivate] Message:\n{}", sb);
             }
             if (sb != null) {
-                log.debug("[executeRequest] Print result:\n{}", sb);
+                log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
                 output.append(printResult(chatId, sb.toString()));
+            } else {
+                log.debug("[getDeliverCallbackPrivate] Result is empty");
+                output.append(printResult(chatId, "Нажаль результат запиту порожній"));
             }
         } else {
             String errorText = String.format("result of request is: %s", responceBody);
@@ -84,7 +86,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         return output.toString();
     }
 
-    protected abstract List<String> executeRequest(SmartJson message);
+    protected abstract List<String> parceResponce(SmartJson message);
 
     protected boolean isResultValid(SmartJson result) {
         return "success".equalsIgnoreCase(result.getSubMessage(SmartJson.KEYS.OUTPUT).getValue("result"));
@@ -98,4 +100,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         return textOfMessageBegin() != null && !textOfMessageBegin().isEmpty();
     }
 
+    protected Object[] getRequestArguments(SmartJson message) {
+        return message == null ? new Object[0] : message.convertToList().toArray();
+    }
 }

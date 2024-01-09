@@ -59,7 +59,7 @@ public class FilesList extends GetTorrent {
         if (currentFile.getFolders().size() == 1 && currentFile.getFolders().get(0).equals(currentFile.getName())) {
             return "";
         }
-        if(previousFile != null && previousFile.getFolders().equals(currentFile.getFolders())) {
+        if (previousFile != null && previousFile.getFolders().equals(currentFile.getFolders())) {
             return "---";
         }
         if (previousFile == null || !previousFile.getFolders().equals(currentFile.getFolders())) {

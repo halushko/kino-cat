@@ -21,15 +21,13 @@ public interface Constants {
             String DELETE = "EXECUTE_TORRENT_COMMAND_DELETE";
             String DELETE_ONLY_TORRENT = "EXECUTE_TORRENT_COMMAND_DELETE_ONLY_TORRENT";
             String DELETE_WITH_FILES = "EXECUTE_TORRENT_COMMAND_DELETE_WITH_FILES";
-
-        }
-
-        interface MediaServer {
-            String EXECUTE_MINIDLNA_COMMAND = "EXECUTE_MINIDLNA_COMMAND_QUEUE";
         }
     }
 
     interface Commands {
+        interface Text {
+            String HELP = "/help";
+        }
         interface Torrent {
             String LIST_TORRENTS = "/list";
             String LIST_TORRENT_COMMANDS = "/more_";
@@ -42,13 +40,6 @@ public interface Constants {
             String REMOVE_JUST_TORRENT = "/approve_just_torrent_";
             String LIST_FILES = "/files_";
             String REMOVE_COMMAND = "/remove_";
-
-        }
-
-        interface Text {
-            String SEND_TEXT_TO_USER = "#$SEND_TEXT_TO_USER$#";
-            String SEPARATOR = "#$SEPARATOR$#";
-            String REMOVE_WARN_TEXT_FUNC = "askRemoveTorrent";
         }
     }
 }

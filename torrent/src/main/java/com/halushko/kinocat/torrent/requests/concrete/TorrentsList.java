@@ -5,10 +5,14 @@ import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 @Slf4j
 public class TorrentsList extends GetTorrent {
+    private final static String SYMBOLS_TO_IGNORE = "[\\s._\"']";
+
     public TorrentsList() {
         super();
     }
@@ -57,6 +61,7 @@ public class TorrentsList extends GetTorrent {
     protected String getQueue() {
         return Constants.Queues.Torrent.TORRENTS_LIST;
     }
+
     @Override
     protected String getRequest() {
         return "get_torrents_list.json";
@@ -65,5 +70,18 @@ public class TorrentsList extends GetTorrent {
     @Override
     protected String textOfMessageBegin() {
         return "Торенти ";
+    }
+
+    @Override
+    protected Predicate<? super TorrentEntity> getSmartFilter(List<String> arguments) {
+        return element -> arguments.isEmpty() || arguments
+                .stream()
+                .anyMatch(a -> ignoreSymbols(element.getName().toUpperCase())
+                        .contains(ignoreSymbols(a).toUpperCase())
+                );
+    }
+
+    private String ignoreSymbols(String str) {
+        return str.replaceAll(SYMBOLS_TO_IGNORE, "");
     }
 }
