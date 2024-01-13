@@ -3,9 +3,9 @@
 - common features are provided
 ### 1.17.1
 - the ▒ (U+2592, Medium Shade) symbol added to the progressbar
-### 1.17.2 (ALPHA)
+### 1.17.2
 - /help command added
-### 1.17.3 (_TODO_)
+### 1.17.3 (ALPHA)
 - add configuration files for microservices running
 ## 1.18 Started (_unmerged_)
 ## 1.19 Planning (_TODO_)
