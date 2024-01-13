@@ -21,7 +21,7 @@ x-common-variables: &common-variables
   LOGS_LEVEL: debug
 services:
   torrent:
-    image: halushko/cinema-torrent:alpha
+    image: halushko/cinema-torrent:beta
     environment: *common-variables
     restart: always
     container_name: "torrent_debug"
@@ -30,7 +30,7 @@ services:
       - ./workdir/config/logs:/home/app/logs
     network_mode: host
   bot:
-    image: halushko/cinema-bot:latest
+    image: halushko/cinema-bot:beta
     environment: *common-variables
     restart: always
     container_name: "bot_debug"
@@ -44,7 +44,7 @@ services:
     volumes:
       - ./workdir/config/logs:/home/app/logs
   file:
-    image: halushko/cinema-file:latest
+    image: halushko/cinema-file:beta
     environment: *common-variables
     restart: always
     container_name: "file_debug"
