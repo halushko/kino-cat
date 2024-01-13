@@ -24,7 +24,7 @@ services:
     image: halushko/cinema-torrent:alpha
     environment: *common-variables
     restart: always
-    container_name: "torrent"
+    container_name: "torrent_debug"
     volumes:
       - ./workdir/config/transmission:/home/app/transmission_config
       - ./workdir/config/logs:/home/app/logs
@@ -33,21 +33,21 @@ services:
     image: halushko/cinema-bot:latest
     environment: *common-variables
     restart: always
-    container_name: "bot"
+    container_name: "bot_debug"
     volumes:
       - ./workdir/config/logs:/home/app/logs
   text:
     image: halushko/cinema-text:beta
     environment: *common-variables
     restart: always
-    container_name: "text"
+    container_name: "text_debug"
     volumes:
       - ./workdir/config/logs:/home/app/logs
   file:
     image: halushko/cinema-file:latest
     environment: *common-variables
     restart: always
-    container_name: "file"
+    container_name: "file_debug"
     volumes:
       - ./workdir/config/files_from_telegram:/home/torrent_files/
       - ./workdir/config/logs:/home/app/logs
