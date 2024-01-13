@@ -4,12 +4,12 @@ x-common-variables: &common-variables
   RABBITMQ_DEFAULT_USER: rabbit_user
   RABBITMQ_DEFAULT_PASS: rabbit_pswrd
   RABBIT_PORT: 5672
-  RABBIT_IP: <input>
-  TORRENT_IP: <input>
+  RABBIT_IP: 192.168.50.132
+  TORRENT_IP: 192.168.50.132
 
-  BOT_TOKEN: <input>
-  BOT_NAME: <input>
-  BOT_TRUSTED_USERS: <input>
+  BOT_TOKEN: 6103416881:AAFSQ_hGImrAI05FaAGnx4Yez2eZM9M5uJc
+  BOT_NAME: halushko_video_bot
+  BOT_TRUSTED_USERS: 43504868
 
   LONG_PAUSE_MILIS: 10000
   MEDIUM_PAUSE_MILIS: 5000
@@ -27,6 +27,7 @@ services:
     container_name: "torrent"
     volumes:
       - ./workdir/config/transmission:/home/app/transmission_config
+      - ./workdir/config/transmission_hdd:/home/app/transmission_config_hdd
       - ./workdir/config/logs:/home/app/logs
     network_mode: host
   bot:
@@ -36,6 +37,8 @@ services:
     container_name: "bot"
     volumes:
       - ./workdir/config/logs:/home/app/logs
+    networks:
+      bot_network_local:
   text:
     image: halushko/cinema-text:alpha
     environment: *common-variables
@@ -43,6 +46,8 @@ services:
     container_name: "text"
     volumes:
       - ./workdir/config/logs:/home/app/logs
+    networks:
+      bot_network_local:
   file:
     image: halushko/cinema-file:alpha
     environment: *common-variables
@@ -52,4 +57,8 @@ services:
       - ./workdir/config/files_from_telegram:/home/torrent_files/
       - ./workdir/config/files_from_telegram_hdd:/home/torrent_files_hdd/
       - ./workdir/config/logs:/home/app/logs
-
+    networks:
+      bot_network_local:
+networks:
+  bot_network_local:
+    driver: bridge

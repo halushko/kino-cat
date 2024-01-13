@@ -13,7 +13,12 @@ services:
       - ./workdir/mediadata:/downloads/complete
       - ./workdir/config/files_from_telegram:/watch
     ports:
-      - 9091:9093
-      - 51413:51415
-      - 51413:51415/udp
+      - 9093:9091
+      - 51415:51413
+      - 51415:51413/udp
     restart: unless-stopped
+    networks:
+      torrent_network:
+networks:
+  torrent_network:
+    driver: bridge

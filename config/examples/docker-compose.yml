@@ -33,7 +33,7 @@ services:
       - 15672:15672
   media:
     image: lscr.io/linuxserver/plex:latest
-    container_name: "media"
+    container_name: "media1"
     depends_on:
       - rabbitmq
     environment:

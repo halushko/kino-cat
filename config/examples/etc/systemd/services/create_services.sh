@@ -34,6 +34,7 @@ systemctl disable torrent-hdd.service
 systemctl disable torrent-hdd-down.service
 systemctl disable torrent-hdd-pull.service
 
+cp -f *.service /etc/systemd/system
 
 systemctl enable bot.service
 systemctl enable bot_debug_down.service

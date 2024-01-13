@@ -1,7 +1,7 @@
 [Unit]
 Description=Bot start
-Requires=docker.service
-After=message_broker.service
+Requires=message_broker.service
+After=bot_pull.service
 
 [Service]
 Type=oneshot
