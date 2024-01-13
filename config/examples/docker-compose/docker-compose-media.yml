@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  media:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: "media"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - VERSION=docker
+    volumes:
+      - ./workdir/config/plex/config:/config
+      - ./workdir/mediadata:/movies
+    restart: unless-stopped
+    network_mode: host
