@@ -1,0 +1,14 @@
+[Unit]
+Description=Shut down Bot
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/dima 
+ExecStart=/usr/bin/docker-compose -f docker-compose-bot.yml down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target
