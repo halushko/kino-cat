@@ -13,5 +13,5 @@
 - add life update of the last message
 - add sub files operations
 - add /full_info
-- 
+- add downloading to the several folders
  
