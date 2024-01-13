@@ -6,7 +6,7 @@ After=message_broker_pull.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/dima
+WorkingDirectory=/home/dima/media
 ExecStart=/usr/bin/docker-compose -f docker-compose-broker.yml up
 ExecStop=/usr/bin/docker-compose -f docker-compose-broker.yml down
 TimeoutStartSec=0

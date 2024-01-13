@@ -12,5 +12,8 @@ services:
       - ./workdir/config/transmission:/config
       - ./workdir/mediadata:/downloads/complete
       - ./workdir/config/files_from_telegram:/watch
-    network_mode: host
+    ports:
+      - 9091:9093
+      - 51413:51415
+      - 51413:51415/udp
     restart: unless-stopped

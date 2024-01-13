@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: "transmission"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./workdir/config/transmission_hdd:/config
+      - ./workdir/mediadata_hdd:/downloads/complete
+      - ./workdir/config/files_from_telegram_hdd:/watch
+    ports:
+      - 9091:9092
+      - 51413:51414
+      - 51413:51414/udp

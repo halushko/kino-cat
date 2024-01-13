@@ -1,12 +1,12 @@
 [Unit]
 Description=Bot start
 Requires=docker.service
-After=torrent.service
+After=message_broker.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/dima
+WorkingDirectory=/home/dima/media
 ExecStart=/usr/bin/docker-compose -f docker-compose-bot.yml up
 ExecStop=/usr/bin/docker-compose -f docker-compose-bot.yml down
 TimeoutStartSec=0

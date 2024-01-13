@@ -6,7 +6,7 @@ After=media_server_down.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/dima 
+WorkingDirectory=/home/dima/media
 ExecStart=/usr/bin/docker-compose -f docker-compose-media.yml pull
 TimeoutStartSec=0
 
