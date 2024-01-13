@@ -40,8 +40,10 @@ public class UserMessageHandler extends InputMessageHandler {
         URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(FILE_PATH)).toURL();
         long userId = rm.getUserId();
         String fileName = String.format("%s%s", rm.getValue(FILE_ID), ".torrent");
+        String message = rm.getValue(TEXT);
 
-        File localFile = new File("/home/torrent_files/" + fileName);
+        File localFile = "hdd".equalsIgnoreCase(message) ? new File("/home/torrent_files_hdd/" + fileName) : new File("/home/torrent_files/" + fileName);
+
         try (InputStream is = fileUrl.openStream()) {
             FileUtils.copyInputStreamToFile(is, localFile);
         } catch (IOException e) {
