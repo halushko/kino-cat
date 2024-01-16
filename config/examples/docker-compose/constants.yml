@@ -1,0 +1,19 @@
+common-variables: &common-variables
+  RABBITMQ_DEFAULT_USER: rabbit_user
+  RABBITMQ_DEFAULT_PASS: rabbit_pswrd
+  RABBIT_PORT: 5672
+  RABBIT_IP: <input
+  TORRENT_IP: [{"ip"="<input>","port"="9093"},{"name"="hdd","ip"="<input>","port"="9092"}]
+
+  BOT_TOKEN: <input>
+  BOT_NAME: <input>
+  BOT_TRUSTED_USERS: <input>
+
+  LONG_PAUSE_MILIS: 10000
+  MEDIUM_PAUSE_MILIS: 5000
+  SMALL_PAUSE_MILIS: 500
+
+  PING: /ping
+  PONG: pong
+
+  LOGS_LEVEL: info

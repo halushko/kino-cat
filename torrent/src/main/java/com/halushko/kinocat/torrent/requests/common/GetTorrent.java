@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 public abstract class GetTorrent extends TransmissionWebApiExecutor {
     @Override
-    protected final List<String> parceResponce(SmartJson json) {
+    protected final List<String> parseResponce(SmartJson json) {
         return json.getSubMessage(SmartJson.KEYS.OUTPUT)
                 .getSubMessage("arguments")
                 .getSubMessage("torrents")

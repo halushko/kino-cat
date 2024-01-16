@@ -1,24 +1,9 @@
 version: '3.7'
 
 x-common-variables: &common-variables
-  RABBITMQ_DEFAULT_USER: rabbit_user
-  RABBITMQ_DEFAULT_PASS: rabbit_pswrd
-  RABBIT_PORT: 5672
-  RABBIT_IP: 192.168.50.132
-  TORRENT_IP: 192.168.50.132
-
-  BOT_TOKEN: 6103416881:AAFSQ_hGImrAI05FaAGnx4Yez2eZM9M5uJc
-  BOT_NAME: halushko_video_bot
-  BOT_TRUSTED_USERS: 43504868
-
-  LONG_PAUSE_MILIS: 10000
-  MEDIUM_PAUSE_MILIS: 5000
-  SMALL_PAUSE_MILIS: 500
-
-  PING: /ping
-  PONG: pong
-
-  LOGS_LEVEL: info
+  extends:
+    file: constants.yml
+    service: common-variables
 services:
   torrent:
     image: halushko/cinema-torrent:alpha
