@@ -1,7 +1,7 @@
 [Unit]
 Description=Media server down
 Requires=docker.service
-After=docker.service
+After=mount-hdd.service
 
 [Service]
 Type=oneshot

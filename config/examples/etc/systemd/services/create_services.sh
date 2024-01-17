@@ -16,6 +16,7 @@ systemctl stop torrent-pull.service
 systemctl stop torrent-hdd.service
 systemctl stop torrent-hdd-down.service
 systemctl stop torrent-hdd-pull.service
+systemctl stop mount-hdd.service
 
 systemctl disable bot.service
 systemctl disable bot-debug-down.service
@@ -33,6 +34,7 @@ systemctl disable torrent-pull.service
 systemctl disable torrent-hdd.service
 systemctl disable torrent-hdd-down.service
 systemctl disable torrent-hdd-pull.service
+systemctl disable mount-hdd.service
 
 cp -f *.service /etc/systemd/system
 
@@ -52,3 +54,4 @@ systemctl enable torrent-pull.service
 systemctl enable torrent-hdd.service
 systemctl enable torrent-hdd-down.service
 systemctl enable torrent-hdd-pull.service
+systemctl enable mount-hdd.service

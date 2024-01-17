@@ -81,7 +81,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     output.append(printResult(chatId, sb.toString()));
                 } else {
                     log.debug("[getDeliverCallbackPrivate] Result is empty");
-                    output.append(printResult(chatId, "Нажаль результат запиту порожній"));
+                    output.append(printResult(chatId, String.format("%s: Нажаль результат запиту порожній", session.getKey())));
                 }
             } else {
                 String errorText = String.format("Server: %s result of request is: %s", session.getKey(), responceBody);

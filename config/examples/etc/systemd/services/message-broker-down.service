@@ -1,7 +1,7 @@
 [Unit]
 Description=Message brocker Service
 Requires=docker.service
-After=docker.service
+After=mount-hdd.service
 
 [Service]
 Type=oneshot

@@ -1,7 +1,7 @@
 [Unit]
 Description=Shut down Bot
 Requires=docker.service
-After=message-broker.service
+After=mount-hdd.service
 
 [Service]
 Type=oneshot

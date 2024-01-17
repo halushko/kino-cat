@@ -1,16 +1,16 @@
 version: '3.7'
 
 services:
-#  torrent_debug:
-#    image: halushko/cinema-torrent:beta
-#    env_file:
-#      - constants.env
-#    restart: always
-#    container_name: "torrent_debug"
-#    volumes:
-#      - ./workdir/config/transmission:/home/app/transmission_config
-#      - ./workdir/config/logs:/home/app/logs
-#    network_mode: host
+  torrent_debug:
+    image: halushko/cinema-torrent:beta
+    env_file:
+      - constants.env
+    restart: always
+    container_name: "torrent_debug"
+    volumes:
+      - ./workdir/config/transmission:/home/app/transmission_config
+      - ./workdir/config/logs:/home/app/logs
+    network_mode: host
   bot_debug:
     image: halushko/cinema-bot:beta
     env_file:

@@ -12,11 +12,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static com.halushko.kinocat.core.rabbit.SmartJson.KEYS.*;
 @Slf4j
 public class UserMessageHandler extends InputMessageHandler {
-    private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
+    private final static String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
+
+    @SuppressWarnings("unchecked")
+    private final static Set<String> folders = new LinkedHashSet<>() {{
+        new SmartJson(System.getenv("TORRENT_IP"))
+                .convertToList()
+                .stream()
+                .map((x -> (Map<String, Object>) x))
+                .forEach(x -> add(String.valueOf(x.getOrDefault("name", "default"))));
+    }};
 
     @Override
     protected String getDeliverCallbackPrivate(SmartJson rabbitMessage) {
@@ -41,9 +53,12 @@ public class UserMessageHandler extends InputMessageHandler {
         long userId = rm.getUserId();
         String fileName = String.format("%s%s", rm.getValue(FILE_ID), ".torrent");
         String message = rm.getValue(TEXT);
-
-        File localFile = "hdd".equalsIgnoreCase(message) ? new File("/home/torrent_files_hdd/" + fileName) : new File("/home/torrent_files/" + fileName);
-
+        if(message == null || message.trim().isEmpty()) {
+            message = "";
+        } else if(folders.contains(message.trim())){
+            message = "_" + message.trim();
+        }
+        File localFile = new File(String.format("/home/torrent_files%s/%s", message, fileName));
         try (InputStream is = fileUrl.openStream()) {
             FileUtils.copyInputStreamToFile(is, localFile);
         } catch (IOException e) {

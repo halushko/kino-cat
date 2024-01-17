@@ -10,7 +10,7 @@ services:
       - TZ=Etc/UTC
     volumes:
       - ./workdir/config/transmission_hdd:/config
-      - ./workdir/mediadata_hdd:/downloads/complete
+      - ./workdir/mediadata/hdd/mediadata:/downloads/complete
       - ./workdir/config/files_from_telegram_hdd:/watch
     ports:
       - 9092:9091
