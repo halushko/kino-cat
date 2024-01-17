@@ -27,7 +27,7 @@ public class UserMessageHandler extends InputMessageHandler {
                 .convertToList()
                 .stream()
                 .map((x -> (Map<String, Object>) x))
-                .forEach(x -> add(String.valueOf(x.getOrDefault("name", "default"))));
+                .forEach(x -> add(String.valueOf(x.getOrDefault("name", "default")).toLowerCase()));
     }};
 
     @Override
@@ -52,11 +52,13 @@ public class UserMessageHandler extends InputMessageHandler {
         URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(FILE_PATH)).toURL();
         long userId = rm.getUserId();
         String fileName = String.format("%s%s", rm.getValue(FILE_ID), ".torrent");
-        String message = rm.getValue(TEXT);
+        String message = rm.getValue(CAPTION);
         if(message == null || message.trim().isEmpty()) {
             message = "";
-        } else if(folders.contains(message.trim())){
-            message = "_" + message.trim();
+        } else if(folders.contains(message.trim().toLowerCase())){
+            message = "_" + message.trim().toLowerCase();
+        } else {
+            message = "";
         }
         File localFile = new File(String.format("/home/torrent_files%s/%s", message, fileName));
         try (InputStream is = fileUrl.openStream()) {

@@ -33,7 +33,7 @@ public abstract class InputMessageHandlerApiRequest extends InputMessageHandler 
                 .map((x -> (Map<String, Object>) x))
                 .forEach(
                         x -> this.serverUrls.put(
-                                String.valueOf(x.getOrDefault("name", "default")),
+                                String.valueOf(x.getOrDefault("name", "default")).toLowerCase(),
                                 String.format("%s://%s:%s/%s",
                                         x.getOrDefault("protocol", "http"),
                                         x.getOrDefault("ip", "localhost"),
