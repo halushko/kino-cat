@@ -1,7 +1,7 @@
 [Unit]
 Description=Media server start
 Requires=docker.service
-After=media_server_pull.service
+After=media-server-pull.service
 
 [Service]
 Type=oneshot

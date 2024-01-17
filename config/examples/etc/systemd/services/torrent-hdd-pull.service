@@ -1,7 +1,7 @@
 [Unit]
 Description=Torrent update
 Requires=docker.service
-After=torrent_down.service
+After=torrent-hdd-down.service
 
 [Service]
 Type=oneshot

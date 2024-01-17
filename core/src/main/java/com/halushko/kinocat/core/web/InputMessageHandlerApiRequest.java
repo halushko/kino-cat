@@ -19,7 +19,7 @@ import java.util.stream.IntStream;
 @SuppressWarnings("unused")
 @Slf4j
 public abstract class InputMessageHandlerApiRequest extends InputMessageHandler {
-    private final Map<String, String> serverUrls = new LinkedHashMap<>();
+    protected final Map<String, String> serverUrls = new LinkedHashMap<>();
 
     public InputMessageHandlerApiRequest(String protocol, String ip, int port, String suffix) {
         this.serverUrls.put("default", String.format("%s://%s:%s/%s", protocol, ip, port, suffix));
@@ -33,12 +33,12 @@ public abstract class InputMessageHandlerApiRequest extends InputMessageHandler 
                 .map((x -> (Map<String, Object>) x))
                 .forEach(
                         x -> this.serverUrls.put(
-                                String.valueOf(x.containsValue("name") ? x.get("name") : "default"),
+                                String.valueOf(x.getOrDefault("name", "default")),
                                 String.format("%s://%s:%s/%s",
-                                        x.containsValue("protocol") ? x.get("protocol") : "http",
-                                        x.get("ip"),
-                                        x.get("port"),
-                                        x.containsValue("suffix") ? x.get("suffix") : "transmission/rpc"
+                                        x.getOrDefault("protocol", "http"),
+                                        x.getOrDefault("ip", "localhost"),
+                                        x.getOrDefault("port", "9091"),
+                                        x.getOrDefault("suffix", "transmission/rpc")
                                 )
                         )
                 );

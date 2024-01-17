@@ -1,7 +1,7 @@
 [Unit]
 Description=Torrent start
 Requires=docker.service
-After=bot.service
+After=torrent-pull.service
 
 [Service]
 Type=oneshot

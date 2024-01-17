@@ -1,7 +1,7 @@
 [Unit]
 Description=Message broker start
 Requires=docker.service
-After=message_broker_pull.service
+After=message-broker-pull.service
 
 [Service]
 Type=oneshot

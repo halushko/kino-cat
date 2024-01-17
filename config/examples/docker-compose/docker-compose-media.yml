@@ -11,7 +11,7 @@ services:
       - VERSION=docker
     volumes:
       - ./workdir/config/plex/config:/config
-      - ./workdir/mediadata:/movies/local
-      - ./workdir/mediadata_hdd:/movies/hdd
+      - ./workdir/mediadata:/movies
+#      - ./workdir/mediadata_hdd:/movies/hdd
     restart: unless-stopped
     network_mode: host

@@ -1,13 +1,13 @@
 [Unit]
-Description=Bot update
+Description=Message brocker Service
 Requires=docker.service
-After=bot_down.service
+After=message-broker-down.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/home/dima/media
-ExecStart=/usr/bin/docker-compose -f docker-compose-bot.yml pull
+ExecStart=/usr/bin/docker-compose -f docker-compose-broker.yml pull
 TimeoutStartSec=0
 
 [Install]

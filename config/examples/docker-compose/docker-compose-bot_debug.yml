@@ -1,47 +1,47 @@
 version: '3.7'
 
-x-common-variables: &common-variables
-  extends:
-    file: constants.yml
-    service: common-variables
 services:
-  torrent_debug:
-    image: halushko/cinema-torrent:beta
-    environment: *common-variables
-    restart: always
-    container_name: "torrent_debug"
-    volumes:
-      - ./workdir/config/transmission:/home/app/transmission_config
-      - ./workdir/config/logs:/home/app/logs
-    network_mode: host
+#  torrent_debug:
+#    image: halushko/cinema-torrent:beta
+#    env_file:
+#      - constants.env
+#    restart: always
+#    container_name: "torrent_debug"
+#    volumes:
+#      - ./workdir/config/transmission:/home/app/transmission_config
+#      - ./workdir/config/logs:/home/app/logs
+#    network_mode: host
   bot_debug:
     image: halushko/cinema-bot:beta
-    environment: *common-variables
+    env_file:
+      - constants.env
     restart: always
     container_name: "bot_debug"
     volumes:
       - ./workdir/config/logs:/home/app/logs
     networks:
-      at_private_network_debug:
+      bot_network_debug:
   text_debug:
     image: halushko/cinema-text:beta
-    environment: *common-variables
+    env_file:
+      - constants.env
     restart: always
     container_name: "text_debug"
     volumes:
       - ./workdir/config/logs:/home/app/logs
     networks:
-      at_private_network_debug:
+      bot_network_debug:
   file_debug:
     image: halushko/cinema-file:beta
-    environment: *common-variables
+    env_file:
+      - constants.env
     restart: always
     container_name: "file_debug"
     volumes:
       - ./workdir/config/files_from_telegram:/home/torrent_files/
       - ./workdir/config/logs:/home/app/logs
     networks:
-      at_private_network_debug:
+      bot_network_debug:
 networks:
   bot_network_debug:
     driver: bridge

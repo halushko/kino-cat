@@ -16,10 +16,11 @@ import java.util.Map;
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
     private final static Map<String, String> sessionIdValues = new HashMap<>();
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
-    public static final String TRANSMISSION_IP = System.getenv("TORRENT_IP");
+    public static final String TRANSMISSION_IP = "[{\"ip\": \"192.168.50.132\",\"port\": \"9093\"}, {\"name\": \"hdd\",\"ip\": \"192.168.50.132\",\"port\": \"9092\"}]";//System.getenv("TORRENT_IP");
 
     public TransmissionWebApiExecutor() {
         super(TRANSMISSION_IP);
+        serverUrls.keySet().forEach(x -> sessionIdValues.put(x, null));
     }
 
     @Override
@@ -33,8 +34,8 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                 //new session
                 log.debug("[getDeliverCallbackPrivate] Create a new session");
 
-                val responce = send("", "Content-Type", "application/json", "");
-                TransmissionWebApiExecutor.sessionIdValues.put(session.getKey(), responce.getHeader(sessionIdKey));
+                val responce = send(session.getKey(), "Content-Type", "application/json", "");
+                sessionIdValues.put(session.getKey(), responce.getHeader(sessionIdKey));
             }
             String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", getRequest()));
             Object[] requestBodyFormatArguments = getRequestArguments(message.getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS));
@@ -42,7 +43,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             String requestBody = String.format(requestBodyFormat, requestBodyFormatArguments);
             log.debug("[getDeliverCallbackPrivate] Request body:\n{}", requestBody);
 
-            ApiResponce responce = send(requestBody, session.getKey(), "Content-Type", "application/json", sessionIdKey, session.getValue());
+            ApiResponce responce = send(session.getKey(), requestBody, session.getKey(), "Content-Type", "application/json", sessionIdKey, session.getValue());
             String responceBody = responce.getBody();
             if (responceBody.contains("409: Conflict")) {
                 //expired session
