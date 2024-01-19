@@ -1,6 +1,9 @@
 package com.halushko.kinocat.core.web;
 
+import com.halushko.kinocat.core.JsonConstants.WebKeys;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
+import com.halushko.kinocat.core.prcessors.ValueProcessor;
+import com.halushko.kinocat.core.prcessors.ServicesInfoProcessor;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -11,37 +14,33 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SuppressWarnings("unused")
 @Slf4j
 public abstract class InputMessageHandlerApiRequest extends InputMessageHandler {
-    protected final Map<String, String> serverUrls = new LinkedHashMap<>();
+    protected final Map<String, String> serverUrls;
 
     public InputMessageHandlerApiRequest(String protocol, String ip, int port, String suffix) {
-        this.serverUrls.put("default", String.format("%s://%s:%s/%s", protocol, ip, port, suffix));
+        this(
+                new SmartJson(
+                        new HashMap<>() {
+                            {
+                                put(WebKeys.KEY_PROTOCOL, protocol);
+                                put(WebKeys.KEY_IP, ip);
+                                put(WebKeys.KEY_PORT, port);
+                                put(WebKeys.KEY_SUFFIX, suffix);
+                            }
+                        }
+                ).getRabbitMessageText()
+
+        );
     }
 
-    public InputMessageHandlerApiRequest(String urls) {
-        //noinspection unchecked
-        new SmartJson(urls)
-                .convertToList()
-                .stream()
-                .map((x -> (Map<String, Object>) x))
-                .forEach(
-                        x -> this.serverUrls.put(
-                                String.valueOf(x.getOrDefault("name", "default")).toLowerCase(),
-                                String.format("%s://%s:%s/%s",
-                                        x.getOrDefault("protocol", "http"),
-                                        x.getOrDefault("ip", "localhost"),
-                                        x.getOrDefault("port", "9091"),
-                                        x.getOrDefault("suffix", "transmission/rpc")
-                                )
-                        )
-                );
+    public InputMessageHandlerApiRequest(String json) {
+        serverUrls = getServicesInfoProcessor(json).getServiceUrls();
     }
 
     protected ApiResponce send(String serverName, String body, Map<String, String> headers) {
@@ -74,6 +73,59 @@ public abstract class InputMessageHandlerApiRequest extends InputMessageHandler 
                 collect(Collectors.toMap(i -> headers[i], i -> headers[i + 1], (a, b) -> b, LinkedHashMap::new));
         return send(serverName, body, headerMap);
     }
+
     protected abstract String getRequest();
 
+    protected String getDefaultProtocol() {
+        return "http";
+    }
+
+    protected String getDefaultIp() {
+        return "localhost";
+    }
+
+    protected String getDefaultNameValue() {
+        return "";
+    }
+
+    protected abstract String getDefaultPort();
+
+    protected abstract String getDefaultSuffix();
+
+    public String getDefaultUrlTemplate() {
+        return "%s://%s:%s/%s";
+    }
+
+    protected ServicesInfoProcessor getServicesInfoProcessor(String json) {
+        return new ApiInfoProcessor(json);
+    }
+
+    private class ApiInfoProcessor extends ServicesInfoProcessor {
+        public ApiInfoProcessor(String json) {
+            super(json);
+        }
+
+        @Override
+        public ValueProcessor getNameProcessor() {
+            return new ValueProcessor(WebKeys.KEY_NAME, getDefaultNameValue());
+        }
+
+        @Override
+        public List<ValueProcessor> getServiceProcessors() {
+            return new ArrayList<>() {
+                {
+                    //do not change the order
+                    add(new ValueProcessor(WebKeys.KEY_PROTOCOL, getDefaultProtocol()));
+                    add(new ValueProcessor(WebKeys.KEY_IP, getDefaultIp()));
+                    add(new ValueProcessor(WebKeys.KEY_PORT, getDefaultPort()));
+                    add(new ValueProcessor(WebKeys.KEY_SUFFIX, getDefaultSuffix()));
+                }
+            };
+        }
+
+        @Override
+        public String getUrlTemplate() {
+            return getDefaultUrlTemplate();
+        }
+    }
 }

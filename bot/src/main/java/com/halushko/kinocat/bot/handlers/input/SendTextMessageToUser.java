@@ -1,6 +1,6 @@
 package com.halushko.kinocat.bot.handlers.input;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +19,6 @@ public class SendTextMessageToUser extends InputMessageHandler {
     }
     @Override
     protected String getQueue() {
-        return Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT;
+        return Queues.Telegram.TELEGRAM_OUTPUT_TEXT;
     }
 }

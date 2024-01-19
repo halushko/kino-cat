@@ -1,4 +1,4 @@
-package com.halushko.kinocat.core.commands;
+package com.halushko.kinocat.text.commands;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -10,20 +10,17 @@ public class CommandsCollection {
     private Map<String, Command> allCommands;
     private final List<Command> values = new ArrayList<>();
 
-    @SuppressWarnings("unused")
-    public void addValue(String command, String queue, String description) {
-        values.add(new Command(command, queue, description, new LinkedHashMap<>()));
-    }
-    @SuppressWarnings("unused")
-    public void addValue(String command, String queue, String description, Map<String, String> params) {
-        values.add(new Command(command, queue, description, params));
+    public void addValue(String command, String queue, String description, CommandProperties... additionalProperties) {
+        values.add(new Command(command, queue, description, additionalProperties));
+        if (Arrays.stream(additionalProperties).anyMatch(x -> x == CommandProperties.CAN_CONTAIN_SERVER_NUMBER)) {
+            values.add(new Command(command + "_", queue, description, additionalProperties));
+        }
     }
 
-    @SuppressWarnings("unused")
     public Command getCommand(String text) {
         log.debug("[getCommand] Try to get command from text [{}]", text);
-        if (text == null || text.isEmpty()) return new Command();
-        val result =  CommandChecker.getCommand(text, getCommandList());
+        if (text == null || text.isEmpty()) return Command.getEmptyCommand();
+        val result = CommandChecker.getCommand(text, getCommandList());
         log.debug("[getCommand] Command is command={}, queue={}", result.getCommand(), result.getQueue());
         return result;
     }
@@ -32,6 +29,7 @@ public class CommandsCollection {
     public Collection<Command> getCommands() {
         return new ArrayList<>(getCommandList());
     }
+
     private Collection<Command> getCommandList() {
         init();
         return allCommands.values();

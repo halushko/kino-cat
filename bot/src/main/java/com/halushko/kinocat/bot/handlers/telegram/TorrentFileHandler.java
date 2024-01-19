@@ -1,7 +1,8 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
 import com.halushko.kinocat.bot.KoTorrentBot;
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.JsonConstants.SmartJsonKeys;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
@@ -9,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import static com.halushko.kinocat.core.rabbit.SmartJson.KEYS.*;
 
 @Slf4j
 public class TorrentFileHandler extends UserMessageHandler {
@@ -33,14 +32,14 @@ public class TorrentFileHandler extends UserMessageHandler {
 
         try {
             SmartJson rm = new SmartJson(chatId).
-                    addValue(FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath()).
-                    addValue(FILE_ID, update.getMessage().getDocument().getFileId()).
-                    addValue(TEXT, message).
-                    addValue(CAPTION, caption).
-                    addValue(SIZE, String.valueOf(fileSize)).
-                    addValue(MIME_TYPE, mimeType);
+                    addValue(SmartJsonKeys.FILE_PATH, KoTorrentBot.BOT.execute(uploadedFile).getFilePath()).
+                    addValue(SmartJsonKeys.FILE_ID, update.getMessage().getDocument().getFileId()).
+                    addValue(SmartJsonKeys.TEXT, message).
+                    addValue(SmartJsonKeys.CAPTION, caption).
+                    addValue(SmartJsonKeys.SIZE, String.valueOf(fileSize)).
+                    addValue(SmartJsonKeys.MIME_TYPE, mimeType);
 
-            RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_FILE);
+            RabbitUtils.postMessage(rm, Queues.Telegram.TELEGRAM_INPUT_FILE);
         } catch (TelegramApiException e) {
             log.error("[TorrentFileHandler] Error during file processing", e);
             KoTorrentBot.sendText(chatId, e.getMessage());

@@ -1,5 +1,6 @@
 package com.halushko.kinocat.torrent.requests.common;
 
+import com.halushko.kinocat.core.JsonConstants.SmartJsonKeys;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 
@@ -11,16 +12,16 @@ import java.util.stream.IntStream;
 
 public abstract class GetTorrent extends TransmissionWebApiExecutor {
     @Override
-    protected final List<String> parseResponce(SmartJson json) {
-        return json.getSubMessage(SmartJson.KEYS.OUTPUT)
+    protected final List<String> parseResponce(SmartJson json, String serverNumber) {
+        return json.getSubMessage(SmartJsonKeys.OUTPUT)
                 .getSubMessage("arguments")
                 .getSubMessage("torrents")
                 .convertToList()
                 .stream()
                 .map(TorrentEntity::new)
                 .filter(getSmartFilter(
-                                json.getSubMessage(SmartJson.KEYS.INPUT)
-                                        .getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS)
+                                json.getSubMessage(SmartJsonKeys.INPUT)
+                                        .getSubMessage(SmartJsonKeys.COMMAND_ARGUMENTS)
                                         .convertToList()
                                         .stream()
                                         .map(String::valueOf)
@@ -29,11 +30,11 @@ public abstract class GetTorrent extends TransmissionWebApiExecutor {
                         )
                 )
                 .sorted(Comparator.comparing(TorrentEntity::getName))
-                .map(this::generateAnswer)
+                .map(x -> generateAnswer(x, serverNumber))
                 .toList();
     }
 
-    protected abstract String generateAnswer(TorrentEntity torrent);
+    protected abstract String generateAnswer(TorrentEntity torrent, String serverNumber);
 
     @Override
     protected final Object[] getRequestArguments(SmartJson message) {

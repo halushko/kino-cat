@@ -1,5 +1,6 @@
 package com.halushko.kinocat.torrent.requests.common;
 
+import com.halushko.kinocat.core.JsonConstants.SmartJsonKeys;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
@@ -15,7 +16,7 @@ public abstract class ExecuteForAllTorrents extends GetTorrent {
         List<String> newArguments = new ArrayList<>() {{
             add(output.replace(OUTPUT_SEPARATOR, ",").replaceAll(",+", ",").replaceAll(",+$", ""));
         }};
-        SmartJson newInput = input.addValue(SmartJson.KEYS.COMMAND_ARGUMENTS, newArguments);
+        SmartJson newInput = input.addValue(SmartJsonKeys.COMMAND_ARGUMENTS, newArguments);
         log.debug("[executePostAction] Start to execute a post action. input:\n{}\noutput:{}\nqueue:{}", newInput, output, getQueueForPostAction());
         RabbitUtils.postMessage(newInput, getQueueForPostAction());
     }
@@ -33,7 +34,7 @@ public abstract class ExecuteForAllTorrents extends GetTorrent {
     protected abstract String getQueueForPostAction();
 
     @Override
-    protected final String generateAnswer(TorrentEntity torrent) {
+    protected final String generateAnswer(TorrentEntity torrent, String serverNumber) {
         return torrent.getId();
     }
 }
