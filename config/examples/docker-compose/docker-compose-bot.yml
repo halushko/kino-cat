@@ -11,7 +11,8 @@ services:
       - ./workdir/config/transmission:/home/app/transmission_config
       - ./workdir/config/transmission_hdd:/home/app/transmission_config_hdd
       - ./workdir/config/logs:/home/app/logs
-    network_mode: host
+    networks:
+      bot_network_local:
   bot:
     image: halushko/cinema-bot:alpha
     env_file:

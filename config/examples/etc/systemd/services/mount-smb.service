@@ -6,7 +6,8 @@ After=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=mount -t ntfs /dev/sdb1 /home/dima/media/workdir/mediadata_hdd/
+ExecStart=mount.cifs //skynetrouter.asuscomm.com/Films /home/dima/media/workdir/mediadata_morhun -o username=Halushko,password=ObolonSvitle1,port=5001
+
 #ExecStop=umount /dev/sdb1
 TimeoutStartSec=0
 
