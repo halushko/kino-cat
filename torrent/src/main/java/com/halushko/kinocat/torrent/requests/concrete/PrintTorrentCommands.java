@@ -13,13 +13,13 @@ public class PrintTorrentCommands extends GetTorrent {
     }
 
     @Override
-    protected String generateAnswer(TorrentEntity torrent, String serverNumber) {
+    protected String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator) {
         return String.format("%s\n%s\n%s\n%s\n%s"
                 , torrent.getName()
-                , String.format("%s%s_%s", Commands.Torrent.PAUSE, serverNumber, torrent.getId())
-                , String.format("%s%s_%s", Commands.Torrent.RESUME, serverNumber, torrent.getId())
-                , String.format("%s%s_%s", Commands.Torrent.TORRENT_INFO, serverNumber, torrent.getId())
-                , String.format("%s%s_%s", Commands.Torrent.REMOVE_COMMAND, serverNumber, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.PAUSE, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.RESUME, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.TORRENT_INFO, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.REMOVE_COMMAND, serverNumber, serverVsTorrentSeparator, torrent.getId())
         );
     }
 

@@ -30,11 +30,15 @@ public abstract class GetTorrent extends TransmissionWebApiExecutor {
                         )
                 )
                 .sorted(Comparator.comparing(TorrentEntity::getName))
-                .map(x -> generateAnswer(x, serverNumber))
+                .map(x -> generateAnswerPrivate(x, serverNumber))
                 .toList();
     }
 
-    protected abstract String generateAnswer(TorrentEntity torrent, String serverNumber);
+    protected String generateAnswerPrivate(TorrentEntity torrent, String serverNumber) {
+        String serverVsTorrentSeparator = serverNumber.isEmpty() ? "": "_";
+        return generateAnswer(torrent, serverNumber, serverVsTorrentSeparator);
+    }
+    protected abstract String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator);
 
     @Override
     protected final Object[] getRequestArguments(SmartJson message) {

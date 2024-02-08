@@ -34,7 +34,7 @@ public abstract class ExecuteForAllTorrents extends GetTorrent {
     protected abstract String getQueueForPostAction();
 
     @Override
-    protected final String generateAnswer(TorrentEntity torrent, String serverNumber) {
+    protected final String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator) {
         return torrent.getId();
     }
 }

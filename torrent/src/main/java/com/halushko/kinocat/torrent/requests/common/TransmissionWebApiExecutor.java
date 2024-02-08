@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
     private final static Map<String, String> sessionIdValues = new HashMap<>();
-    private final static Map<String, String> serverNumbers = new HashMap<>();
+    private final static Map<String, String> serverNames = new HashMap<>();
 
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
     public static final String TRANSMISSION_IP = "[{\"ip\": \"192.168.50.132\",\"port\": \"9093\"}, {\"name\": \"hdd\",\"ip\": \"192.168.50.132\",\"port\": \"9092\"}]";//System.getenv("TORRENT_IP");
@@ -25,9 +25,10 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
     public TransmissionWebApiExecutor() {
         super(TRANSMISSION_IP);
         int i = -1;
-        for (String server : serverUrls.keySet()) {
-            sessionIdValues.put(server, null);
-            serverNumbers.put(String.valueOf(++i), server);
+        for (val server : serverUrls.keySet()) {
+            String serverNumber = String.valueOf(++i);
+            sessionIdValues.put(serverNumber, null);
+            serverNames.put(serverNumber, server);
         }
     }
 
@@ -40,27 +41,33 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
 
         StringBuilder output = new StringBuilder();
 
-        try {
-            Integer.parseInt(selectedServer);
-            if (serverNumbers.containsKey(selectedServer)) {
-                serversToApply.add(selectedServer);
-            } else {
-                serversToApply.addAll(serverNumbers.keySet());
+        if(!selectedServer.isEmpty()) {
+            try {
+                Integer.parseInt(selectedServer);
+                if (serverNames.containsKey(selectedServer)) {
+                    serversToApply.add(selectedServer);
+                } else {
+                    String errorText = String.format("Server number: '%s' is invalid", selectedServer);
+                    output.append(errorText);
+                    printResult(chatId, errorText);
+                }
+            } catch (NumberFormatException e) {
+                String errorText = String.format("Server number: '%s' is invalid", selectedServer);
+                output.append(errorText);
+                printResult(chatId, errorText);
             }
-        } catch (NumberFormatException e) {
-            String errorText = String.format("Server number: '%s' is invalid", selectedServer);
-            output.append(errorText);
-            printResult(chatId, errorText);
+        } else {
+            serversToApply.addAll(serverNames.keySet());
         }
 
-        for (val sn : serversToApply) {
-            String serverUrl = serverNumbers.get(sn);
-            if (sessionIdValues.get(sn) == null) {
+        for (val serverNumber : serversToApply) {
+            String serverName = serverNames.get(serverNumber);
+            if (sessionIdValues.get(serverNumber) == null) {
                 //new session
                 log.debug("[getDeliverCallbackPrivate] Create a new session");
 
-                val responce = send(serverUrl, "Content-Type", "application/json", "");
-                sessionIdValues.put(serverUrl, responce.getHeader(sessionIdKey));
+                val responce = send(serverName, "Content-Type", "application/json", "");
+                sessionIdValues.put(serverNumber, responce.getHeader(sessionIdKey));
             }
             String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", getRequest()));
             Object[] requestBodyFormatArguments = getRequestArguments(message.getSubMessage(SmartJsonKeys.COMMAND_ARGUMENTS));
@@ -68,13 +75,13 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             String requestBody = String.format(requestBodyFormat, requestBodyFormatArguments);
             log.debug("[getDeliverCallbackPrivate] Request body:\n{}", requestBody);
 
-            ApiResponce responce = send(serverUrl, requestBody, serverUrl, "Content-Type", "application/json", sessionIdKey, sessionIdValues.get(sn));
+            ApiResponce responce = send(serverName, requestBody, serverName, "Content-Type", "application/json", sessionIdKey, sessionIdValues.get(serverNumber));
             String responceBody = responce.getBody();
             if (responceBody.contains("409: Conflict")) {
                 //expired session
                 log.debug("[getDeliverCallbackPrivate] Recreate a session");
-                TransmissionWebApiExecutor.sessionIdValues.put(serverUrl, responce.getHeader(sessionIdKey));
-                responce = send(serverUrl, requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValues.get(sn));
+                TransmissionWebApiExecutor.sessionIdValues.put(serverNumber, responce.getHeader(sessionIdKey));
+                responce = send(serverName, requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValues.get(serverNumber));
                 responceBody = responce.getBody();
             }
 
@@ -82,7 +89,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
             SmartJson json = new SmartJson(SmartJsonKeys.INPUT, message.getRabbitMessageText()).addValue(SmartJsonKeys.OUTPUT, responceBody);
 
             if (isResultValid(json)) {
-                val result = parseResponce(json, sn.isEmpty() ? "" : "_" + sn);
+                val result = parseResponce(json, serverNumber);
                 StringBuilder sb = null;
                 for (int i = 1; i <= result.size(); i++) {
                     String answer = result.get(i - 1);
@@ -95,7 +102,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                         }
                         sb = new StringBuilder();
                         if (addDescription()) {
-                            sb.append(serverUrl).append(": ").append(textOfMessageBegin()).append(i).append("-").append(result.size() < i + 10 ? result.size() : (i == 1 ? 9 : i + 9)).append("\n\n");
+                            sb.append(serverName).append(": ").append(textOfMessageBegin()).append(i).append("-").append(result.size() < i + 10 ? result.size() : (i == 1 ? 9 : i + 9)).append("\n\n");
                         }
                     }
                     sb.append(answer).append(OUTPUT_SEPARATOR);
@@ -106,10 +113,10 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     output.append(printResult(chatId, sb.toString()));
                 } else {
                     log.debug("[getDeliverCallbackPrivate] Result is empty");
-                    output.append(printResult(chatId, String.format("%s: Нажаль результат запиту порожній", serverUrl)));
+                    output.append(printResult(chatId, String.format("%s: Нажаль результат запиту порожній", serverName)));
                 }
             } else {
-                String errorText = String.format("Server: %s result of request is: %s", serverUrl, responceBody);
+                String errorText = String.format("Server: %s result of request is: %s", serverName, responceBody);
                 output.append(errorText);
                 printResult(chatId, errorText);
             }

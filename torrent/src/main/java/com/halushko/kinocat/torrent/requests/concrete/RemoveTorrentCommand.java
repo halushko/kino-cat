@@ -11,11 +11,11 @@ public class RemoveTorrentCommand extends GetTorrent {
     private static final String ANSWER = "Дійсно хочете видалити торент %s?\n\n-- видалити лише сам торент: %s\n\n-- видалити ще й скачані файли: %s";
 
     @Override
-    protected String generateAnswer(TorrentEntity torrent, String serverNumber) {
+    protected String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator) {
         return String.format(ANSWER
                 , torrent.getName()
-                , String.format("%s%s_%s", REMOVE_JUST_TORRENT, serverNumber, torrent.getId())
-                , String.format("%s%s_%s", REMOVE_WITH_FILES, serverNumber, torrent.getId())
+                , String.format("%s%s%s%s", REMOVE_JUST_TORRENT, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", REMOVE_WITH_FILES, serverNumber, serverVsTorrentSeparator, torrent.getId())
         );
     }
 

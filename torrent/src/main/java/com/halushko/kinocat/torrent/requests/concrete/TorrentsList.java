@@ -19,12 +19,12 @@ public class TorrentsList extends GetTorrent {
     }
 
     @Override
-    protected String generateAnswer(TorrentEntity torrent, String serverNumber) {
+    protected String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator) {
         return String.format("%s %s\n%s %s\n%s %s"
                 , getStatusIcon(torrent), torrent.getName()
                 , getProgressBar(torrent), getGigabytesLeft(torrent)
-                , String.format("%s%s_%s", Commands.Torrent.LIST_TORRENT_COMMANDS, serverNumber, torrent.getId())
-                , String.format("%s%s_%s", Commands.Torrent.LIST_FILES, serverNumber, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.LIST_TORRENT_COMMANDS, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.LIST_FILES, serverNumber, serverVsTorrentSeparator, torrent.getId())
         );
     }
 

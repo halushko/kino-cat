@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 public class FilesList extends GetTorrent {
 
     @Override
-    protected String generateAnswer(TorrentEntity torrent, String serverNumber) {
+    protected String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator) {
         StringBuilder sb = new StringBuilder("Торент ").append(torrent.getName()).append("\n/\n");
         SubTorrentEntity previousFile = null;
         for (SubTorrentEntity currentFile : torrent.getFiles()) {
