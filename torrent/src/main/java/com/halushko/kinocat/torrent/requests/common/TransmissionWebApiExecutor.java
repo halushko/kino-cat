@@ -17,7 +17,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
     private final static Map<String, String> serverNames = new HashMap<>();
 
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
-    public static final String TRANSMISSION_IP = "[{\"ip\": \"192.168.50.132\",\"port\": \"9093\"}, {\"name\": \"hdd\",\"ip\": \"192.168.50.132\",\"port\": \"9092\"}]";//System.getenv("TORRENT_IP");
+    public static final String TRANSMISSION_IP = System.getenv("TORRENT_IP");
 
     public TransmissionWebApiExecutor() {
         super(TRANSMISSION_IP);
@@ -73,10 +73,10 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     output.append(printResult(chatId, sb.toString()));
                 } else {
                     log.debug("[getDeliverCallbackPrivate] Result is empty");
-                    output.append(printResult(chatId, String.format("%s: Нажаль результат запиту порожній", serverName)));
+                    output.append(printResult(chatId, String.format("%s: Нажаль результат запиту порожній", serverName.isEmpty() ? "main" : serverName)));
                 }
             } else {
-                String errorText = String.format("Server: %s result of request is: %s", serverName, responce.responceBody());
+                String errorText = String.format("Server: %s result of request is: %s", serverName.isEmpty() ? "main" : serverName, responce.responceBody());
                 output.append(errorText);
                 printResult(chatId, errorText);
             }
