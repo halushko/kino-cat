@@ -28,7 +28,12 @@ public class UserTextMessageHandler extends InputMessageHandler {
                 message.addValue(SmartJsonKeys.TEXT, "Такої команди не знайдено");
             }
             if(command.getAdditionalProperties().contains(CommandProperties.CONTAINS_SERVER_NUMBER) && !command.getArguments().isEmpty()){
-                message.addValue(SmartJsonKeys.SELECT_SERVER, command.getArguments().get(0));
+                String serverNumber = command.getArguments().get(0);
+                try {
+                    Integer.parseInt(serverNumber);
+                    message.addValue(SmartJsonKeys.SELECT_SERVER, serverNumber);
+                } catch (NumberFormatException ignored) {
+                }
             }
 
             RabbitUtils.postMessage(message, command.getQueue());
