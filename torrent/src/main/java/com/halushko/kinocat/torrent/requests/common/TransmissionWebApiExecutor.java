@@ -1,5 +1,6 @@
 package com.halushko.kinocat.torrent.requests.common;
 
+import com.halushko.kinocat.core.JsonConstants.SmartJsonKeys;
 import com.halushko.kinocat.core.files.ResourceReader;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.halushko.kinocat.core.web.ApiResponce;
@@ -7,89 +8,151 @@ import com.halushko.kinocat.core.web.InputMessageHandlerApiRequest;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
-import java.util.List;
+import java.util.*;
 
 // https://github.com/transmission/transmission/blob/main/docs/rpc-spec.md
 @Slf4j
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
-    private static String sessionIdValue;
+    private final static Map<String, String> sessionIdValues = new HashMap<>();
+    private final static Map<String, String> serverNames = new HashMap<>();
+
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
     public static final String TRANSMISSION_IP = System.getenv("TORRENT_IP");
 
     public TransmissionWebApiExecutor() {
-        super("http", TRANSMISSION_IP, 9091, "transmission/rpc");
+        super(TRANSMISSION_IP);
+        int i = 0;
+        for (val server : serverUrls.keySet()) {
+            String serverNumber = String.valueOf(++i);
+            sessionIdValues.put(serverNumber, null);
+            serverNames.put(serverNumber, server);
+        }
     }
 
     @Override
     protected final String getDeliverCallbackPrivate(SmartJson message) {
         log.debug("[getDeliverCallbackPrivate] Message:\n{}", message.getRabbitMessageText());
         long chatId = message.getUserId();
-        if (sessionIdValue == null) {
-            //new session
-            log.debug("[getDeliverCallbackPrivate] Create a new session");
+        List<String> serversToApply = new ArrayList<>();
 
-            val responce = send("", "Content-Type", "application/json");
-            TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
-        }
-        String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", getRequest()));
-        Object[] requestBodyFormatArguments = getRequestArguments(message.getSubMessage(SmartJson.KEYS.COMMAND_ARGUMENTS));
-        log.debug("[getDeliverCallbackPrivate] Request body format:\n{}\nRequest body format arguments:\n{}", requestBodyFormat, requestBodyFormatArguments);
-        String requestBody = String.format(requestBodyFormat, requestBodyFormatArguments);
-        log.debug("[getDeliverCallbackPrivate] Request body:\n{}", requestBody);
-
-        ApiResponce responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
-        String responceBody = responce.getBody();
-        if (responceBody.contains("409: Conflict")) {
-            //expired session
-            log.debug("[getDeliverCallbackPrivate] Recreate a session");
-            TransmissionWebApiExecutor.sessionIdValue = responce.getHeader(sessionIdKey);
-            responce = send(requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValue);
-            responceBody = responce.getBody();
-        }
-
-        log.debug("[getDeliverCallbackPrivate] Responce body:\n{}", responceBody);
-        SmartJson json = new SmartJson(SmartJson.KEYS.INPUT, message.getRabbitMessageText()).addValue(SmartJson.KEYS.OUTPUT, responceBody);
         StringBuilder output = new StringBuilder();
 
-        if (isResultValid(json)) {
-            val result = parceResponce(json);
-            StringBuilder sb = null;
-            for (int i = 1; i <= result.size(); i++) {
-                String answer = result.get(i-1);
-                log.debug("[getDeliverCallbackPrivate] answer={}", answer);
-                if (i == 1 || i % 10 == 0) {
-                    log.debug("[getDeliverCallbackPrivate] New message created");
-                    if (sb != null) {
-                        log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
-                        output.append(printResult(chatId, sb.toString())).append(OUTPUT_SEPARATOR);
+        analyzeServer(message, serversToApply, output, chatId);
+
+        for (val serverNumber : serversToApply) {
+            String serverName = serverNames.get(serverNumber);
+            
+            generateSessionId(serverNumber, serverName);
+            TransmissionResponce responce = getTransmissionResponce(message, serverNumber, serverName);
+
+            if (isResultValid(responce.json())) {
+                val result = parseResponce(responce.json(), serverNumber);
+                StringBuilder sb = null;
+                for (int i = 1; i <= result.size(); i++) {
+                    String answer = result.get(i - 1);
+                    log.debug("[getDeliverCallbackPrivate] answer={}", answer);
+                    if (i == 1 || i % 10 == 0) {
+                        log.debug("[getDeliverCallbackPrivate] New message created");
+                        if (sb != null) {
+                            log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
+                            output.append(printResult(chatId, sb.toString())).append(OUTPUT_SEPARATOR);
+                        }
+                        sb = new StringBuilder();
+                        if (addDescription()) {
+                            sb.append(serverName.isEmpty() ? "main" : serverName).append(": ")
+                                    .append(textOfMessageBegin())
+                                    .append(i).append("-").append(result.size() < i + 10 ? result.size() : (i == 1 ? 9 : i + 9))
+                                    .append("\n\n");
+                        }
                     }
-                    sb = new StringBuilder();
-                    if (addDescription()) {
-                        sb.append(textOfMessageBegin()).append(i).append("-").append(result.size() < i + 10 ? result.size() : (i == 1 ? 9 : i + 9)).append("\n\n");
-                    }
+                    sb.append(answer).append(OUTPUT_SEPARATOR);
+                    log.debug("[getDeliverCallbackPrivate] Message:\n{}", sb);
                 }
-                sb.append(answer).append(OUTPUT_SEPARATOR);
-                log.debug("[getDeliverCallbackPrivate] Message:\n{}", sb);
-            }
-            if (sb != null) {
-                log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
-                output.append(printResult(chatId, sb.toString()));
+                if (sb != null) {
+                    log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
+                    output.append(printResult(chatId, sb.toString()));
+                } else {
+                    log.debug("[getDeliverCallbackPrivate] Result is empty");
+                    output.append(printResult(chatId, String.format("%s: Нажаль результат запиту порожній", serverName.isEmpty() ? "main" : serverName)));
+                }
             } else {
-                log.debug("[getDeliverCallbackPrivate] Result is empty");
-                output.append(printResult(chatId, "Нажаль результат запиту порожній"));
+                String errorText = String.format("Server: %s result of request is: %s", serverName.isEmpty() ? "main" : serverName, responce.responceBody());
+                output.append(errorText);
+                printResult(chatId, errorText);
             }
-        } else {
-            String errorText = String.format("result of request is: %s", responceBody);
-            output.append(errorText);
-            printResult(chatId, errorText);
         }
         return output.toString();
     }
 
-    protected abstract List<String> parceResponce(SmartJson message);
+    private TransmissionResponce getTransmissionResponce(SmartJson message, String serverNumber, String serverName) {
+        String requestBody = generateRequestBody(message);
+
+        ApiResponce responce = send(serverName, requestBody, serverName, "Content-Type", "application/json", sessionIdKey, sessionIdValues.get(serverNumber));
+        String responceBody = responce.getBody();
+        if (responceBody.contains("409: Conflict")) {
+            //expired session
+            log.debug("[getDeliverCallbackPrivate] Recreate a session");
+            TransmissionWebApiExecutor.sessionIdValues.put(serverNumber, responce.getHeader(sessionIdKey));
+            responce = send(serverName, requestBody, "Content-Type", "application/json", sessionIdKey, sessionIdValues.get(serverNumber));
+            responceBody = responce.getBody();
+        }
+
+        log.debug("[getDeliverCallbackPrivate] Responce body:\n{}", responceBody);
+        SmartJson json = new SmartJson(SmartJsonKeys.INPUT, message.getRabbitMessageText()).addValue(SmartJsonKeys.OUTPUT, responceBody);
+        return new TransmissionResponce(responceBody, json);
+    }
+
+    private record TransmissionResponce(String responceBody, SmartJson json) {
+    }
+
+    private String generateRequestBody(SmartJson message) {
+        String requestBodyFormat = ResourceReader.readResourceContent(String.format("transmission_requests/%s", getRequest()));
+        Object[] requestBodyFormatArguments = getRequestArguments(message.getSubMessage(SmartJsonKeys.COMMAND_ARGUMENTS));
+        if(requestBodyFormatArguments.length > 1) {
+            requestBodyFormatArguments = Arrays.copyOfRange(requestBodyFormatArguments, 1, requestBodyFormatArguments.length);
+        }
+        log.debug("[getDeliverCallbackPrivate] Request body format:\n{}\nRequest body format arguments:\n{}", requestBodyFormat, requestBodyFormatArguments);
+        String requestBody = String.format(requestBodyFormat, requestBodyFormatArguments);
+        log.debug("[getDeliverCallbackPrivate] Request body:\n{}", requestBody);
+        return requestBody;
+    }
+
+    private void generateSessionId(String serverNumber, String serverName) {
+        if (sessionIdValues.get(serverNumber) == null) {
+            //new session
+            log.debug("[getDeliverCallbackPrivate] Create a new session");
+
+            val responce = send(serverName, "Content-Type", "application/json", "");
+            sessionIdValues.put(serverNumber, responce.getHeader(sessionIdKey));
+        }
+    }
+
+    private void analyzeServer(SmartJson message, List<String> serversToApply, StringBuilder output, long chatId) {
+        String selectedServer = message.getValue(SmartJsonKeys.SELECT_SERVER);
+        if(!selectedServer.isEmpty()) {
+            try {
+                Integer.parseInt(selectedServer);
+                if (serverNames.containsKey(selectedServer)) {
+                    serversToApply.add(selectedServer);
+                } else {
+                    String errorText = String.format("Server number: '%s' is invalid", selectedServer);
+                    output.append(errorText);
+                    printResult(chatId, errorText);
+                }
+            } catch (NumberFormatException e) {
+                String errorText = String.format("Server number: '%s' is invalid", selectedServer);
+                output.append(errorText);
+                printResult(chatId, errorText);
+            }
+        } else {
+            serversToApply.addAll(serverNames.keySet());
+        }
+    }
+
+    protected abstract List<String> parseResponce(SmartJson message, String serverNumber);
 
     protected boolean isResultValid(SmartJson result) {
-        return "success".equalsIgnoreCase(result.getSubMessage(SmartJson.KEYS.OUTPUT).getValue("result"));
+        return "success".equalsIgnoreCase(result.getSubMessage(SmartJsonKeys.OUTPUT).getValue("result"));
     }
 
     protected String textOfMessageBegin() {
@@ -103,4 +166,15 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
     protected Object[] getRequestArguments(SmartJson message) {
         return message == null ? new Object[0] : message.convertToList().toArray();
     }
+
+    @Override
+    protected String getDefaultPort() {
+        return "9091";
+    }
+
+    @Override
+    protected String getDefaultSuffix() {
+        return "transmission/rpc";
+    }
+
 }

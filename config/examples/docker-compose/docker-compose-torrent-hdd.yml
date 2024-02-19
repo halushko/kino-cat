@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  transmission_hdd:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: "transmission_hdd"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./workdir/config/transmission_hdd:/config
+      - ./workdir/mediadata_hdd/mediadata:/downloads/complete
+      - ./workdir/config/files_from_telegram_hdd:/watch
+    ports:
+      - 9092:9091
+      - 51414:51413
+      - 51414:51413/udp
+    networks:
+      torrent_network_hdd:
+networks:
+  torrent_network_hdd:
+    driver: bridge

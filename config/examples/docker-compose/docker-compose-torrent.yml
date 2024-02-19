@@ -12,5 +12,13 @@ services:
       - ./workdir/config/transmission:/config
       - ./workdir/mediadata:/downloads/complete
       - ./workdir/config/files_from_telegram:/watch
-    network_mode: host
+    ports:
+      - 9093:9091
+      - 51415:51413
+      - 51415:51413/udp
     restart: unless-stopped
+    networks:
+      torrent_network:
+networks:
+  torrent_network:
+    driver: bridge

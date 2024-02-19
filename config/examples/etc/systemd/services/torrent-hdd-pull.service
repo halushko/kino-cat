@@ -1,13 +1,13 @@
 [Unit]
 Description=Torrent update
 Requires=docker.service
-After=torrent_down.service
+After=torrent-hdd-down.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/dima 
-ExecStart=/usr/bin/docker-compose -f docker-compose-torrent.yml pull
+WorkingDirectory=/home/dima/media
+ExecStart=/usr/bin/docker-compose -f docker-compose-torrent-hdd.yml pull
 TimeoutStartSec=0
 
 [Install]

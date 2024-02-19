@@ -1,13 +1,13 @@
 [Unit]
-Description=Shut down debug Bot
+Description=Mount HDD disc
 Requires=docker.service
 After=docker.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/dima 
-ExecStart=/usr/bin/docker-compose -f docker-compose-bot_debug.yml down
+ExecStart=mount -t ntfs /dev/sdb1 /home/dima/media/workdir/mediadata_hdd/
+ExecStop=umount /dev/sdb1
 TimeoutStartSec=0
 
 [Install]

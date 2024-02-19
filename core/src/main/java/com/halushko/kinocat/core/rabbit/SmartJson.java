@@ -4,19 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.halushko.kinocat.core.JsonConstants.SmartJsonKeys;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.util.*;
 
+import static com.halushko.kinocat.core.JsonConstants.SmartJsonKeys.*;
+
+
 @SuppressWarnings({"UnusedReturnValue", "unused"})
 @Slf4j
 public class SmartJson {
     public static final String DEFAULT_KEY = "DEFAULT_KEY";
-
-    public enum KEYS {
-        USER_ID, TEXT, COMMAND_ARGUMENTS, INPUT, OUTPUT, FILE_PATH, MIME_TYPE, SIZE, CAPTION, FILE_ID
-    }
 
     private String json = "";
     private final static ObjectMapper mapper = new ObjectMapper() {{
@@ -24,10 +24,10 @@ public class SmartJson {
     }};
 
     public SmartJson(long userId) {
-        addValue(KEYS.USER_ID, String.valueOf(userId));
+        addValue(USER_ID, String.valueOf(userId));
     }
 
-    public SmartJson(KEYS key, Object value) {
+    public SmartJson(SmartJsonKeys key, Object value) {
         this(key.name(), value);
     }
 
@@ -37,8 +37,8 @@ public class SmartJson {
 
     public SmartJson(long userId, String text) {
         log.debug("[RabbitMessage] Start create RabbitMessage user={}, text={}", userId, text);
-        addValue(KEYS.USER_ID, String.valueOf(userId));
-        addValue(KEYS.TEXT, text);
+        addValue(SmartJsonKeys.USER_ID, String.valueOf(userId));
+        addValue(SmartJsonKeys.TEXT, text);
         log.debug("[RabbitMessage] Result RabbitMessage for user={} is json={}", userId, json);
     }
 
@@ -50,14 +50,14 @@ public class SmartJson {
         this.json = map == null ? "" : convertToString(map);
     }
 
-    public SmartJson getSubMessage(KEYS key) {
+    public SmartJson getSubMessage(SmartJsonKeys key) {
         return getSubMessage(key.name());
     }
     public SmartJson getSubMessage(String key) {
         return new SmartJson(getValue(key));
     }
 
-    public SmartJson addValue(KEYS key, Object value) {
+    public SmartJson addValue(SmartJsonKeys key, Object value) {
         return addValue(key.name(), value);
     }
     public SmartJson addValue(String key, Object value) {
@@ -68,7 +68,7 @@ public class SmartJson {
         return this;
     }
 
-    public String getValue(KEYS key) {
+    public String getValue(SmartJsonKeys key) {
         return getValue(key.name());
     }
     public String getValue(String key) {
@@ -101,10 +101,10 @@ public class SmartJson {
     }
 
     public String getText() {
-        return getValue(KEYS.TEXT);
+        return getValue(SmartJsonKeys.TEXT);
     }
     public long getUserId() {
-        return Long.parseLong(getValue(KEYS.USER_ID));
+        return Long.parseLong(getValue(SmartJsonKeys.USER_ID));
     }
 
     public String getRabbitMessageText() {

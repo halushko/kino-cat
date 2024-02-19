@@ -1,15 +1,16 @@
-package com.halushko.kinocat.text;
+package com.halushko.kinocat.text.handlers;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.core.rabbit.SmartJson;
+import com.halushko.kinocat.text.Constants;
 
 import java.util.stream.Collectors;
 
 public class HelpCommand extends InputMessageHandler {
     @Override
     protected String getDeliverCallbackPrivate(SmartJson smartJson) {
-        return UserTextMessageHandler.scripts.getCommands().stream()
+        return Constants.COMMANDS_COLLECTION.getCommands().stream()
                 .map(command -> command.getCommand() + " - " + command.getDescription() + "\n")
                 .collect(Collectors.joining());
     }
@@ -21,6 +22,6 @@ public class HelpCommand extends InputMessageHandler {
 
     @Override
     protected String getQueue() {
-        return Constants.Queues.Text.HELP;
+        return Queues.Text.HELP;
     }
 }

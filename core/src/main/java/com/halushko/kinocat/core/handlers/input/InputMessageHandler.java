@@ -1,6 +1,6 @@
 package com.halushko.kinocat.core.handlers.input;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import com.rabbitmq.client.DeliverCallback;
@@ -56,7 +56,7 @@ public abstract class InputMessageHandler implements Runnable {
 
     protected String printResult(long chatId, String text){
         String replacedString = text.replaceAll(OUTPUT_SEPARATOR + "(?=" + OUTPUT_SEPARATOR + ")", ",");
-        RabbitUtils.postMessage(chatId, replacedString, Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+        RabbitUtils.postMessage(chatId, replacedString, Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         return "";
     }
 

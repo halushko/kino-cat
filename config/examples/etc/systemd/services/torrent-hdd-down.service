@@ -1,13 +1,13 @@
 [Unit]
 Description=Torent client Service
 Requires=docker.service
-After=docker.service
+After=mount-hdd.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/dima 
-ExecStart=/usr/bin/docker-compose -f docker-compose-torrent.yml down
+WorkingDirectory=/home/dima/media
+ExecStart=/usr/bin/docker-compose -f docker-compose-torrent-hdd.yml down
 TimeoutStartSec=0
 
 [Install]

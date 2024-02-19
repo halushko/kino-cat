@@ -1,6 +1,6 @@
 package com.halushko.kinocat.bot.handlers.telegram;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.core.handlers.telegram.UserMessageHandler;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
@@ -17,7 +17,7 @@ public class TextHandler extends UserMessageHandler {
         log.debug("[TextHandler] chatId:{}, message:{}", chatId, message);
 
         SmartJson rm = new SmartJson(chatId, message);
-        RabbitUtils.postMessage(rm, Constants.Queues.Telegram.TELEGRAM_INPUT_TEXT);
+        RabbitUtils.postMessage(rm, Queues.Telegram.TELEGRAM_INPUT_TEXT);
     }
 
     @Override

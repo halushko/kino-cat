@@ -1,13 +1,13 @@
 [Unit]
 Description=Message brocker Service
 Requires=docker.service
-After=message_broker_down.service
+After=mount-hdd.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/dima 
-ExecStart=/usr/bin/docker-compose -f docker-compose-broker.yml pull
+WorkingDirectory=/home/dima/media
+ExecStart=/usr/bin/docker-compose -f docker-compose-broker.yml down
 TimeoutStartSec=0
 
 [Install]

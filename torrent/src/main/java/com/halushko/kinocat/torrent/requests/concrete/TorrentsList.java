@@ -1,6 +1,7 @@
 package com.halushko.kinocat.torrent.requests.concrete;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.Commands;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 import lombok.extern.slf4j.Slf4j;
@@ -18,12 +19,12 @@ public class TorrentsList extends GetTorrent {
     }
 
     @Override
-    protected String generateAnswer(TorrentEntity torrent) {
-        return String.format("%s %s\n%s %s\n%s%s %s%s"
+    protected String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator) {
+        return String.format("%s %s\n%s %s\n%s %s"
                 , getStatusIcon(torrent), torrent.getName()
                 , getProgressBar(torrent), getGigabytesLeft(torrent)
-                , Constants.Commands.Torrent.LIST_TORRENT_COMMANDS, torrent.getId()
-                , Constants.Commands.Torrent.LIST_FILES, torrent.getId()
+                , String.format("%s%s%s%s", Commands.Torrent.LIST_TORRENT_COMMANDS, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.LIST_FILES, serverNumber, serverVsTorrentSeparator, torrent.getId())
         );
     }
 
@@ -64,7 +65,7 @@ public class TorrentsList extends GetTorrent {
 
     @Override
     protected String getQueue() {
-        return Constants.Queues.Torrent.TORRENTS_LIST;
+        return Queues.Torrent.TORRENTS_LIST;
     }
 
     @Override

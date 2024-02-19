@@ -1,6 +1,7 @@
 package com.halushko.kinocat.torrent.requests.concrete;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.Commands;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 import lombok.extern.slf4j.Slf4j;
@@ -12,17 +13,19 @@ public class PrintTorrentCommands extends GetTorrent {
     }
 
     @Override
-    protected String generateAnswer(TorrentEntity torrent){
-        return String.format("%s\n%s%s\n%s%s\n%s%s\n%s%s", torrent.getName(),
-                Constants.Commands.Torrent.PAUSE, torrent.getId(),
-                Constants.Commands.Torrent.RESUME, torrent.getId(),
-                Constants.Commands.Torrent.TORRENT_INFO, torrent.getId(),
-                Constants.Commands.Torrent.REMOVE_COMMAND, torrent.getId());
+    protected String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator) {
+        return String.format("%s\n%s\n%s\n%s\n%s"
+                , torrent.getName()
+                , String.format("%s%s%s%s", Commands.Torrent.PAUSE, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.RESUME, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.TORRENT_INFO, serverNumber, serverVsTorrentSeparator, torrent.getId())
+                , String.format("%s%s%s%s", Commands.Torrent.REMOVE_COMMAND, serverNumber, serverVsTorrentSeparator, torrent.getId())
+        );
     }
 
     @Override
     protected String getQueue() {
-        return Constants.Queues.Torrent.TORRENT_COMMANDS;
+        return Queues.Torrent.TORRENT_COMMANDS;
     }
 
     @Override

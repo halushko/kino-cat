@@ -1,12 +1,12 @@
 [Unit]
 Description=Bot update
 Requires=docker.service
-After=bot_down.service
+After=bot-down.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/home/dima 
+WorkingDirectory=/home/dima/media
 ExecStart=/usr/bin/docker-compose -f docker-compose-bot.yml pull
 TimeoutStartSec=0
 

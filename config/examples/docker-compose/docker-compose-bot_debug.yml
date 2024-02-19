@@ -1,54 +1,47 @@
 version: '3.7'
 
-x-common-variables: &common-variables
-  RABBITMQ_DEFAULT_USER: rabbit_user
-  RABBITMQ_DEFAULT_PASS: rabbit_pswrd
-  RABBIT_PORT: 5672
-  RABBIT_IP: <input>
-  TORRENT_IP: <input>
-  
-  BOT_TOKEN: <input>
-  BOT_NAME: <input>
-  BOT_TRUSTED_USERS: <input>
-
-  LONG_PAUSE_MILIS: 10000
-  MEDIUM_PAUSE_MILIS: 5000
-  SMALL_PAUSE_MILIS: 500
-
-  PING: /ping
-  PONG: pong
-
-  LOGS_LEVEL: debug
 services:
-  torrent:
+  torrent_debug:
     image: halushko/cinema-torrent:beta
-    environment: *common-variables
+    env_file:
+      - constants.env
     restart: always
     container_name: "torrent_debug"
     volumes:
       - ./workdir/config/transmission:/home/app/transmission_config
       - ./workdir/config/logs:/home/app/logs
     network_mode: host
-  bot:
+  bot_debug:
     image: halushko/cinema-bot:beta
-    environment: *common-variables
+    env_file:
+      - constants.env
     restart: always
     container_name: "bot_debug"
     volumes:
       - ./workdir/config/logs:/home/app/logs
-  text:
+    networks:
+      bot_network_debug:
+  text_debug:
     image: halushko/cinema-text:beta
-    environment: *common-variables
+    env_file:
+      - constants.env
     restart: always
     container_name: "text_debug"
     volumes:
       - ./workdir/config/logs:/home/app/logs
-  file:
+    networks:
+      bot_network_debug:
+  file_debug:
     image: halushko/cinema-file:beta
-    environment: *common-variables
+    env_file:
+      - constants.env
     restart: always
     container_name: "file_debug"
     volumes:
       - ./workdir/config/files_from_telegram:/home/torrent_files/
       - ./workdir/config/logs:/home/app/logs
-
+    networks:
+      bot_network_debug:
+networks:
+  bot_network_debug:
+    driver: bridge
