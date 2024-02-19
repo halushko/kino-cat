@@ -6,7 +6,8 @@ After=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=mount.cifs //skynetrouter.asuscomm.com/Films /home/dima/media/workdir/1 -o username=1,password=1,port=5001
+ExecStart=mount.cifs //1/1 /home/dima/media/workdir/1 -o username=1,password=1,port=1
+ExecStop=umount /home/dima/media/workdir/1
 TimeoutStartSec=0
 
 [Install]

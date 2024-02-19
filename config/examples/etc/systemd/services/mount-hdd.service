@@ -7,7 +7,7 @@ After=docker.service
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=mount -t ntfs /dev/sdb1 /home/dima/media/workdir/mediadata_hdd/
-#ExecStop=umount /dev/sdb1
+ExecStop=umount /dev/sdb1
 TimeoutStartSec=0
 
 [Install]

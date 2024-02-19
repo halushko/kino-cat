@@ -21,7 +21,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
 
     public TransmissionWebApiExecutor() {
         super(TRANSMISSION_IP);
-        int i = -1;
+        int i = 0;
         for (val server : serverUrls.keySet()) {
             String serverNumber = String.valueOf(++i);
             sessionIdValues.put(serverNumber, null);

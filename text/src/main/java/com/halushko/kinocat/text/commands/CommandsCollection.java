@@ -12,7 +12,7 @@ public class CommandsCollection {
 
     public void addValue(String command, String queue, String description, CommandProperties... additionalProperties) {
         values.add(new Command(command, queue, description, additionalProperties));
-        if (Arrays.stream(additionalProperties).anyMatch(x -> x == CommandProperties.CAN_CONTAIN_SERVER_NUMBER)) {
+        if (Arrays.stream(additionalProperties).anyMatch(x -> x == CommandProperties.CONTAINS_SERVER_NUMBER)) {
             values.add(new Command(command + "_", queue, description, additionalProperties));
         }
     }

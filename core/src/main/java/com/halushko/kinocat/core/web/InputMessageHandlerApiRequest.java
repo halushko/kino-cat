@@ -128,4 +128,8 @@ public abstract class InputMessageHandlerApiRequest extends InputMessageHandler 
             return getDefaultUrlTemplate();
         }
     }
+
+    protected SmartJson parseParameters(SmartJson message) {
+        return message;
+    }
 }

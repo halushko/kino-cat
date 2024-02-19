@@ -27,7 +27,7 @@ public class UserTextMessageHandler extends InputMessageHandler {
             if(command.getAdditionalProperties().contains(CommandProperties.EMPTY_INSTANCE)){
                 message.addValue(SmartJsonKeys.TEXT, "Такої команди не знайдено");
             }
-            if(command.getAdditionalProperties().contains(CommandProperties.CAN_CONTAIN_SERVER_NUMBER)){
+            if(command.getAdditionalProperties().contains(CommandProperties.CONTAINS_SERVER_NUMBER) && !command.getArguments().isEmpty()){
                 message.addValue(SmartJsonKeys.SELECT_SERVER, command.getArguments().get(0));
             }
 
