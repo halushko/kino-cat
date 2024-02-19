@@ -10,7 +10,7 @@
 ### 1.17.4 (ALPHA)
 - add downloading to the several folders
 - add smb connection example
-### 1.17.5 (BETA)
+### 1.17.6 (BETA)
 - add /full_info
 ## 1.18 Started (_unmerged_)
 ## 1.19 Planning (_TODO_)
