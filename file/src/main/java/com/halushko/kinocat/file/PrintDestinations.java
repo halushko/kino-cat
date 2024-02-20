@@ -30,7 +30,7 @@ public class PrintDestinations extends CliCommandExecutor {
                 String.join("", result),
                 Constants.FOLDERS.keySet().stream()
                         .map(folder ->
-                                String.format("\\n%s: %s_%s_%s",
+                                String.format("\n%s: %s%s_%s",
                                         getServiceLable(folder),
                                         Commands.File.SELECT_DESTINATION,
                                         getServiceLable(folder),
@@ -52,6 +52,6 @@ public class PrintDestinations extends CliCommandExecutor {
 
     @Override
     protected String getScript(SmartJson rabbitMessage) {
-        return String.format("transmission-show %s", rabbitMessage.getValue(SmartJsonKeys.FILE_PATH));
+        return String.format("bash -c \"transmission-show %s\"", rabbitMessage.getValue(SmartJsonKeys.FILE_PATH));
     }
 }

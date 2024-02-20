@@ -22,7 +22,7 @@ public class MoveToDestinationFolder extends CliCommandExecutor {
         String folder = (String) arguments.get(0);
         String file = (String) arguments.get(1);
 
-        return String.format("mv -f %s/%s.torrent %s/%s.torrent",
+        return String.format("bash -c \"mv -f %s/%s.torrent %s/%s.torrent\"",
                 Constants.PATH_TO_UNAPPROVED_FOLDER,
                 file,
                 Constants.FOLDERS.get(folder),
