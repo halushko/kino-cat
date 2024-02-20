@@ -52,6 +52,6 @@ public class PrintDestinations extends CliCommandExecutor {
 
     @Override
     protected String getScript(SmartJson rabbitMessage) {
-        return String.format("bash -c \"transmission-show %s\"", rabbitMessage.getValue(SmartJsonKeys.FILE_PATH));
+        return String.format("bash -c \"/usr/bin/transmission-show %s\"", rabbitMessage.getValue(SmartJsonKeys.FILE_PATH));
     }
 }
