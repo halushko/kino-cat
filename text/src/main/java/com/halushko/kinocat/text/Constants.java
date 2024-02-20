@@ -70,5 +70,10 @@ public interface Constants {
                 Queues.Text.HELP,
                 "вивести інформацію по всім командам"
         );
+
+        addValue(Commands.File.SELECT_DESTINATION,
+                Queues.File.MOVE_TO_FOLDER,
+                "<папка> <файл> обрати в яку папку буде завантаження"
+        );
     }};
 }

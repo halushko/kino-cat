@@ -14,8 +14,7 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
     @Override
     protected String getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         long userId = rabbitMessage.getUserId();
-        String script = rabbitMessage.getText();
-
+        String script = getScript(rabbitMessage);
         log.debug("[ExternalCliCommandExecutor] userId:{}, script:{}", userId, script);
 
         try {
@@ -34,11 +33,11 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
     }
 
     protected List<String> executeViaCLI(String script) {
-        String command = String.format("sh %s%s", "/home/app/", script);
-        log.debug("[executeViaCLI] Execute script: {}", command);
+//        String command = String.format("sh %s%s", "/home/app/", script);
+        log.debug("[executeViaCLI] Execute script: {}", script);
         List<String> result = new ArrayList<>();
 
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        ProcessBuilder processBuilder = new ProcessBuilder(script);
         processBuilder.redirectErrorStream(true);
 
         try {
@@ -59,5 +58,9 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
         log.debug("[executeViaCLI] Execution of script finished. Result is:");
         result.forEach(log::debug);
         return result;
+    }
+
+    protected String getScript(SmartJson rabbitMessage){
+        return  rabbitMessage.getText();
     }
 }

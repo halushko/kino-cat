@@ -73,13 +73,18 @@ public class TorrentEntity {
         files.forEach(file -> this.files.add(new SubTorrentEntity(file, id)));
 
         this.lastActivityDate = getDate(torrent.getValue("activityDate"));
-        this.dateCreated = getDate(torrent.getValue("dateCreated"));
+        this.dateCreated = getDate(torrent.getValue("dateCreated")); //TODO check
         this.addedDate = getDate(torrent.getValue("addedDate"));
     }
 
     private static String getDate(String strValue) {
         if(strValue.isEmpty()) return "";
-        val timestamp = Long.parseLong(strValue);
+        long timestamp;
+        try {
+            timestamp = Long.parseLong(strValue);
+        } catch (NumberFormatException e) {
+            timestamp = 0;
+        }
         Instant instant = Instant.ofEpochSecond(timestamp);
         ZonedDateTime date = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
         return date.format(FORMATTER);

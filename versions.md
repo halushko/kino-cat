@@ -11,10 +11,12 @@
 - add downloading to the several folders
 - add smb connection example
 ### 1.17.6 (BETA)
-- add /full_info
+- add /info
+- add ability to choose the destination folder
 ## 1.18 Started (_unmerged_)
 ## 1.19 Planning (_TODO_)
 - fix error `build_core / build_core The 'save-state' command is deprecated and will be disabled soon. Please upgrade to using Environment Files. For more information see: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/`
 - add life update of the last message
 - add sub files operations
+- add the free space during approval
  

@@ -57,7 +57,7 @@ public abstract class InputMessageHandler implements Runnable {
     protected String printResult(long chatId, String text){
         String replacedString = text.replaceAll(OUTPUT_SEPARATOR + "(?=" + OUTPUT_SEPARATOR + ")", ",");
         RabbitUtils.postMessage(chatId, replacedString, Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
-        return "";
+        return replacedString;
     }
 
     @SuppressWarnings("unused")

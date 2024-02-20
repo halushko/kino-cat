@@ -5,5 +5,7 @@ public class Main {
         System.out.println("Hello world! I'm fileConsumer!");
         org.apache.log4j.BasicConfigurator.configure();
         new UserMessageHandler().run();
+        new PrintDestinations().run();
+        new MoveToDestinationFolder().run();
     }
 }
