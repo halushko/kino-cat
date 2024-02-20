@@ -64,13 +64,13 @@ public class UserMessageHandler extends InputMessageHandler {
         File localFile = new File(String.format("%s/%s", Constants.PATH_TO_UNAPPROVED_FOLDER, fileName));
         try (InputStream is = fileUrl.openStream()) {
             FileUtils.copyInputStreamToFile(is, localFile);
-            SmartJson message = new SmartJson(userId)
-                    .addValue(SmartJsonKeys.FILE_PATH, localFile.getAbsolutePath())
-                    .addValue(SmartJsonKeys.FILE_ID, fileName);
-            RabbitUtils.postMessage(message, Queues.File.CHOOSE_THE_DESTINATION);
         } catch (IOException e) {
             RabbitUtils.postMessage(userId, e.getMessage(), Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         }
+        SmartJson message = new SmartJson(userId)
+                .addValue(SmartJsonKeys.FILE_PATH, localFile.getAbsolutePath())
+                .addValue(SmartJsonKeys.FILE_ID, fileName);
+        RabbitUtils.postMessage(message, Queues.File.CHOOSE_THE_DESTINATION);
     }
 
     @Override
