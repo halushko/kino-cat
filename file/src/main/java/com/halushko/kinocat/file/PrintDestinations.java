@@ -57,7 +57,7 @@ public class PrintDestinations extends CliCommandExecutor {
                 "/bin/bash",
                 "-c",
 //                String.format("\"/usr/bin/transmission-show %s\"", rabbitMessage.getValue(SmartJsonKeys.FILE_PATH).replaceAll("\\s+", "\\\\ "))
-                String.format("\"ls -la %s\"", rabbitMessage.getValue(SmartJsonKeys.FILE_PATH))
+                "\"ls -la /tmp/unapproved\""
         };
     }
 }
