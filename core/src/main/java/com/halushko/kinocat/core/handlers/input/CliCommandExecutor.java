@@ -2,6 +2,7 @@ package com.halushko.kinocat.core.handlers.input;
 
 import com.halushko.kinocat.core.rabbit.SmartJson;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,7 +15,7 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
     @Override
     protected String getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         long userId = rabbitMessage.getUserId();
-        String script = getScript(rabbitMessage);
+        val script = getScript(rabbitMessage);
         log.debug("[ExternalCliCommandExecutor] userId:{}, script:{}", userId, script);
 
         try {
@@ -32,9 +33,9 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
         return lines == null ? "" : String.join("\n", lines);
     }
 
-    protected List<String> executeViaCLI(String script) {
+    protected List<String> executeViaCLI(String[] script) {
 //        String command = String.format("sh %s%s", "/home/app/", script);
-        log.debug("[executeViaCLI] Execute script: {}", script);
+        log.debug("[executeViaCLI] Execute script: [{}]", String.join(", ", script));
         List<String> result = new ArrayList<>();
 
         ProcessBuilder processBuilder = new ProcessBuilder(script);
@@ -60,7 +61,7 @@ public abstract class CliCommandExecutor extends InputMessageHandler {
         return result;
     }
 
-    protected String getScript(SmartJson rabbitMessage){
-        return  rabbitMessage.getText();
+    protected String[] getScript(SmartJson rabbitMessage){
+        return  new String[] {rabbitMessage.getText()};
     }
 }

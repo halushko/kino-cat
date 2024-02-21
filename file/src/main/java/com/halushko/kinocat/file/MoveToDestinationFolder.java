@@ -17,16 +17,19 @@ public class MoveToDestinationFolder extends CliCommandExecutor {
     }
 
     @Override
-    protected String getScript(SmartJson rabbitMessage) {
+    protected String[] getScript(SmartJson rabbitMessage) {
         List<Object> arguments = rabbitMessage.getSubMessage(SmartJsonKeys.COMMAND_ARGUMENTS).convertToList();
         String folder = (String) arguments.get(0);
         String file = (String) arguments.get(1);
-
-        return String.format("bash -c \"mv -f %s/%s.torrent %s/%s.torrent\"",
-                Constants.PATH_TO_UNAPPROVED_FOLDER,
-                file,
-                Constants.FOLDERS.get(folder),
-                UUID.randomUUID()
-        );
+        return new String[]{
+                "/bin/bash",
+                "-c",
+                String.format("\"mv -f %s/%s.torrent %s/%s.torrent\"",
+                        Constants.PATH_TO_UNAPPROVED_FOLDER.replaceAll("\\s+", "\\\\ "),
+                        file.replaceAll("\\s+", "\\\\ "),
+                        Constants.FOLDERS.get(folder).replaceAll("\\s+", "\\\\ "),
+                        UUID.randomUUID()
+                )
+        };
     }
 }
