@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  torrent_debug:
+    image: halushko/cinema-torrent:beta
+    env_file:
+      - constants.env
+    restart: always
+    container_name: "torrent_debug"
+    volumes:
+      - ./workdir/config/transmission:/home/app/transmission_config
+      - ./workdir/config/logs:/home/app/logs
+    networks:
+      bot_network_debug:
+  bot_debug:
+    image: halushko/cinema-bot:beta
+    env_file:
+      - constants.env
+    restart: always
+    container_name: "bot_debug"
+    volumes:
+      - ./workdir/config/logs:/home/app/logs
+    networks:
+      bot_network_debug:
+  text_debug:
+    image: halushko/cinema-text:beta
+    env_file:
+      - constants.env
+    restart: always
+    container_name: "text_debug"
+    volumes:
+      - ./workdir/config/logs:/home/app/logs
+    networks:
+      bot_network_debug:
+  file_debug:
+    image: halushko/cinema-file:beta
+    env_file:
+      - constants.env
+    restart: always
+    container_name: "file_debug"
+    volumes:
+        - ./workdir/config/files_from_telegram:/home/torrent_files/
+        - ./workdir/config/files_from_telegram_hdd:/home/torrent_files_hdd/
+        - ./workdir/config/logs:/home/app/logs
+    networks:
+      bot_network_debug:
+networks:
+  bot_network_debug:
+    driver: bridge

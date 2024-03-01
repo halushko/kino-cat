@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: "transmission"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./workdir/config/transmission:/config
+      - ./workdir/mediadata:/downloads/complete
+      - ./workdir/config/files_from_telegram:/watch
+    ports:
+      - 9093:9091
+      - 51415:51413
+      - 51415:51413/udp
+    restart: unless-stopped
+    networks:
+      torrent_network:
+networks:
+  torrent_network:
+    driver: bridge

@@ -1,0 +1,14 @@
+[Unit]
+Description=Mount HDD disc
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=mount.cifs //1/1 /home/dima/media/workdir/1 -o username=1,password=1,port=1
+ExecStop=umount /home/dima/media/workdir/1
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target

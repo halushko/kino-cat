@@ -10,6 +10,7 @@ public class Main {
         new DeleteOnlyTorrent().run();
         new DeleteWithFiles().run();
         new FilesList().run();
+        new TorrentFullInfo().run();
         new PauseTorrent().run();
         new ResumeTorrent().run();
         new RemoveTorrentCommand().run();

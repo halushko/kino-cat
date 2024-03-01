@@ -1,4 +1,4 @@
-package com.halushko.kinocat.core.commands;
+package com.halushko.kinocat.text.commands;
 
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -10,22 +10,24 @@ public class CommandsCollection {
     private Map<String, Command> allCommands;
     private final List<Command> values = new ArrayList<>();
 
-    @SuppressWarnings("unused")
-    public void addValue(String command, String queue) {
-        values.add(new Command(command, queue, new LinkedHashMap<>()));
+    public void addValue(String command, String queue, String description, CommandProperties... additionalProperties) {
+        values.add(new Command(command, queue, description, additionalProperties));
+        if (!command.endsWith("_") && Arrays.stream(additionalProperties).anyMatch(x -> x == CommandProperties.CONTAINS_SERVER_NUMBER)) {
+            values.add(new Command(command + "_", queue, description, additionalProperties));
+        }
     }
-    @SuppressWarnings("unused")
-    public void addValue(String command, String queue, Map<String, String> params) {
-        values.add(new Command(command, queue, params));
+
+    public Command getCommand(String text) {
+        log.debug("[getCommand] Try to get command from text [{}]", text);
+        if (text == null || text.isEmpty()) return Command.getEmptyCommand();
+        val result = CommandChecker.getCommand(text, getCommandList());
+        log.debug("[getCommand] Command is command={}, queue={}", result.getCommand(), result.getQueue());
+        return result;
     }
 
     @SuppressWarnings("unused")
-    public Command getCommand(String text) {
-        log.debug("[getCommand] Try to get command from text [{}]", text);
-        if (text == null || text.isEmpty()) return new Command();
-        val result =  CommandChecker.getCommand(text, getCommandList());
-        log.debug("[getCommand] Command is command={}, queue={}", result.getCommand(), result.getQueue());
-        return result;
+    public Collection<Command> getCommands() {
+        return new ArrayList<>(getCommandList());
     }
 
     private Collection<Command> getCommandList() {

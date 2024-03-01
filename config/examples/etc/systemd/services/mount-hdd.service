@@ -1,0 +1,14 @@
+[Unit]
+Description=Mount HDD disc
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=mount -t ntfs /dev/sdb1 /home/dima/media/workdir/mediadata_hdd/
+ExecStop=umount /dev/sdb1
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target

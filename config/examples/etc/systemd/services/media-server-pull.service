@@ -1,0 +1,14 @@
+[Unit]
+Description=Media server update
+Requires=docker.service
+After=media-server-down.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/home/dima/media
+ExecStart=/usr/bin/docker-compose -f docker-compose-media.yml pull
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target

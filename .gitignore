@@ -133,3 +133,9 @@ gradle-app.setting
 /*/gradlew.bat
 /config/kot-builder/runner/jars/
 /config/kot-builder/runner/workdir/
+
+/config/examples/docker-compose/.bash_history
+/config/examples/docker-compose/.bash_logout
+/config/examples/docker-compose/.bashrc
+/config/examples/docker-compose/.profile
+/config/examples/docker-compose/.sudo_as_admin_successful

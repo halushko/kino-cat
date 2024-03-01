@@ -1,6 +1,7 @@
 package com.halushko.kinocat.file;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.JsonConstants.SmartJsonKeys;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.core.handlers.input.InputMessageHandler;
 import com.halushko.kinocat.core.rabbit.RabbitUtils;
 import com.halushko.kinocat.core.rabbit.SmartJson;
@@ -13,15 +14,14 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.halushko.kinocat.core.rabbit.SmartJson.KEYS.*;
 @Slf4j
 public class UserMessageHandler extends InputMessageHandler {
-    private static final String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
+    private final static String FILE_URL_PREFIX = String.format("%s%s/", "https://api.telegram.org/file/bot", System.getenv("BOT_TOKEN"));
 
     @Override
     protected String getDeliverCallbackPrivate(SmartJson rabbitMessage) {
         try {
-            String mimeType = rabbitMessage.getValue(MIME_TYPE);
+            String mimeType = rabbitMessage.getValue(SmartJsonKeys.MIME_TYPE);
             if ("application/x-bittorrent".equalsIgnoreCase(mimeType)) {
                 handleTorrent(rabbitMessage);
             }
@@ -32,25 +32,49 @@ public class UserMessageHandler extends InputMessageHandler {
     }
 
     protected void handleTorrent(SmartJson rm) throws MalformedURLException {
-        long fileSize = Long.parseLong(rm.getValue(SIZE));
+        long fileSize = Long.parseLong(rm.getValue(SmartJsonKeys.SIZE));
+        long userId = rm.getUserId();
         if (fileSize > 5242880L) {
-            log.warn(String.format("The file size is too big for .torrent (more than 0.5 Mb). Size = %s bytes", fileSize));
+            String error = String.format("The file size is too big for .torrent (more than 5 Mb). Size = %s Mb", ((double) fileSize) / (1024 * 1024));
+            log.warn(error);
+            RabbitUtils.postMessage(userId, error, Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
             return;
         }
-        URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(FILE_PATH)).toURL();
-        long userId = rm.getUserId();
-        String fileName = String.format("%s%s", rm.getValue(FILE_ID), ".torrent");
+        URL fileUrl = java.net.URI.create(FILE_URL_PREFIX + rm.getValue(SmartJsonKeys.FILE_PATH)).toURL();
+        String fileName = String.format("%s%s", rm.getValue(SmartJsonKeys.FILE_ID), ".torrent");
 
-        File localFile = new File("/home/torrent_files/" + fileName);
+        if (Constants.FOLDERS.size() > 1) {
+            sendToChoose(userId, fileUrl);
+        } else {
+            sendToDownload(fileName, fileUrl, userId);
+        }
+    }
+
+    private static void sendToDownload(String fileName, URL fileUrl, long userId) {
+        File localFile = new File(String.format("%s/%s", Constants.PATH_TO_DESTINATION_FOLDER, fileName));
         try (InputStream is = fileUrl.openStream()) {
             FileUtils.copyInputStreamToFile(is, localFile);
         } catch (IOException e) {
-            RabbitUtils.postMessage(userId, e.getMessage(), Constants.Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+            RabbitUtils.postMessage(userId, e.getMessage(), Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         }
+    }
+
+    private static void sendToChoose(long userId, URL fileUrl) {
+        String fileName = fileUrl.getFile().replaceAll(".*/", "");
+        File localFile = new File(String.format("%s/%s", Constants.PATH_TO_UNAPPROVED_FOLDER, fileName));
+        try (InputStream is = fileUrl.openStream()) {
+            FileUtils.copyInputStreamToFile(is, localFile);
+        } catch (IOException e) {
+            RabbitUtils.postMessage(userId, e.getMessage(), Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
+        }
+        SmartJson message = new SmartJson(userId)
+                .addValue(SmartJsonKeys.FILE_PATH, localFile.getAbsolutePath())
+                .addValue(SmartJsonKeys.FILE_ID, fileName);
+        RabbitUtils.postMessage(message, Queues.File.CHOOSE_THE_DESTINATION);
     }
 
     @Override
     protected String getQueue() {
-        return Constants.Queues.Telegram.TELEGRAM_INPUT_FILE;
+        return Queues.Telegram.TELEGRAM_INPUT_FILE;
     }
 }

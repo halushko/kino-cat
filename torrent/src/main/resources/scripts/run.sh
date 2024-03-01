@@ -9,4 +9,13 @@ else
   echo "The transmission service configured by this service" > /home/app/transmission_config/.settings.lock
 fi
 
+mkdir -p /home/app/transmission_config_hdd
+if [ -e /home/app/transmission_config_hdd/.settings.lock ]; then
+  echo "The transmission hdd service was already configured by this service"
+else
+  cp /home/app/settings.json /home/app/transmission_config_hdd/settings.json
+  echo "The transmission hdd service configured by this service"
+  echo "The transmission hdd service configured by this service" > /home/app/transmission_config_hdd/.settings.lock
+fi
+
 java -Dlog4j.configuration=file:/home/app/log4j-${LOGS_LEVEL}.properties -jar /home/app/app.jar

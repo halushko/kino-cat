@@ -1,16 +1,15 @@
-package com.halushko.kinocat.core.commands;
+package com.halushko.kinocat.text.commands;
 
-import com.halushko.kinocat.core.rabbit.SmartJson;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 class CommandChecker {
     private final String fullText;
-    private Command command = new Command();
+    private Command command = Command.getEmptyCommand();
 
     private CommandChecker(String str) {
         this.fullText = str;
@@ -36,15 +35,10 @@ class CommandChecker {
     }
 
     private void setCommand(Command candidate) {
-        log.debug("[setCommandText] Command={}, fullText={}, Queue={}, Arguments={}", candidate.getCommand(), fullText, candidate.getQueue(), candidate.getArguments());
+        log.debug("[setCommandText] Command={}, fullText={}, Queue={}, Arguments={}", candidate.getCommand(), fullText, candidate.getQueue(), candidate.getAdditionalProperties());
         String delimiter = candidate.getCommand().endsWith("_") ? "_" : "\\s+";
-        Map<String, Object> arguments = new HashMap<>() {{
-            put(SmartJson.KEYS.COMMAND_ARGUMENTS.name(),
-                    fullText.replace(candidate.getCommand(), "")
-                            .trim()
-                            .split(delimiter)
-            );
-        }};
-        command = new Command(candidate.getCommand(), candidate.getQueue(), new SmartJson(arguments));
+        val arg = fullText.replace(candidate.getCommand(), "").trim().split(delimiter);
+        command = new Command(candidate.getCommand(), candidate.getQueue(), candidate.getDescription(), candidate.getAdditionalProperties().toArray(new CommandProperties[0]));
+        command.getArguments().addAll(Arrays.stream(arg).toList());
     }
 }

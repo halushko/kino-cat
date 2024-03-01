@@ -1,6 +1,6 @@
 package com.halushko.kinocat.torrent.requests.concrete;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.torrent.entities.SubTorrentEntity;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 public class FilesList extends GetTorrent {
 
     @Override
-    protected String generateAnswer(TorrentEntity torrent) {
+    protected String generateAnswer(TorrentEntity torrent, String serverNumber, String serverVsTorrentSeparator) {
         StringBuilder sb = new StringBuilder("Торент ").append(torrent.getName()).append("\n/\n");
         SubTorrentEntity previousFile = null;
         for (SubTorrentEntity currentFile : torrent.getFiles()) {
@@ -47,8 +47,13 @@ public class FilesList extends GetTorrent {
         StringBuilder line = new StringBuilder();
 
         IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
-        IntStream.range(blackBlocks, blocks).mapToObj(i -> "░").forEach(line::append);
 
+        if(blackBlocks < blocks) {
+            line.append("▒");
+        }
+        if(blackBlocks + 1 < blocks) {
+            IntStream.range(blackBlocks + 1, blocks).mapToObj(i -> "░").forEach(line::append);
+        }
         return line.toString();
     }
 
@@ -70,7 +75,7 @@ public class FilesList extends GetTorrent {
 
     @Override
     protected String getQueue() {
-        return Constants.Queues.Torrent.FILES_LIST;
+        return Queues.Torrent.FILES_LIST;
     }
 
     @Override

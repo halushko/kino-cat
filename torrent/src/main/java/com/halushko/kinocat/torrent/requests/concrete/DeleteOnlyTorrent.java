@@ -1,6 +1,6 @@
 package com.halushko.kinocat.torrent.requests.concrete;
 
-import com.halushko.kinocat.core.commands.Constants;
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.torrent.requests.common.VoidTorrentOperator;
 
 public class DeleteOnlyTorrent extends VoidTorrentOperator {
@@ -16,6 +16,6 @@ public class DeleteOnlyTorrent extends VoidTorrentOperator {
 
     @Override
     protected String getQueue() {
-        return Constants.Queues.Torrent.DELETE_ONLY_TORRENT;
+        return Queues.Torrent.DELETE_ONLY_TORRENT;
     }
 }
