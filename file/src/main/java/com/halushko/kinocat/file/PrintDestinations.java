@@ -14,15 +14,15 @@ import java.util.stream.Collectors;
 public class PrintDestinations extends CliCommandExecutor {
     @Override
     protected String getResultString(List<String> lines, SmartJson rabbitMessage) {
-        log.debug(String.format("[getResultString] [%s]", String.join(", ", lines )));
+        log.debug(String.format("[getResultString] [%s]", String.join(", ", lines)));
         String[] result = new String[4];
         result[0] = "(";
         result[2] = ") ";
         for (String line : lines) {
-            if (line.matches(Constants.NAME_LINE)) {
+            if (line.matches(Constants.NAME_LINE + ".*")) {
                 result[3] = line.replaceFirst(Constants.NAME_LINE, "");
             }
-            if (line.matches(Constants.SIZE_LINE)) {
+            if (line.matches(Constants.SIZE_LINE + ".*")) {
                 result[1] = line.replaceFirst(Constants.SIZE_LINE, "");
             }
         }
