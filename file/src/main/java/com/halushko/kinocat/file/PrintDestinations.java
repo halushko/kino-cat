@@ -54,7 +54,7 @@ public class PrintDestinations extends CliCommandExecutor {
     @Override
     protected String[] getScript(SmartJson rabbitMessage) {
         return new String[]{
-                "/usr/bin/transmission-show %s",
+                "/usr/bin/transmission-show",
                 rabbitMessage.getValue(SmartJsonKeys.FILE_PATH).replaceAll("\\s+", "\\\\ ")
         };
     }
