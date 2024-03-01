@@ -1,5 +1,5 @@
 # Version history
-## 1.17 (LATEST)
+## 1.17
 - common features are provided
 ### 1.17.1
 - the ▒ (U+2592, Medium Shade) symbol added to the progressbar
@@ -7,10 +7,10 @@
 - /help command added
 ### 1.17.3
 - add configuration files for microservices running
-### 1.17.4 (ALPHA)
+### 1.17.4
 - add downloading to the several folders
 - add smb connection example
-### 1.17.6 (BETA)
+### 1.17.6 (LATEST)
 - add /info
 - add ability to choose the destination folder
 ## 1.18 Started (_unmerged_)
