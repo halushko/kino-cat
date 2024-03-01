@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class MoveToDestinationFolder extends CliCommandExecutor {
@@ -25,7 +26,12 @@ public class MoveToDestinationFolder extends CliCommandExecutor {
             folderPath = Constants.FOLDERS.get("");
         }
 
-        String file = String.valueOf(arguments.get(1)).replaceAll("\\s+", "\\\\ ");
+        String file = arguments.stream().
+                skip(1).
+                map(Object::toString).
+                collect(Collectors.joining("_")).
+                replaceAll("\\s+", "\\\\ ");
+
         return new String[]{
                 "mv",
                 "-f",
