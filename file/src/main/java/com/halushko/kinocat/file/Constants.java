@@ -10,7 +10,7 @@ public interface Constants {
     Map<String, String> FOLDERS = new FoldersProcessor(System.getenv("TORRENT_IP"))
             .values.keySet().stream()
             .collect(Collectors.toMap(key -> key, key -> String.format(PATH_TO_DESTINATION_FOLDER + "%s", !key.isEmpty() ? "_" + key : "")));
-    String NAME_LINE = "^\\s+Name:\\s+";
-    String SIZE_LINE = "^\\s+Total Size:\\s+";
+    String NAME_LINE = "^\\s+Name:\\s+.*";
+    String SIZE_LINE = "^\\s+Total Size:\\s+.*";
 
 }
