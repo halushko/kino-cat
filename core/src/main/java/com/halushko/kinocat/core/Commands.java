@@ -13,10 +13,14 @@ public interface Commands {
         String PAUSE = "/pause_";
         String RESUME_ALL = "/resume_all";
         String PAUSE_ALL = "/pause_all";
-        String TORRENT_INFO = "/full_info_";
+        String TORRENT_INFO = "/info_";
         String REMOVE_WITH_FILES = "/approve_with_files_";
         String REMOVE_JUST_TORRENT = "/approve_just_torrent_";
         String LIST_FILES = "/files_";
         String REMOVE_COMMAND = "/remove_";
+    }
+
+    interface File {
+        String SELECT_DESTINATION = "/start_";
     }
 }

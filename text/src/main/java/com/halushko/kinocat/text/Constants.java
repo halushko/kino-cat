@@ -9,61 +9,71 @@ public interface Constants {
     CommandsCollection COMMANDS_COLLECTION = new CommandsCollection() {{
         addValue(Commands.Torrent.LIST_TORRENTS,
                 Queues.Torrent.TORRENTS_LIST,
-                "відобразити всі торенти. Якщо після команди додати слова, то торенти будуть відфільтровані за іменами з цими словами",
+                "<сервер> відобразити всі торенти. Якщо після команди додати слова, то торенти будуть відфільтровані за іменами з цими словами",
                 CommandProperties.CONTAINS_SERVER_NUMBER,
                 CommandProperties.CAN_BE_NOT_TORRENT
         );
         addValue(Commands.Torrent.LIST_TORRENT_COMMANDS,
                 Queues.Torrent.TORRENT_COMMANDS,
-                "<номер торента> перелічити можливі команди для вказаного торента",
+                "<сервер> <номер торента> перелічити можливі команди для вказаного торента",
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
         addValue(Commands.Torrent.LIST_FILES,
                 Queues.Torrent.FILES_LIST,
-                "<номер торента> відобразити всі файли, що будуть скачані в цьому торенті",
+                "<сервер> <номер торента> відобразити всі файли, що будуть скачані в цьому торенті",
+                CommandProperties.CONTAINS_SERVER_NUMBER,
+                CommandProperties.CAN_BE_NOT_TORRENT
+        );
+        addValue(Commands.Torrent.TORRENT_INFO,
+                Queues.Torrent.TORRENT_INFO,
+                "<сервер> <номер торента> відобразити інформацію по торенту",
                 CommandProperties.CONTAINS_SERVER_NUMBER,
                 CommandProperties.CAN_BE_NOT_TORRENT
         );
         addValue(Commands.Torrent.RESUME,
                 Queues.Torrent.RESUME_TORRENT,
-                "<номер торента> почати закачувати цей торент",
+                "<сервер> <номер торента> почати закачувати цей торент",
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
         addValue(Commands.Torrent.PAUSE,
                 Queues.Torrent.PAUSE_TORRENT,
-                "<номер торента> припинити закачувати цей торент",
+                "<сервер> <номер торента> припинити закачувати цей торент",
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
         addValue(Commands.Torrent.RESUME_ALL,
                 Queues.Torrent.RESUME_ALL,
-                "почати закачувати всі торенти",
+                "<сервер> почати закачувати всі торенти",
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
         addValue(Commands.Torrent.PAUSE_ALL,
                 Queues.Torrent.PAUSE_ALL,
-                "припинити закачувати всі тореенти",
+                "<сервер> припинити закачувати всі тореенти",
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
-//        addValue(Torrent.TORRENT_INFO, "", "info_torrent.sh", Queues.Torrent.TORRENT_INFO);
         addValue(Commands.Torrent.REMOVE_WITH_FILES,
                 Queues.Torrent.DELETE_WITH_FILES,
-                "<номер торента> видалити вказаний торент разом з файлами",
+                "<сервер> <номер торента> видалити вказаний торент разом з файлами",
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
         addValue(Commands.Torrent.REMOVE_JUST_TORRENT,
                 Queues.Torrent.DELETE_ONLY_TORRENT,
-                "<номер торента> видалити вказаний торент, але залишити файли",
+                "<сервер> <номер торента> видалити вказаний торент, але залишити файли",
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
         addValue(Commands.Torrent.REMOVE_COMMAND,
                 Queues.Torrent.DELETE,
-                "<номер торента> почати процедуру видалення вказаного торента",
+                "<сервер> <номер торента> почати процедуру видалення вказаного торента",
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
 
         addValue(Commands.Text.HELP,
                 Queues.Text.HELP,
                 "вивести інформацію по всім командам"
+        );
+
+        addValue(Commands.File.SELECT_DESTINATION,
+                Queues.File.MOVE_TO_FOLDER,
+                "<папка> <файл> обрати в яку папку буде завантаження"
         );
     }};
 }

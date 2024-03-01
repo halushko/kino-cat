@@ -25,4 +25,9 @@ public interface Queues {
     interface Text {
         String HELP = "DISPLAY_ALL_COMMANDS";
     }
+
+    interface File {
+        String CHOOSE_THE_DESTINATION = "FILE_CHOOSE_THE_DESTINATION";
+        String MOVE_TO_FOLDER = "FILE_MOVE_TO_FOLDER";
+    }
 }
