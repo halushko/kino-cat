@@ -10,7 +10,7 @@
 ### 1.17.4
 - add downloading to the several folders
 - add smb connection example
-### 1.17.9
+### 1.17.10
 - add /info
 - add ability to choose the destination folder
 ## 1.18 (latest/alpha/beta)
