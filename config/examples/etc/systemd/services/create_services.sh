@@ -16,6 +16,9 @@ systemctl stop torrent-pull.service
 systemctl stop torrent-hdd.service
 systemctl stop torrent-hdd-down.service
 systemctl stop torrent-hdd-pull.service
+systemctl stop torrent-low.service
+systemctl stop torrent-low-down.service
+systemctl stop torrent-low-pull.service
 systemctl stop mount-hdd.service
 systemctl stop mount-smb.service
 
@@ -35,6 +38,9 @@ systemctl disable torrent-pull.service
 systemctl disable torrent-hdd.service
 systemctl disable torrent-hdd-down.service
 systemctl disable torrent-hdd-pull.service
+systemctl disable torrent-low.service
+systemctl disable torrent-low-down.service
+systemctl disable torrent-low-pull.service
 systemctl disable mount-hdd.service
 systemctl disable mount-smb.service
 
@@ -56,5 +62,8 @@ systemctl enable torrent-pull.service
 systemctl enable torrent-hdd.service
 systemctl enable torrent-hdd-down.service
 systemctl enable torrent-hdd-pull.service
+systemctl enable torrent-low.service
+systemctl enable torrent-low-down.service
+systemctl enable torrent-low-pull.service
 systemctl enable mount-hdd.service
 systemctl enable mount-smb.service
