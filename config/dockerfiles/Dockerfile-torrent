@@ -5,5 +5,5 @@ COPY torrent-*.jar /home/app/app.jar
 COPY ./src/main/resources/log_properties /home/app
 COPY ./src/main/resources/scripts /home/app
 COPY ./src/main/resources/config /home/app
-RUN chmod +X /home/app/*.sh
+RUN chmod 777 /home/app/*.sh && chmod +X /home/app/*.sh
 ENTRYPOINT ["sh", "/home/app/run.sh"]
