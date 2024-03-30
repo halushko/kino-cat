@@ -1,5 +1,5 @@
 FROM openjdk:20-ea-35-jdk-slim
-RUN apt-get update -f -y
+RUN apt-get update
 RUN apt-get install -f -y jq
 COPY torrent-*.jar /home/app/app.jar
 COPY ./src/main/resources/log_properties /home/app
