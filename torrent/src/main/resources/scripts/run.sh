@@ -1,5 +1,5 @@
 #!/bin/bash
-z
+
 TORRENT_IP_ARRAY=$(echo $TORRENT_IP | jq -r '.[]')
 
 for ITEM in $TORRENT_IP_ARRAY
