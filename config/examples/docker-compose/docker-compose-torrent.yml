@@ -8,6 +8,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
+    command: sh -c "while [ ! -f /config/.unlock ]; do sleep 10; shutdown now; done && /usr/bin/transmission-daemon -f --log-debug --config-dir /config"
     volumes:
       - ./workdir/config/transmission:/config
       - ./workdir/mediadata:/downloads/complete
@@ -16,7 +17,7 @@ services:
       - 9093:9091
       - 51415:51413
       - 51415:51413/udp
-    restart: unless-stopped
+    restart: always
     networks:
       torrent_network:
 networks:

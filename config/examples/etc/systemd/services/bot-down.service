@@ -1,7 +1,7 @@
 [Unit]
 Description=Shut down Bot
 Requires=docker.service
-After=mount-hdd.service
+After=mount-hdd.service mount-smb.service
 
 [Service]
 Type=oneshot

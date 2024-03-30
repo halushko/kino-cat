@@ -1,7 +1,7 @@
 [Unit]
 Description=Torent client Service
 Requires=docker.service
-After=mount-hdd.service
+After=bot.service
 
 [Service]
 Type=oneshot

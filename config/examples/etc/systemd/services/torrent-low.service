@@ -1,15 +1,16 @@
 [Unit]
-Description=Torrent start
+Description=Low Torrent start
 Requires=docker.service
-After=torrent-low-pull.service
+After=torrent.service
 
 [Service]
 Type=oneshot
-RemainAfterExit=yes
-WorkingDirectory=/home/dima/media
-ExecStart=/usr/bin/docker-compose -f docker-compose-torrent-low.yml up
-ExecStop=/usr/bin/docker-compose -f docker-compose-torrent-low.yml down
 TimeoutStartSec=0
+
+WorkingDirectory=/home/dima/media
+
+ExecStartPre=/usr/bin/docker-compose -f docker-compose-torrent-low.yml down
+ExecStart=/usr/bin/docker-compose -f docker-compose-torrent-low.yml up
 
 [Install]
 WantedBy=default.target
