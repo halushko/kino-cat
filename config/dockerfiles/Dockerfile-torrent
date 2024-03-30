@@ -1,4 +1,6 @@
 FROM openjdk:20-ea-35-jdk-slim
+RUN apt-get upgrade -f -y
+RUN apt-get install -f -y qr
 COPY torrent-*.jar /home/app/app.jar
 COPY ./src/main/resources/log_properties /home/app
 COPY ./src/main/resources/scripts /home/app
