@@ -20,3 +20,5 @@ for ITEM in $TORRENT_IP_ARRAY; do
     echo "The transmission service for <$NAME> configured by this service" > $CONFIG_PATH/.unlock
   fi
 done
+
+java -Dlog4j.configuration=file:/home/app/log4j-${LOGS_LEVEL}.properties -jar /home/app/app.jar
