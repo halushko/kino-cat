@@ -14,7 +14,7 @@ import java.util.*;
 @Slf4j
 public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiRequest {
     private final static Map<String, String> sessionIdValues = new HashMap<>();
-    private final static Map<String, String> serverNames = new HashMap<>();
+    protected final static Map<String, String> serverNames = new HashMap<>();
 
     protected final static String sessionIdKey = "X-Transmission-Session-Id";
     public static final String TRANSMISSION_IP = System.getenv("TORRENT_IP");

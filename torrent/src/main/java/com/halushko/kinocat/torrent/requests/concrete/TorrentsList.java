@@ -80,7 +80,9 @@ public class TorrentsList extends GetTorrent {
 
     @Override
     protected Predicate<? super TorrentEntity> getSmartFilter(List<String> arguments) {
-        return element -> arguments.isEmpty() || arguments
+        return element -> arguments.isEmpty()
+                || (arguments.size() == 1 && serverNames.containsKey(arguments.get(0)))
+                || arguments
                 .stream()
                 .anyMatch(a -> ignoreSymbols(element.getName().toUpperCase())
                         .contains(ignoreSymbols(a).toUpperCase())
