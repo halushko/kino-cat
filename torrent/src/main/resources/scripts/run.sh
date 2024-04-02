@@ -14,10 +14,11 @@ for ITEM in $TORRENT_IP_ARRAY; do
   mkdir -p "$CONFIG_PATH"
 
   if [ -e "$CONFIG_PATH/.unlock" ]; then
-    echo "The transmission service for $NAME was already configured" > $CONFIG_PATH/.unlock
+    echo "The transmission service for <$NAME> was already configured" >> $CONFIG_PATH/.unlock
   else
     cp /home/app/settings.json $CONFIG_PATH/settings.json
     echo "The transmission service for <$NAME> configured by this service" > $CONFIG_PATH/.unlock
+    chmod 777 -R "$CONFIG_PATH"/*
   fi
 done
 
