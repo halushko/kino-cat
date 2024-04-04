@@ -16,7 +16,7 @@ services:
       - 9093:9091
       - 51415:51413
       - 51415:51413/udp
-    restart: unless-stopped
+    restart: always
     networks:
       torrent_network:
 networks:

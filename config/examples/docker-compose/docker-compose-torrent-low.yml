@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  transmission_low:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: "transmission_low"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./workdir/config/transmission_low:/config
+      - ./workdir/mediadata_hdd/low_quality:/downloads/complete
+      - ./workdir/config/files_from_telegram_low:/watch
+    ports:
+      - 9094:9091
+      - 51416:51413
+      - 51416:51413/udp
+    restart: always
+    networks:
+      torrent_network_low:
+networks:
+  torrent_network_low:
+    driver: bridge

@@ -16,6 +16,7 @@ services:
       - 9092:9091
       - 51414:51413
       - 51414:51413/udp
+    restart: always
     networks:
       torrent_network_hdd:
 networks:

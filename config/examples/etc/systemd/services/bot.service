@@ -9,7 +9,7 @@ RemainAfterExit=yes
 WorkingDirectory=/home/dima/media
 ExecStart=/usr/bin/docker-compose -f docker-compose-bot.yml up
 ExecStop=/usr/bin/docker-compose -f docker-compose-bot.yml down
-TimeoutStartSec=0
+TimeoutStartSec=0999
 
 [Install]
 WantedBy=default.target

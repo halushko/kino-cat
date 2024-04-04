@@ -14,5 +14,6 @@ services:
       - ./workdir/mediadata:/movies/1
       - ./workdir/mediadata_hdd/mediadata:/movies/2
       - ./workdir/mediadata_morhun:/movies/3
-    restart: unless-stopped
+      - ./workdir/mediadata_hdd/low_quality:/movies/4
+    restart: always
     network_mode: host

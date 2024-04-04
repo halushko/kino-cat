@@ -10,6 +10,7 @@ services:
     volumes:
       - ./workdir/config/transmission:/home/app/transmission_config
       - ./workdir/config/transmission_hdd:/home/app/transmission_config_hdd
+      - ./workdir/config/transmission_low:/home/app/transmission_config_low
       - ./workdir/config/logs:/home/app/logs
     networks:
       bot_network_local:
@@ -42,6 +43,7 @@ services:
     volumes:
       - ./workdir/config/files_from_telegram:/home/torrent_files/
       - ./workdir/config/files_from_telegram_hdd:/home/torrent_files_hdd/
+      - ./workdir/config/files_from_telegram_low:/home/torrent_files_low/
       - ./workdir/config/logs:/home/app/logs
     networks:
       bot_network_local:
