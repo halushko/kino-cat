@@ -34,7 +34,7 @@ public class TorrentsList extends GetTorrent {
         StringBuilder line = new StringBuilder();
 
         IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
-        if(blackBlocks < blocks) {
+        if (blackBlocks < blocks) {
             line.append("▒");
         }
         if (blackBlocks + 1 < blocks) {
@@ -47,7 +47,7 @@ public class TorrentsList extends GetTorrent {
     protected String getGigabytesLeft(TorrentEntity torrent) {
         return torrent.getPercentDone() == 1.0
                 ? " (заверш)"
-                : " % (" + Math.round((torrent.getTotalSize() - (long) (torrent.getTotalSize() * torrent.getPercentDone())) / 1000000.0) / 1000.0 + " Gb залиш)";
+                : Math.round(torrent.getPercentDone() * 100) + " % (" + Math.round((torrent.getTotalSize() - (long) (torrent.getTotalSize() * torrent.getPercentDone())) / 1000000.0) / 1000.0 + " Gb залиш)";
     }
 
     protected String getStatusIcon(TorrentEntity torrent) {

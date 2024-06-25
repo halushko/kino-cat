@@ -1,13 +1,13 @@
 [Unit]
-Description=Message brocker Service
+Description=Shut down Bot
 Requires=docker.service
-After=mount-hdd.service
+After=mount-hdd.service mount-smb.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/home/dima/media
-ExecStart=/usr/bin/docker-compose -f docker-compose-broker.yml down
+ExecStart=/usr/bin/bash stop.sh
 TimeoutStartSec=0
 
 [Install]
