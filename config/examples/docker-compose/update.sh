@@ -49,6 +49,4 @@ if ! $keys_specified; then
     update_torrent_low
 fi
 
-unmount_filesystems
-
 echo "All images files have been updated."
