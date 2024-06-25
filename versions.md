@@ -14,10 +14,10 @@
 - add /info
 - add ability to choose the destination folder
 ## 1.18 (latest)
-### 1.18.1 (alpha)
+### 1.18.1
 - add auto generation of transmission configs after ENV files edition
 - fix /list_<number> commnd
-### 1.18.2 (beta)
+### 1.18.2 (alpha)
 - fix percents in /list
 - add one start/stop script
 - fix acces of unauthorized users
