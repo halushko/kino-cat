@@ -1,13 +1,13 @@
 [Unit]
-Description=Shut down debug Bot
+Description=Bot update
 Requires=docker.service
-After=docker.service
+After=kino-down.service
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/home/dima/media
-ExecStart=/usr/bin/docker-compose -f docker-compose-bot_debug.yml down
+ExecStart=/usr/bin/bash update.sh
 TimeoutStartSec=0
 
 [Install]

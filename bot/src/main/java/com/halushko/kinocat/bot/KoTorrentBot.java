@@ -23,7 +23,7 @@ public class KoTorrentBot extends TelegramLongPollingBot {
 
     static {
         for (Map.Entry<String, String> a : System.getenv().entrySet()) {
-            log.debug(a.getKey() + " = [" + a.getValue() + "]");
+            log.debug("\"{}\" = \"{}\"", a.getKey(), a.getValue());
         }
     }
 
@@ -73,13 +73,14 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     }
 
     public static boolean validateUser(long userId) {
-//        if (trustedUserIds.isEmpty()) {
-//            parseTrustedUsersEnv();
-//        }
-//        boolean valid = trustedUserIds.contains(userId);
-//        log.debug("[validateUser] The user {} is {}valid", userId, valid ? "" : "in");
-//        return valid;
-        return true;
+        if (trustedUserIds.isEmpty()) {
+            parseTrustedUsersEnv();
+        }
+        boolean validUser = trustedUserIds.contains(userId);
+        if (!validUser) {
+            log.error("[validateUser] The user {} is trying to use bot", userId);
+        }
+        return validUser;
     }
 
     public static void sendText(long chatId, String str) {
@@ -103,12 +104,12 @@ public class KoTorrentBot extends TelegramLongPollingBot {
     }
 
     private static void parseTrustedUsersEnv() {
-        Arrays.stream(BOT_TRUSTED_USERS.split(",")).forEach(userId -> {
+        Arrays.stream(BOT_TRUSTED_USERS.split(",")).map(String::trim).forEach(userId -> {
             try {
                 trustedUserIds.add(Long.parseLong(userId));
-                log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is trusted", userId));
+                log.debug(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is trusted", userId));
             } catch (Exception e) {
-                log.warn(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is invalid", userId));
+                log.error(String.format("[BOT.parseTrustedUsersEnv] User ID '%s' is invalid", userId));
             }
         });
     }

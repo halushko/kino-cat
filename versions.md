@@ -14,10 +14,14 @@
 - add /info
 - add ability to choose the destination folder
 ## 1.18 (latest)
-### 1.18.1 (beta/alpha)
+### 1.18.1
 - add auto generation of transmission configs after ENV files edition
 - fix /list_<number> commnd
-### 1.18.2 (_TODO_)
+### 1.18.2 (alpha)
+- fix percents in /list
+- add one start/stop script
+- fix acces of unauthorized users
+### 1.18.3 (_TODO_)
 - add hurtom API
 ## 1.19 Planning (_TODO_)
 - fix error `build_core / build_core The 'save-state' command is deprecated and will be disabled soon. Please upgrade to using Environment Files. For more information see: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/`
