@@ -53,7 +53,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     if (i == 1 || i % 10 == 0) {
                         log.debug("[getDeliverCallbackPrivate] New message created");
                         if (sb != null) {
-                            log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
+                            log.debug("[getDeliverCallbackPrivate] Print result internal:\n{}", sb);
                             output.append(printResult(chatId, sb.toString())).append(OUTPUT_SEPARATOR);
                         }
                         sb = new StringBuilder();
@@ -68,7 +68,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     log.debug("[getDeliverCallbackPrivate] Message:\n{}", sb);
                 }
                 if (sb != null) {
-                    log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
+                    log.debug("[getDeliverCallbackPrivate] Print result last:\n{}", sb);
                     output.append(printResult(chatId, sb.toString()));
                 } else {
                     log.debug("[getDeliverCallbackPrivate] Result is empty");
@@ -175,5 +175,4 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
     protected String getDefaultSuffix() {
         return "transmission/rpc";
     }
-
 }

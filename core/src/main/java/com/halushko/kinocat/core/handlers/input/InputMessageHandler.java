@@ -49,28 +49,19 @@ public abstract class InputMessageHandler implements Runnable {
 
     private void getDeliverCallbackLog(SmartJson message) {
         log.debug("[InputMessageHandler] Start processing message={}", message.getRabbitMessageText());
-        if(!validate(message)) {
-            log.error("[InputMessageHandler] Invalid message={}", message.getRabbitMessageText());
-            RabbitUtils.postMessage(message.getUserId(), message.getRabbitMessageText(), Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
-        } else {
-            String result = getDeliverCallbackPrivate(message);
-            executePostAction(message, result);
-            log.debug("[InputMessageHandler] Finish processing with result: {}", result);
-        }
+        String result = getDeliverCallbackPrivate(message);
+        executePostAction(message, result);
+        log.debug("[InputMessageHandler] Finish processing with result: {}", result);
     }
 
-    protected String printResult(long chatId, String text){
+    protected String printResult(long chatId, String text) {
         String replacedString = text.replaceAll(OUTPUT_SEPARATOR + "(?=" + OUTPUT_SEPARATOR + ")", ",");
         RabbitUtils.postMessage(chatId, replacedString, Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         return replacedString;
     }
 
-    protected boolean validate(@SuppressWarnings("unused") SmartJson message){
-        return true;
-    }
-
     @SuppressWarnings("unused")
-    protected void executePostAction(SmartJson input, String output){
+    protected void executePostAction(SmartJson input, String output) {
     }
 
     protected abstract String getDeliverCallbackPrivate(SmartJson message);
