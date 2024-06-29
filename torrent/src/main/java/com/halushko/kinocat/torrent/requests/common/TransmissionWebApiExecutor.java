@@ -38,7 +38,6 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         StringBuilder output = new StringBuilder();
 
         analyzeServer(message, serversToApply, output, chatId);
-
         for (val serverNumber : serversToApply) {
             String serverName = serverNames.get(serverNumber);
             
@@ -127,7 +126,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         }
     }
 
-    private void analyzeServer(SmartJson message, List<String> serversToApply, StringBuilder output, long chatId) {
+    protected void analyzeServer(SmartJson message, List<String> serversToApply, StringBuilder output, long chatId) {
         String selectedServer = message.getValue(SmartJsonKeys.SELECT_SERVER);
         if(!selectedServer.isEmpty()) {
             try {
