@@ -54,7 +54,7 @@ public class UserTextMessageHandler extends InputMessageHandler {
                 }
             }
 
-            RabbitUtils.postMessage(message, command.getQueue());
+            RabbitUtils.postMessage(message, queue);
 
             log.debug("[UserMessageHandler] Finish DeliverCallbackPrivate for {}", getQueue());
         } catch (Exception e) {
