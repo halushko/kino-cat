@@ -38,7 +38,7 @@ public class UserTextMessageHandler extends InputMessageHandler {
             }
 
             log.debug("[UserMessageHandler] Command: queue={}, arguments={}", queue, arguments);
-            SmartJson message = new SmartJson(userId).addValue(SmartJsonKeys.COMMAND_ARGUMENTS, command.getArguments());
+            SmartJson message = new SmartJson(userId).addValue(SmartJsonKeys.COMMAND_ARGUMENTS, arguments);
 
             if (!isSearchCommand) {
                 if (command.getAdditionalProperties().contains(CommandProperties.EMPTY_INSTANCE)) {

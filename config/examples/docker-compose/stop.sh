@@ -35,6 +35,15 @@ while (( "$#" )); do
         -th) stop_torrent_hdd; keys_specified=true ;;
         -tl) stop_torrent_low; keys_specified=true ;;
         -t) stop_torrent; stop_torrent_hdd; stop_torrent_low; keys_specified=true ;;
+        -h) echo "Tool for kino-cat docker-containers stop:" ;
+            echo "            -h   print help" ;
+            echo "            -r   stop broker" :
+            echo "            -m   stop media" ;
+            echo "            -b   stop bot" ;
+            echo "            -t   stop all torrent clients";
+            echo "            -tt  stop main torrent client";
+            echo "            -th  stop HDD torrent client";
+            echo "            -tl  stop Low torrent client"; keys_specified=true ;;
         *) echo "Unexpected key: $1" >&2; exit 1 ;;
     esac
     shift
