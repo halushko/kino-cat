@@ -66,6 +66,12 @@ public interface Constants {
                 CommandProperties.CONTAINS_SERVER_NUMBER
         );
 
+        addValue("<текст>",
+                Queues.Torrent.SEARCH_BY_NAME,
+                "шукати токент за назвою",
+                CommandProperties.EMPTY_INSTANCE
+        );
+
         addValue(Commands.Text.HELP,
                 Queues.Text.HELP,
                 "вивести інформацію по всім командам"

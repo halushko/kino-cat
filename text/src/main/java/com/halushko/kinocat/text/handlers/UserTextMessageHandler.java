@@ -10,6 +10,9 @@ import com.halushko.kinocat.text.commands.Command;
 import com.halushko.kinocat.text.commands.CommandProperties;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 public class UserTextMessageHandler extends InputMessageHandler {
     @Override
@@ -20,23 +23,39 @@ public class UserTextMessageHandler extends InputMessageHandler {
             long userId = rabbitMessage.getUserId();
             log.debug("[UserMessageHandler] user_id={} text={}", userId, text);
             Command command = Constants.COMMANDS_COLLECTION.getCommand(text);
-            log.debug("[UserMessageHandler] Command: queue={}, arguments={}", command.getQueue(), command.getArguments());
+            List<String> arguments;
+            String queue;
+            boolean isSearchCommand = command.getCommand().trim().isEmpty();
 
+            if (isSearchCommand) {
+                arguments = new ArrayList<>() {{
+                    add(text);
+                }};
+                queue = Queues.Torrent.SEARCH_BY_NAME;
+            } else {
+                arguments = command.getArguments();
+                queue = command.getQueue();
+            }
+
+            log.debug("[UserMessageHandler] Command: queue={}, arguments={}", queue, arguments);
             SmartJson message = new SmartJson(userId).addValue(SmartJsonKeys.COMMAND_ARGUMENTS, command.getArguments());
 
-            if(command.getAdditionalProperties().contains(CommandProperties.EMPTY_INSTANCE)){
-                message.addValue(SmartJsonKeys.TEXT, "Такої команди не знайдено");
-            }
-            if(command.getAdditionalProperties().contains(CommandProperties.CONTAINS_SERVER_NUMBER) && !command.getArguments().isEmpty()){
-                String serverNumber = command.getArguments().get(0);
-                try {
-                    Integer.parseInt(serverNumber);
-                    message.addValue(SmartJsonKeys.SELECT_SERVER, serverNumber);
-                } catch (NumberFormatException ignored) {
+            if (!isSearchCommand) {
+                if (command.getAdditionalProperties().contains(CommandProperties.EMPTY_INSTANCE)) {
+                    message.addValue(SmartJsonKeys.TEXT, "Такої команди не знайдено");
+                }
+                if (command.getAdditionalProperties().contains(CommandProperties.CONTAINS_SERVER_NUMBER) && !command.getArguments().isEmpty()) {
+                    String serverNumber = command.getArguments().get(0);
+                    try {
+                        Integer.parseInt(serverNumber);
+                        message.addValue(SmartJsonKeys.SELECT_SERVER, serverNumber);
+                    } catch (NumberFormatException ignored) {
+                    }
                 }
             }
 
             RabbitUtils.postMessage(message, command.getQueue());
+
             log.debug("[UserMessageHandler] Finish DeliverCallbackPrivate for {}", getQueue());
         } catch (Exception e) {
             log.error("[UserMessageHandler] During message handle got an error: ", e);

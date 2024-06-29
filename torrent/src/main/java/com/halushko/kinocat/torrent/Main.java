@@ -16,6 +16,7 @@ public class Main {
         new RemoveTorrentCommand().run();
         new PrintTorrentCommands().run();
         new TorrentsList().run();
+        new SearchByName().run();
 
         new PauseAll().run();
         new ResumeAll().run();
