@@ -15,21 +15,27 @@ public class CheckDiskFreeSpace extends CliCommandExecutor {
         log.debug(String.format("[CheckDiskFreeSpace] [%s]", String.join(", ", lines)));
         StringBuilder sb = new StringBuilder("Вільного місця у сховищі:");
 
-for (val device : Constants.FOLDERS.entrySet()) {
+        for (String line : lines) {
+            sb.append("\n").append(line);
+        }
+
+        for (val device : Constants.FOLDERS.entrySet()) {
             boolean flag = false;
+            sb.append("\n").append(device.getKey());
             for (String line : lines) {
                 if (line.matches(device.getKey() + ".*")) {
-                    sb.append("\n")
-                            .append(device.getKey())
-                            .append(": ")
-                            .append(
-                                    line.replaceAll("^\\S+\\s+\\S+\\s+\\S+\\s+", "")
-                                            .replaceAll("\\S+\\s+\\S+\\s*$", "")
-                            );
+                    String size = line;
+                    size = size.replaceAll("^\\S+\\s+\\S+\\s+\\S+\\s+", "");
+                    size = size.replaceAll("\\S+\\s+\\S+\\s*$", "");
+
+                    sb.append("\n").append(device.getKey());
+                    sb.append(": ").append(size);
+
                     flag = true;
+                    break;
                 }
             }
-            if(!flag) {
+            if (!flag) {
                 sb.append("\n").append(device.getKey()).append(": не вказано Filesystem у налаштуваннях");
             }
         }
