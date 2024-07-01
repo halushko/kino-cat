@@ -17,6 +17,7 @@ public class Main {
         new PrintTorrentCommands().run();
         new TorrentsList().run();
         new SearchByName().run();
+        new DownloadsList().run();
 
         new PauseAll().run();
         new ResumeAll().run();
