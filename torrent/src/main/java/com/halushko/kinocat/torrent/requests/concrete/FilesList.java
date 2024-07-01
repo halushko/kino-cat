@@ -5,8 +5,6 @@ import com.halushko.kinocat.torrent.entities.SubTorrentEntity;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 
-import java.util.stream.IntStream;
-
 public class FilesList extends GetTorrent {
 
     @Override
@@ -42,19 +40,9 @@ public class FilesList extends GetTorrent {
         long completed = torrent.getBytesCompleted();
         long full = torrent.getLength();
         double percents = (double) completed / full;
-
         int blackBlocks = (int) (percents * blocks);
-        StringBuilder line = new StringBuilder();
 
-        IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
-
-        if(blackBlocks < blocks) {
-            line.append("▒");
-        }
-        if(blackBlocks + 1 < blocks) {
-            IntStream.range(blackBlocks + 1, blocks).mapToObj(i -> "░").forEach(line::append);
-        }
-        return line.toString();
+        return constructProgressBar(blocks, blackBlocks);
     }
 
     protected String getFolderText(SubTorrentEntity previousFile, SubTorrentEntity currentFile) {

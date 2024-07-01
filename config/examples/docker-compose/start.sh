@@ -43,6 +43,15 @@ while (( "$#" )); do
         -tt) start_torrent; keys_specified=true ;;
         -th) start_torrent_hdd; keys_specified=true ;;
         -tl) start_torrent_low; keys_specified=true ;;
+        -h) echo "Tool for kino-cat docker-containers start:" ;
+            echo "            -h   print help" ;
+            echo "            -r   start broker" :
+            echo "            -m   start media" ;
+            echo "            -b   start bot" ;
+            echo "            -t   start all torrent clients";
+            echo "            -tt  start main torrent client";
+            echo "            -th  start HDD torrent client";
+            echo "            -tl  start Low torrent client"; keys_specified=true ;;
         *) echo "Unexpected key: $1" >&2; exit 1 ;;
     esac
     shift

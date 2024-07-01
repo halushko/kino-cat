@@ -54,14 +54,14 @@ public abstract class InputMessageHandler implements Runnable {
         log.debug("[InputMessageHandler] Finish processing with result: {}", result);
     }
 
-    protected String printResult(long chatId, String text){
+    protected String printResult(long chatId, String text) {
         String replacedString = text.replaceAll(OUTPUT_SEPARATOR + "(?=" + OUTPUT_SEPARATOR + ")", ",");
         RabbitUtils.postMessage(chatId, replacedString, Queues.Telegram.TELEGRAM_OUTPUT_TEXT);
         return replacedString;
     }
 
     @SuppressWarnings("unused")
-    protected void executePostAction(SmartJson input, String output){
+    protected void executePostAction(SmartJson input, String output) {
     }
 
     protected abstract String getDeliverCallbackPrivate(SmartJson message);

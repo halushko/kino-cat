@@ -17,11 +17,11 @@
 ### 1.18.1
 - add auto generation of transmission configs after ENV files edition
 - fix /list_<number> command
-### 1.19 (alpha/latest)
+### 1.19 (latest)
 - fix percents in /list
 - add one start/stop script
 - fix access of unauthorized users
-### 1.19.1 (beta)
+### 1.19.1 (alpha/beta)
 - change search, remove it from /list
 ## 1.20 Planning (_TODO_)
 - fix error `build_core / build_core The 'save-state' command is deprecated and will be disabled soon. Please upgrade to using Environment Files. For more information see: https://github.blog/changelog/2022-10-11-github-actions-deprecating-save-state-and-set-output-commands/`

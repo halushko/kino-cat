@@ -6,14 +6,8 @@ import com.halushko.kinocat.torrent.entities.TorrentEntity;
 import com.halushko.kinocat.torrent.requests.common.GetTorrent;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.IntStream;
-
 @Slf4j
 public class TorrentsList extends GetTorrent {
-    private final static String SYMBOLS_TO_IGNORE = "[\\s._\"']";
-
     public TorrentsList() {
         super();
     }
@@ -31,17 +25,7 @@ public class TorrentsList extends GetTorrent {
     protected String getProgressBar(TorrentEntity torrent) {
         int blocks = 20;
         int blackBlocks = (int) (torrent.getPercentDone() * blocks);
-        StringBuilder line = new StringBuilder();
-
-        IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
-        if (blackBlocks < blocks) {
-            line.append("▒");
-        }
-        if (blackBlocks + 1 < blocks) {
-            IntStream.range(blackBlocks + 1, blocks).mapToObj(i -> "░").forEach(line::append);
-        }
-
-        return "||" + line + "||";
+        return "||" + constructProgressBar(blocks, blackBlocks) + "||";
     }
 
     protected String getGigabytesLeft(TorrentEntity torrent) {
@@ -76,20 +60,5 @@ public class TorrentsList extends GetTorrent {
     @Override
     protected String textOfMessageBegin() {
         return "Торенти ";
-    }
-
-    @Override
-    protected Predicate<? super TorrentEntity> getSmartFilter(List<String> arguments) {
-        return element -> arguments.isEmpty()
-                || (arguments.size() == 1 && serverNames.containsKey(arguments.get(0)))
-                || arguments
-                .stream()
-                .anyMatch(a -> ignoreSymbols(element.getName().toUpperCase())
-                        .contains(ignoreSymbols(a).toUpperCase())
-                );
-    }
-
-    private String ignoreSymbols(String str) {
-        return str.replaceAll(SYMBOLS_TO_IGNORE, "");
     }
 }

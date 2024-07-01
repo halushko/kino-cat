@@ -16,14 +16,6 @@ update_torrent() {
     /usr/bin/docker-compose -f /home/dima/media/docker-compose-torrent.yml pull
 }
 
-update_torrent_hdd() {
-    /usr/bin/docker-compose -f /home/dima/media/docker-compose-torrent-hdd.yml pull
-}
-
-update_torrent_low() {
-    /usr/bin/docker-compose -f /home/dima/media/docker-compose-torrent-low.yml pull
-}
-
 keys_specified=false
 
 while (( "$#" )); do
@@ -31,10 +23,13 @@ while (( "$#" )); do
         -r) update_broker; keys_specified=true ;;
         -m) update_media; keys_specified=true ;;
         -b) update_bot; keys_specified=true ;;
-        -t) update_torrent; update_torrent_hdd; update_torrent_low; keys_specified=true ;;
-        -tt) update_torrent; keys_specified=true ;;
-        -th) update_torrent_hdd; keys_specified=true ;;
-        -tl) update_torrent_low; keys_specified=true ;;
+        -t) update_torrent; keys_specified=true ;;
+        -h) echo "Tool for kino-cat docker-containers pull:" ;
+            echo "            -h   print help" ;
+            echo "            -r   update broker" :
+            echo "            -m   update media" ;
+            echo "            -b   update bot" ;
+            echo "            -t   update torrent clients"; keys_specified=true ;;
         *) echo "Unexpected key: $1" >&2; exit 1 ;;
     esac
     shift
@@ -45,8 +40,6 @@ if ! $keys_specified; then
     update_media
     update_bot
     update_torrent
-    update_torrent_hdd
-    update_torrent_low
 fi
 
 echo "All images files have been updated."

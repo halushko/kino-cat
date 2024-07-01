@@ -38,7 +38,6 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         StringBuilder output = new StringBuilder();
 
         analyzeServer(message, serversToApply, output, chatId);
-
         for (val serverNumber : serversToApply) {
             String serverName = serverNames.get(serverNumber);
             
@@ -54,7 +53,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     if (i == 1 || i % 10 == 0) {
                         log.debug("[getDeliverCallbackPrivate] New message created");
                         if (sb != null) {
-                            log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
+                            log.debug("[getDeliverCallbackPrivate] Print result internal:\n{}", sb);
                             output.append(printResult(chatId, sb.toString())).append(OUTPUT_SEPARATOR);
                         }
                         sb = new StringBuilder();
@@ -69,7 +68,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
                     log.debug("[getDeliverCallbackPrivate] Message:\n{}", sb);
                 }
                 if (sb != null) {
-                    log.debug("[getDeliverCallbackPrivate] Print result:\n{}", sb);
+                    log.debug("[getDeliverCallbackPrivate] Print result last:\n{}", sb);
                     output.append(printResult(chatId, sb.toString()));
                 } else {
                     log.debug("[getDeliverCallbackPrivate] Result is empty");
@@ -127,7 +126,7 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
         }
     }
 
-    private void analyzeServer(SmartJson message, List<String> serversToApply, StringBuilder output, long chatId) {
+    protected void analyzeServer(SmartJson message, List<String> serversToApply, StringBuilder output, long chatId) {
         String selectedServer = message.getValue(SmartJsonKeys.SELECT_SERVER);
         if(!selectedServer.isEmpty()) {
             try {
@@ -176,5 +175,4 @@ public abstract class TransmissionWebApiExecutor extends InputMessageHandlerApiR
     protected String getDefaultSuffix() {
         return "transmission/rpc";
     }
-
 }

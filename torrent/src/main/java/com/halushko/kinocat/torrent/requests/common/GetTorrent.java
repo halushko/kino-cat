@@ -61,4 +61,17 @@ public abstract class GetTorrent extends TransmissionWebApiExecutor {
     protected Predicate<? super TorrentEntity> getSmartFilter(List<String> arguments) {
         return element -> true;
     }
+
+    protected static String constructProgressBar(int blocks, int blackBlocks) {
+        StringBuilder line = new StringBuilder();
+
+        IntStream.range(0, blackBlocks).mapToObj(i -> "█").forEach(line::append);
+        if (blackBlocks < blocks) {
+            line.append("▒");
+        }
+        if (blackBlocks + 1 < blocks) {
+            IntStream.range(blackBlocks + 1, blocks).mapToObj(i -> "░").forEach(line::append);
+        }
+        return line.toString();
+    }
 }
