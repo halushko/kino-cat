@@ -10,11 +10,8 @@ public class DownloadsList extends TorrentsList {
 
     @Override
     protected Predicate<? super TorrentEntity> getSmartFilter(List<String> arguments) {
-        return element -> arguments.isEmpty()
-                || (arguments.size() == 1 && serverNames.containsKey(arguments.get(0)))
-                || arguments
-                .stream()
-                .anyMatch(a -> element.getPercentDone() < 1.0);
+        return element -> element.getPercentDone() < 1.0
+                && (arguments.isEmpty() || (arguments.size() == 1 && serverNames.containsKey(arguments.get(0))));
     }
 
     @Override
