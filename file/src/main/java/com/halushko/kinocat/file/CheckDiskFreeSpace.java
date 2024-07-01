@@ -15,32 +15,22 @@ public class CheckDiskFreeSpace extends CliCommandExecutor {
         log.debug(String.format("[CheckDiskFreeSpace] [%s]", String.join(", ", lines)));
         StringBuilder sb = new StringBuilder("Вільного місця у сховищі:");
 
-        for (val device : Constants.FOLDERS.entrySet()) {
-            sb.append("\nfolder: ").append(device.getKey()).append(": ").append(device.getValue());
-        }
-        for (val device : Constants.DEVICES.entrySet()) {
-            sb.append("\n device: ").append(device.getKey()).append(": ").append(device.getValue());
-        }
-        for (String line : lines) {
-            sb.append("\nres: ").append(line);
-        }
-
-
-        for (val device : Constants.FOLDERS.entrySet()) {
-            val key = device.getKey();
-            if (Constants.DEVICES.containsKey(key)) {
-                val value = Constants.DEVICES.get(key);
-                for (String line : lines) {
-                    if (line.matches(value + ".*")) {
-                        sb.append("\n")
-                                .append(key)
-                                .append(": ")
-                                .append(
-                                line.replaceAll("^\\S+\\s+\\S+\\s+\\S+\\s+", "")
-                                        .replaceAll("\\S+\\s+\\S+\\s*$", "")
-                        );
-                    }
+for (val device : Constants.FOLDERS.entrySet()) {
+            boolean flag = false;
+            for (String line : lines) {
+                if (line.matches(device.getKey() + ".*")) {
+                    sb.append("\n")
+                            .append(device.getKey())
+                            .append(": ")
+                            .append(
+                                    line.replaceAll("^\\S+\\s+\\S+\\s+\\S+\\s+", "")
+                                            .replaceAll("\\S+\\s+\\S+\\s*$", "")
+                            );
+                    flag = true;
                 }
+            }
+            if(!flag) {
+                sb.append("\n").append(device.getKey()).append(": не вказано Filesystem у налаштуваннях");
             }
         }
 
