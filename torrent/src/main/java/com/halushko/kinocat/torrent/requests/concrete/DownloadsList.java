@@ -1,5 +1,6 @@
 package com.halushko.kinocat.torrent.requests.concrete;
 
+import com.halushko.kinocat.core.Queues;
 import com.halushko.kinocat.torrent.entities.TorrentEntity;
 
 import java.util.List;
@@ -14,5 +15,10 @@ public class DownloadsList extends TorrentsList {
                 || arguments
                 .stream()
                 .anyMatch(a -> element.getPercentDone() < 1.0);
+    }
+
+    @Override
+    protected String getQueue() {
+        return Queues.Torrent.LIST_TORRENTS_IN_DOWNLOAD_STATUS;
     }
 }
