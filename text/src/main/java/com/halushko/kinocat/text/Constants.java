@@ -9,7 +9,7 @@ public interface Constants {
     CommandsCollection COMMANDS_COLLECTION = new CommandsCollection() {{
         addValue(Commands.Torrent.LIST_TORRENTS,
                 Queues.Torrent.TORRENTS_LIST,
-                "<сервер> відобразити всі торенти. Якщо після команди додати слова, то торенти будуть відфільтровані за іменами з цими словами",
+                "<сервер> відобразити всі торенти",
                 CommandProperties.CONTAINS_SERVER_NUMBER,
                 CommandProperties.CAN_BE_NOT_TORRENT
         );
@@ -70,6 +70,11 @@ public interface Constants {
                 Queues.Torrent.SEARCH_BY_NAME,
                 "шукати токент за назвою",
                 CommandProperties.EMPTY_INSTANCE
+        );
+        addValue(Commands.Torrent.LIST_TORRENTS_IN_DOWNLOAD_STATUS,
+                Queues.Torrent.LIST_TORRENTS_IN_DOWNLOAD_STATUS,
+                "<сервер> відобразити всі торенти що знаходяться в стані \"завантаження\"",
+                CommandProperties.CONTAINS_SERVER_NUMBER
         );
 
         addValue(Commands.Text.HELP,

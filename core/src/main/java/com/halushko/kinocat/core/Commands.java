@@ -18,6 +18,7 @@ public interface Commands {
         String REMOVE_JUST_TORRENT = "/approve_just_torrent_";
         String LIST_FILES = "/files_";
         String REMOVE_COMMAND = "/remove_";
+        String LIST_TORRENTS_IN_DOWNLOAD_STATUS = "/downloads";
     }
 
     interface File {
