@@ -44,7 +44,7 @@ public class PrintDestinations extends CliCommandExecutor {
 
     @Override
     protected String getQueue() {
-        return Queues.File.SHOW_FREE_SPACE;
+        return Queues.File.CHOOSE_THE_DESTINATION;
     }
 
     @Override
