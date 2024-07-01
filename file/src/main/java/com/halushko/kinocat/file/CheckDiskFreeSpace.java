@@ -16,10 +16,10 @@ public class CheckDiskFreeSpace extends CliCommandExecutor {
         StringBuilder sb = new StringBuilder("Вільного місця у сховищі:");
 
         for (val device : Constants.FOLDERS.entrySet()) {
-            sb.append("\nfolder ").append(device.getKey()).append(": ").append(device.getValue());
+            sb.append("\nfolder: ").append(device.getKey()).append(": ").append(device.getValue());
         }
         for (val device : Constants.DEVICES.entrySet()) {
-            sb.append("\n device").append(device.getKey()).append(": ").append(device.getValue());
+            sb.append("\n device: ").append(device.getKey()).append(": ").append(device.getValue());
         }
         for (String line : lines) {
             sb.append("\nres: ").append(line);
@@ -55,7 +55,7 @@ public class CheckDiskFreeSpace extends CliCommandExecutor {
     @Override
     protected String[] getScript(SmartJson rabbitMessage) {
         return new String[]{
-                "/usr/bin/df",
+                "/bin/df",
                 "-h"
         };
     }
